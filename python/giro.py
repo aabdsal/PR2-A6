@@ -2,8 +2,9 @@ from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
 RDK = robolink.Robolink()
 
-def pick_plancha_larga():
+def giro_plancha():
     return
-
-def pick_plancha_ancha():
+def giro_mesa():
+    return
+def giro_ini_mesa():
     return
