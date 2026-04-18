@@ -11,6 +11,17 @@ las_dos = False
 elegir = 0
 
 def var_resets():
+    global detecta_larga
+    global detecta_ancha
+    global sensor_cuadro
+    global en_mesa
+    global plancha_acabada
+    global en_cinta
+    global acabar
+    global aux
+    global las_dos
+    global elegir
+
     detecta_larga = False
     detecta_ancha = False
     sensor_cuadro = False
