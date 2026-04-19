@@ -39,8 +39,9 @@ Adicionalmente, la propuesta contempla:
 
 ## 5) Requisitos
 - RoboDK instalado y estacion de simulacion disponible.
-- Python 3.12+ (recomendado con entorno virtual).
+- Python 3.9+ (compatible con el interprete integrado de RoboDK).
 - Paquete Python `robodk` instalado en el entorno activo.
+- Si se ejecuta con PySide2/shiboken2, usar `numpy<2` para evitar incompatibilidades binarias.
 
 ## 6) Preparacion del entorno
 Desde la raiz del proyecto:
@@ -49,7 +50,7 @@ Desde la raiz del proyecto:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install robodk
+python -m pip install robodk "numpy<2"
 ```
 
 Comprobacion:
