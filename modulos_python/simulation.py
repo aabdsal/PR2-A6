@@ -1,6 +1,5 @@
 from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
-from typing import Optional
 
 RDK = robolink.Robolink()
 
@@ -19,5 +18,5 @@ def simulation_reemplazar_pos_objeto(object_name: str):
 def simulation_adjuntar_objeto(tool: robolink.Item):
     tool.AttachClosest()
 
-def simulation_soltar_objeto(tool: robolink.Item):
-    tool.DetachClosest()
+def simulation_soltar_objeto(tool, frame: robolink.Item):
+    tool.DetachClosest(frame)

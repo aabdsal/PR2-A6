@@ -2,13 +2,14 @@ from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
 RDK = robolink.Robolink()
 
-import var
-import simulation
+from modulos_python import simulation, var
 
 def _mover_cinta(cinta_name: str, target_name: str):
     cinta = RDK.Item(cinta_name)
-    target_cinta = RDK.Item(target_name, robolink.ITEM_TYPE_TARGET)
-    cinta.MoveJ(target_cinta.Pose())
+    if cinta.Valid():
+        target_cinta = RDK.Item(target_name, robolink.ITEM_TYPE_TARGET)
+        cinta.MoveJ(target_cinta)
+    else: raise RuntimeError("El nombre de la cinta no existe")
 
 # programa de robodk cinta ancha
 def mover_cinta_ancha():
@@ -26,7 +27,6 @@ def mover_cinta_larga():
 def mover_cinta_larga_atras():
     _mover_cinta("CintaLargoIni", "Cinta Larga Ini")
 
-
 # programas de robodk cinta cuadro avanza y cinta cuadro retrocede
 def mover_cinta_main():
     _mover_cinta("CintaCuadroIni", "CintaCuadroFin")
@@ -38,10 +38,11 @@ def mover_cinta_main_atras():
 
 # programa de robodk cinta cuadro acabada
 def mover_cinta_cuadro_acabada():
-    if not var.acabar:
-        _mover_cinta("CintaCuadroFini", "CintaCuadroSoldadoFin")
-        simulation.simulation_ocultar_objeto("plancha")
-    else:
-        _mover_cinta("CintaCuadroFini", "CintaCuadroSoldadoIni")
 
-    var.acabar = True
+    if var.en_cinta:
+        if not var.acabar:
+            _mover_cinta("CintaCuadroFini", "CintaCuadroSoldadoFin")
+            simulation.simulation_ocultar_objeto("planchaAcabada")
+        else:
+            _mover_cinta("CintaCuadroFini", "CintaCuadroSoldadoIni")
+        var.acabar = True

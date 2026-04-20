@@ -2,10 +2,9 @@ from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
 RDK = robolink.Robolink()
 
-import mover_cintas as mc
-import var
-import giro
-import simulation as sim
+from modulos_python import var, giro
+from modulos_python import mover_cintas as mc
+from modulos_python import simulation as sim
 
 mc.mover_cinta_ancha_atras()
 mc.mover_cinta_larga_atras()

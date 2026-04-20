@@ -3,7 +3,7 @@ from typing import Optional
 
 RDK = robolink.Robolink()
 
-import giro
+from modulos_python import giro, var
 
 ACTION_RESET = -1
 ACTION_OFF = 0
@@ -88,14 +88,50 @@ def _apply_spray_action(
 
 
 def soldar_ini(
-    giros: int = 4,
     tool_name: Optional[str] = DEFAULT_TOOL_NAME,
     object_name: Optional[str] = DEFAULT_OBJECT_NAME,
     color: str = DEFAULT_COLOR,
 ) -> int:
-    for i in range(giros):
-        giro.giro_plancha(i)
+    
+    r = RDK.Item("ABB IRB 1660-4/1.55(Soldador)", robolink.ITEM_TYPE_ROBOT)
+    toolR = RDK.Item("Fronius MTB500i Welding Gun", robolink.ITEM_TYPE_TOOL)
+    sistRefWeld = RDK.Item("RobotSoldador", robolink.ITEM_TYPE_FRAME)
+    sistRefMesa = RDK.Item("MesaGiratoria", robolink.ITEM_TYPE_FRAME)
 
+    if var.las_dos:
+        r.setFrame(sistRefWeld)
+        r.setTool(toolR)
+
+        ini = RDK.Item("inici", robolink.ITEM_TYPE_TARGET)
+        prePIS = RDK.Item("prePIS", robolink.ITEM_TYPE_TARGET)
+        PIS = RDK.Item("PIS", robolink.ITEM_TYPE_TARGET)
+        PFS = RDK.Item("PFS", robolink.ITEM_TYPE_TARGET)
+        postPFS = RDK.Item("postPFS", robolink.ITEM_TYPE_TARGET)
+
+        r.MoveJ(ini)
+
+        for i in range(4):
+            giro.giro_plancha(i)    
+            r.MoveJ(prePIS)
+
+            r.MoveL(PIS)
+            r.Pause(500)
+
+            r.setFrame(sistRefMesa)
+            _apply_spray_action(
+                action=ACTION_ON,
+                tool_name=tool_name,
+                object_name=object_name,
+                color=color,
+            )
+
+            r.setFrame(sistRefWeld)
+            r.MoveL(PFS)
+            soldar_stop(tool_name=tool_name)
+            r.MoveL(postPFS)
+
+        giro.giro_final_plancha_soldada()
+    
     return _apply_spray_action(
         action=ACTION_ON,
         tool_name=tool_name,

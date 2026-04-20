@@ -4,39 +4,41 @@ from typing import Optional
 
 RDK = robolink.Robolink()
 
-import simulation
-import var
+from modulos_python import simulation, var
 
 sistRefBending = RDK.Item("Bending", robolink.ITEM_TYPE_FRAME)
 home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
 sistRefPick = RDK.Item("Pick", robolink.ITEM_TYPE_FRAME)
 
-def pick_plancha():
-    robot = RDK.Item("Yaskawa MH24", robolink.ITEM_TYPE_ROBOT)
+def _pick_plancha(prepick_str, pick_str : str):
+    r = RDK.Item("Yaskawa MH24", robolink.ITEM_TYPE_ROBOT)
     toolR = RDK.Item("EPick Bend", robolink.ITEM_TYPE_TOOL)
     
-    robot.setFrame(sistRefBending)
-    robot.MoveJ(home.Pose())
+    r.setFrame(sistRefBending)
+    r.setTool(toolR)
+    r.MoveJ(home)
 
-    prepick: Optional[robolink.Item] = None
-    pick: Optional[robolink.Item] = None
+    r.setFrame(sistRefPick)
 
-    robot.setFrame(sistRefPick)
-    if var.detecta_larga:
-        prepick = RDK.Item("PrePickLargo", robolink.ITEM_TYPE_TARGET)
-        pick = RDK.Item("PickLargo", robolink.ITEM_TYPE_TARGET)
-    elif var.detecta_ancha:
-        prepick = RDK.Item("PrePickAncho", robolink.ITEM_TYPE_TARGET)
-        pick = RDK.Item("PickAncho", robolink.ITEM_TYPE_TARGET)
-    else:
-        raise Exception("No se ha podido asignar target a prepick y pick")
+    prepick = RDK.Item(prepick_str, robolink.ITEM_TYPE_TARGET)
+    pick = RDK.Item(pick_str, robolink.ITEM_TYPE_TARGET)
     
-    robot.MoveL(prepick.Pose())
-    robot.Pause(1200)
-    robot.MoveL(pick.Pose())
+    r.MoveL(prepick)
+    r.Pause(1200)
+    r.MoveL(pick)
     simulation.simulation_adjuntar_objeto(toolR)
-    robot.Pause(1200)
-    robot.MoveL(prepick.Pose())   
+    r.Pause(1200)
+    r.MoveL(prepick)   
     
-    robot.Pause(500)
+    r.Pause(500)
+
+def pick_plancha_larga():
+    if var.detecta_larga:
+        _pick_plancha("PrePickLargo", "PickLargo")
+        var.detecta_larga = False
+
+def pick_plancha_ancha():
+    if var.detecta_ancha:
+        _pick_plancha("PrePickAncho", "PickAncho")
+        var.detecta_ancha = False
     
