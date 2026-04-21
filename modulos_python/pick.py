@@ -36,11 +36,21 @@ def _pick_plancha(prepick_str, pick_str : str):
     r.Pause(1000)
 
 def pick_plancha_larga():
+    """
+        sustituir el if por un wait para que la fotocelula
+        de la cinta detecte un objeto mediante el collision 
+    """
+    
     if var.detecta_larga:
         _pick_plancha("PrePickLargo", "PickLargo")
         var.detecta_larga = False
 
 def pick_plancha_ancha():
+    """
+        sustituir el if por un wait para que la fotocelula
+        de la cinta detecte un objeto mediante el collision 
+    """
+
     if var.detecta_ancha:
         _pick_plancha("PrePickAncho", "PickAncho")
         var.detecta_ancha = False

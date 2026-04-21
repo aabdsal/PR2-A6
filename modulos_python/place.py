@@ -39,6 +39,8 @@ def place_cinta_main():
 # programa de roboDK plancha en mesa
 def place_plancha_mesa():
 
+    """ poner un wait de que la fotocelula detecte el objeto """
+    
     tool_paletizado = "EPick Gripper"
     r = RDK.Item("ABB IRB 1660-4/1.55 (paletizado)", robolink.ITEM_TYPE_ROBOT)
     sistRefMesa = RDK.Item("DesplazP1", robolink.ITEM_TYPE_FRAME)

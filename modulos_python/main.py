@@ -5,6 +5,16 @@ RDK, project_dir = preparar_entorno()
 from modulos_python import pick, place, bending, soldar, var
 from modulos_python import mover_cintas as mc
 
+"""
+    Sustituir todos los var. 
+    por setDO y 
+    los if var. :
+    por waitDI
+
+    Ensenyarme a usar thread/tasks 
+    en python para ponerlo en 
+    las respectivas funciones
+"""
 for idx in range(2):
     if idx == 0:
         # ejecutar cinta larga, convertirlo a thread
