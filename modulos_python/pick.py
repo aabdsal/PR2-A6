@@ -11,8 +11,9 @@ home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
 sistRefPick = RDK.Item("Pick", robolink.ITEM_TYPE_FRAME)
 
 def _pick_plancha(prepick_str, pick_str : str):
+    tool_yaskawa = "EPick Bend"
     r = RDK.Item("Yaskawa MH24", robolink.ITEM_TYPE_ROBOT)
-    toolR = RDK.Item("EPick Bend", robolink.ITEM_TYPE_TOOL)
+    toolR = RDK.Item(tool_yaskawa, robolink.ITEM_TYPE_TOOL)
     
     r.setFrame(sistRefBending)
     r.setTool(toolR)
@@ -24,13 +25,15 @@ def _pick_plancha(prepick_str, pick_str : str):
     pick = RDK.Item(pick_str, robolink.ITEM_TYPE_TARGET)
     
     r.MoveL(prepick)
-    r.Pause(1200)
+    r.Pause(1000)
     r.MoveL(pick)
-    simulation.simulation_adjuntar_objeto(toolR)
-    r.Pause(1200)
-    r.MoveL(prepick)   
+
+    var.objetos_tcp[tool_yaskawa] = simulation.simulation_adjuntar_objeto(toolR)
     
-    r.Pause(500)
+    r.Pause(1000)
+    r.MoveL(prepick)
+
+    r.Pause(1000)
 
 def pick_plancha_larga():
     if var.detecta_larga:

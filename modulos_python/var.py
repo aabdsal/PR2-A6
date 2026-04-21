@@ -1,3 +1,4 @@
+from robodk import robolink
 
 detecta_larga = False
 detecta_ancha = False
@@ -9,6 +10,7 @@ acabar = False
 aux = 0
 las_dos = False
 elegir = 0
+objetos_tcp: dict[str, robolink.Item] = {}
 
 def var_resets():
     global detecta_larga
@@ -21,6 +23,7 @@ def var_resets():
     global aux
     global las_dos
     global elegir
+    global objetos_tcp
 
     detecta_larga = False
     detecta_ancha = False
@@ -32,4 +35,5 @@ def var_resets():
     aux = 0
     las_dos = False
     elegir = 0
+    objetos_tcp.clear()
     
