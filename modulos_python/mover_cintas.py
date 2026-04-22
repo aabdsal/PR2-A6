@@ -1,10 +1,10 @@
 from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
-RDK = robolink.Robolink()
 
 from modulos_python import simulation, var
 
 def _mover_cinta(cinta_name: str, target_name: str):
+    RDK = robolink.Robolink()
     cinta = RDK.Item(cinta_name)
     
     if cinta.Valid():
@@ -32,6 +32,7 @@ def mover_cinta_larga_atras():
 
 # programas de robodk cinta cuadro avanza y cinta cuadro retrocede
 def mover_cinta_main():
+    RDK = robolink.Robolink()
     cinta = RDK.Item("CintaCuadroIni")
     
     if cinta.Valid():
@@ -40,7 +41,8 @@ def mover_cinta_main():
     
     _mover_cinta("CintaCuadroIni", "CintaCuadroFin")
 
-def mover_cinta_main_atras():  
+def mover_cinta_main_atras():
+    RDK = robolink.Robolink()
     cinta = RDK.Item("CintaCuadroIni")
     
     if cinta.Valid():
@@ -51,6 +53,7 @@ def mover_cinta_main_atras():
 
 # programa de robodk cinta cuadro acabada
 def mover_cinta_cuadro_acabada():
+    RDK = robolink.Robolink()
     cinta = RDK.Item("CintaCuadroFini")
     
     if cinta.Valid():

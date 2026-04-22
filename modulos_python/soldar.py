@@ -1,6 +1,5 @@
 from robodk import robolink
 from typing import Optional
-
 RDK = robolink.Robolink()
 
 from modulos_python import giro, simulation
