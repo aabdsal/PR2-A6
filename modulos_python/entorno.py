@@ -21,4 +21,3 @@ def preparar_entorno():
     if project_dir not in sys.path:
         sys.path.insert(0, project_dir)
     
-    return RDK, project_dir

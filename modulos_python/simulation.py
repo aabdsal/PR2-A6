@@ -46,3 +46,10 @@ def simulation_soltar_objeto(tool_name: str, frame_name: robolink.Item):
 
     var.objetos_tcp.pop(tool_name, None)
     return True
+
+def waitDI(param_name : str, valor : int):
+    while int(RDK.getParam(param_name) or 0) != valor:
+        robomath.pause(0.01)
+
+def setDO(param_name, valor : str):
+    RDK.setParam(param_name, valor)

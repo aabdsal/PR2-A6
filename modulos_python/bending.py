@@ -48,7 +48,7 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     _transicion_objeto(obj_0, obj_1, sistRefBend, r)
 
     r.MoveL(abreprensa1)
-    r.MoveJ(retract1)
+    r.MoveL(retract1)
     r.Pause(2000)
     r.MoveJ(gir180)
     r.MoveJ(place2)
@@ -61,7 +61,9 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     _transicion_objeto(obj_1, obj_2, sistRefBend, r)
 
     r.MoveL(abreprensa2)
-    r.MoveJ(retract2)
+    r.MoveL(retract2)
+
+    r.setDO("BendingHecho", 1)
 
 def bending_plancha_larga():
     _bending_generico("Bend1", "Bend2", "planxaLarga", "planchaLarga1", "planchaLarga2")
