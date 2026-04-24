@@ -98,7 +98,7 @@ def soldar_ini(
     sistRefMesa = RDK.Item("MesaGiratoria", robolink.ITEM_TYPE_FRAME)
 
     simulation.waitDI("LasDos", 1)
-    simulation.setDO("LasDos", "0")
+    simulation.setDO("LasDos", 0)
 
     r.setFrame(sistRefWeld)
     r.setTool(toolR)
@@ -127,7 +127,7 @@ def soldar_ini(
 
         giro.giro_final_plancha_soldada()
     
-    simulation.setDO("planchaSoldada", "0")
+    simulation.setDO("planchaSoldada", 1)
 
     return _apply_spray_action(
         action=ACTION_ON,
@@ -169,9 +169,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         color = sys.argv[3].lower().strip()
 
-    print("Applying action: " + str(action))
-    print("Using tool: " + str(tool_name))
-    print("Using color: " + str(color))
+    print("Applying action: " + str(action) +"Using tool: " + str(tool_name) + "Using color: " + str(color))
 
     _apply_spray_action(
         action=action,

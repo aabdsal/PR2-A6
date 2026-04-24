@@ -1,11 +1,9 @@
 import os
 import sys
-
-from robodk import robolink    # RoboDK API
-from robodk import robomath    # Robot toolbox
-RDK = robolink.Robolink()
+from robodk import robolink   
 
 def preparar_entorno():
+    RDK = robolink.Robolink()
     rdk_file_param = RDK.getParam(robolink.FILE_OPENSTATION)
 
     if not rdk_file_param:    

@@ -1,31 +1,29 @@
-from robodk import robolink    # RoboDK API
-from robodk import robomath    # Robot toolbox
-RDK = robolink.Robolink()
+from robodk import robolink
+from robodk import robomath
+from modulos_python import var, giro, simulation
 
-from modulos_python import var, giro
-from modulos_python import mover_cintas as mc
-from modulos_python import simulation as sim
 
-estado_inicial_objetos = {}  # clave: nombre objeto
+def reset_objetos():
+    RDK = robolink.Robolink()
+    
+    lista_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT, True)
 
-mc.mover_cinta_ancha_atras()
-mc.mover_cinta_larga_atras()
-mc.mover_cinta_main_atras()
+    for idx in lista_objetos:
+        nombre_objeto = idx if isinstance(idx, str) else idx.Name()
+        simulation.reemplazar_pos_objeto(nombre_objeto)
 
-sim.simulation_reemplazar_pos_objeto("planxaLarga")
-sim.simulation_reemplazar_pos_objeto("planchaLarga1")
-sim.simulation_reemplazar_pos_objeto("planchaLarga2")
-sim.simulation_reemplazar_pos_objeto("planchaAncha")
-sim.simulation_reemplazar_pos_objeto("planchaAncha1")
-sim.simulation_reemplazar_pos_objeto("planchaAncha2")
-sim.simulation_reemplazar_pos_objeto("planchaAcabada")
+def reset_cinta(nombre_cinta : str):
+    RDK = robolink.Robolink()
 
-sim.simulation_mostrar_objeto("planxaLarga")
-sim.simulation_mostrar_objeto("planxaAncha")
+    item_cinta = RDK.Item(nombre_cinta, robolink.ITEM_TYPE_ROBOT)
+    item_cinta.setJoints(robomath.Mat([[0]]))
 
-sim.simulation_mostrar_objeto("planchaLarga2")
-sim.simulation_mostrar_objeto("planchaAncha2")
-sim.simulation_mostrar_objeto("planchaAcabada")
+simulation.mostrar_objeto("planxaLarga")
+simulation.mostrar_objeto("planxaAncha")
+
+simulation.ocultar_objeto("planchaLarga2")
+simulation.ocultar_objeto("planchaAncha2")
+simulation.ocultar_objeto("planchaAcabada")
 
 var.var_resets()
 giro.giro_ini_mesa()

@@ -1,23 +1,24 @@
-from robodk import robolink    # RoboDK API
-from robodk import robomath    # Robot toolbox
+from robodk import robolink    
+from robodk import robomath    
 from typing import Optional
 
 from modulos_python import var
 RDK = robolink.Robolink()
 
-def simulation_ocultar_objeto(object_name: str):
+def ocultar_objeto(object_name: str):
     obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
     obj.setVisible(False)
 
-def simulation_mostrar_objeto(object_name: str):
+def mostrar_objeto(object_name: str):
     obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
     obj.setVisible(True)
 
-def simulation_reemplazar_pos_objeto(object_name: str):
-    obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
-    #obj.setPose()
+def reemplazar_pos_objeto(object_name: str):
+    item = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
+    pose = var.objeto_pose[item.Name()]
+    item.setPose(pose)
 
-def simulation_adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None):
+def adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None):
     if object_name is not None:
         attached = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
         if not attached.Valid():
@@ -32,7 +33,7 @@ def simulation_adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[s
     
     return attached
 
-def simulation_soltar_objeto(tool_name: str, frame_name: robolink.Item):
+def soltar_objeto(tool_name: str, frame_name: robolink.Item):
     if tool_name not in var.objetos_tcp:
         return False
 
@@ -51,5 +52,6 @@ def waitDI(param_name : str, valor : int):
     while int(RDK.getParam(param_name) or 0) != valor:
         robomath.pause(0.01)
 
-def setDO(param_name, valor : str):
-    RDK.setParam(param_name, valor)
+def setDO(param_name: str, valor : int):
+    RDK.setParam(param_name, str(valor))
+

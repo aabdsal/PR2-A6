@@ -1,33 +1,56 @@
-from robodk import robolink    # RoboDK API
-from robodk import robomath    # Robot toolbox
-from modulos_python import simulation
-RDK = robolink.Robolink()
+from robodk import robolink    
+from robodk import robomath    
+from modulos_python import var
+from typing import List
 
-def detectar_objeto(item_name, nombre_sensor : str):
+def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
+
+    if detectados:
+        for idx in detectados:
+            var.objetos_pendientes[nombre_sensor].put(idx)
+            RDK.ShowMessage(f"objeto {idx.Name() } detectado en {nombre_sensor}", False)
+
+def detectar_objeto(nombre_sensor, frame_name : str):
+
+    RDK = robolink.Robolink()
+    
     sensor = RDK.Item(nombre_sensor)
-    item = RDK.Item(item_name)
+    frame = RDK.Item(frame_name, robolink.ITEM_TYPE_FRAME)
 
     if not sensor.Valid():
-        raise Exception("El sensor que me has pasado no existe en tu estación, revisa nombres")
+        raise Exception("El sensor que me has pasado no existe en tu estación, revisa nombres")    
+
+    if not frame.Valid():
+        raise Exception("El frame que me has pasado no existe en tu estación, revisa nombres")
     
-    if not item.Valid():
-        raise Exception("El objeto que me has pasado no existe en tu estación, revisa nombres")
-    
-    #sensor.setDO(nombre_sensor, 0)
-    
-    estado_detectado = -1
+    detectados_anterior = set()
+
     while True:
-        detectado = 0
         
-        if sensor.Collision(item):
-            detectado = 1
+        """ 
+            la lista se podria cargar solo una vez 
+            fuera del while o refrescarla bajo una condicion
+            pero es optimizacion, no logica.
+        """
+        lista_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT, True)  
+
+        detectados_actuales = set()
+
+        for idx in lista_objetos:
+
+            if isinstance(idx, str):
+                idx = RDK.Item(idx)     
+
+            if idx.Valid() and idx.Parent() == frame:
+                if sensor.Collision(idx):
+                    detectados_actuales.add(idx)
         
-        if detectado != estado_detectado:
-            estado_detectado = detectado
-            simulation.setDO(nombre_sensor, str(detectado))
+        entradas_nuevas = list(detectados_actuales - detectados_anterior)
+
+        if entradas_nuevas:
+            productorEvento(nombre_sensor, entradas_nuevas, RDK)
         
+        detectados_anterior = detectados_actuales.copy()
+
         robomath.pause(0.01)
     
-"""
-waitDI y setDO son I/O de robot/programa (entradas y salidas digitales).
-"""

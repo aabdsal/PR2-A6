@@ -1,39 +1,19 @@
 from robodk import robolink
+from robodk import robomath
+import queue
 
-detecta_larga = False
-detecta_ancha = False
-sensor_cuadro = False
-en_mesa = False
-plancha_acabada = False
-en_cinta = False
-acabar = False
-aux = 0
-las_dos = False
-elegir = 0
 objetos_tcp: dict[str, robolink.Item] = {}
 
-def var_resets():
-    global detecta_larga
-    global detecta_ancha
-    global sensor_cuadro
-    global en_mesa
-    global plancha_acabada
-    global en_cinta
-    global acabar
-    global aux
-    global las_dos
-    global elegir
-    global objetos_tcp
+objeto_pose: dict[str, robomath.Mat] = {}
 
-    detecta_larga = False
-    detecta_ancha = False
-    sensor_cuadro = False
-    en_mesa = False
-    plancha_acabada = False
-    en_cinta = False
-    acabar = False
-    aux = 0
-    las_dos = False
-    elegir = 0
+objetos_pendientes: dict[str, queue.Queue[robolink.Item]] = {
+    "SensorCA" : queue.Queue(),
+    "SensorCL" : queue.Queue(),
+    "SensorCC" : queue.Queue(),
+}
+
+def var_resets():
     objetos_tcp.clear()
+    objetos_pendientes.clear()
+    objeto_pose.clear()
     
