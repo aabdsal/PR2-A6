@@ -21,13 +21,6 @@ def giro_mesa():
     target_giro = RDK.Item("Giro90", robolink.ITEM_TYPE_TARGET)
     mesa.MoveJ(target_giro)
 
-def giro_ini_mesa():
-    RDK = robolink.Robolink()
-    mesa = RDK.Item("ABB IRBP A250 D1000")
-    
-    target_ini = RDK.Item("Inici", robolink.ITEM_TYPE_TARGET)
-    mesa.MoveJ(target_ini)
-
 def giro_final_plancha_soldada():
     RDK = robolink.Robolink()
     mesa = RDK.Item("ABB IRBP A250 D1000")
