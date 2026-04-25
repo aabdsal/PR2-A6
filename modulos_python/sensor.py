@@ -1,11 +1,14 @@
 from robodk import robolink    
 from robodk import robomath    
-from modulos_python import var
+from modulos_python import var, simulation
 from typing import List
 
 def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
 
     if detectados:
+
+        simulation.setDO(nombre_sensor, 1)
+
         for idx in detectados:
             var.objetos_pendientes[nombre_sensor].put(idx)
             RDK.ShowMessage(f"objeto {idx.Name() } detectado en {nombre_sensor}", False)

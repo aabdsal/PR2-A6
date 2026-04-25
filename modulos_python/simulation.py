@@ -3,6 +3,7 @@ from robodk import robomath
 from typing import Optional
 
 from modulos_python import var
+
 RDK = robolink.Robolink()
 
 def ocultar_objeto(object_name: str):
@@ -13,10 +14,19 @@ def mostrar_objeto(object_name: str):
     obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
     obj.setVisible(True)
 
-def reemplazar_pos_objeto(object_name: str):
+def reemplazar_pos_objeto(object_name, parent: str,  pose : robomath.Mat):
     item = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
-    pose = var.objeto_pose[item.Name()]
-    item.setPose(pose)
+    if not item.Valid():
+        raise Exception(RDK.ShowMessage("El nombre del objeto no existe"))
+
+    parent_frame = RDK.Item(parent, robolink.ITEM_TYPE_TARGET)
+
+    if not parent_frame.Valid():
+        raise Exception(RDK.ShowMessage("No hay nada en objeto_parent"))
+
+    item.setParentStatic(parent_frame)
+
+    item.setPoseAbs(pose)
 
 def adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None):
     if object_name is not None:
@@ -52,6 +62,7 @@ def waitDI(param_name : str, valor : int):
     while int(RDK.getParam(param_name) or 0) != valor:
         robomath.pause(0.01)
 
-def setDO(param_name: str, valor : int):
+def setDO(param_name: str, valor: int):
+    var.registrar_parametro_json(param_name)
     RDK.setParam(param_name, str(valor))
 

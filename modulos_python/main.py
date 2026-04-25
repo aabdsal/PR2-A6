@@ -9,10 +9,22 @@ from modulos_python import mover_cintas as mc
 from robodk import robolink
 from robodk import robomath
 
+def getIniPose():
+    RDK = robolink.Robolink()
+    lista_ini_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT)
+
+    for idx in lista_ini_objetos:
+        if isinstance(idx, str):
+            idx = RDK.Item(idx) 
+        
+        var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent()))
+
+getIniPose()
+
 
 def _thread_excepthook(args):
     RDK = robolink.Robolink()
-    # Make uncaught thread failures explicit instead of failing silently.
+
     RDK.ShowMessage(f"[ThreadError] {args.thread.name}: {args.exc_type.__name__}: {args.exc_value}")
     traceback.print_exception(args.exc_type, args.exc_value, args.exc_traceback)
 
@@ -97,18 +109,7 @@ def hilo_loggs():
         RDK.ShowMessage(f"Objeto pendiente en ancha: {cola_ancha.qsize()} y larga: {cola_larga.qsize()}", False)
         robomath.pause(0.5)
 
-def hilo_getIniPose():
-    RDK = robolink.Robolink()
-    lista_ini_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT)
-
-    for idx in lista_ini_objetos:
-        if isinstance(idx, str):
-            idx = RDK.Item(idx) 
-        
-        var.objeto_pose[idx.Name()] = idx.Pose()
-
 threads = [
-    #threading.Thread(target=hilo_loggs, daemon= True),
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
     threading.Thread(target=hilo_yaskawa, name="yaskawa"),
