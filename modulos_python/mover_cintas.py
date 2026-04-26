@@ -1,9 +1,9 @@
 from robodk import robolink
 from robodk import robomath
-from modulos_python import simulation
+from modulos_python import simulation, var
 import time
 
-def _mover_cinta(cinta_name: str, target_name: str, RDK : robolink.Robolink | None = None, stop_param: str | None = None):
+def _mover_cinta(cinta_name: str, stop_param: str, RDK : robolink.Robolink | None = None):
 
     if RDK is None:
         RDK = robolink.Robolink()
@@ -13,22 +13,12 @@ def _mover_cinta(cinta_name: str, target_name: str, RDK : robolink.Robolink | No
     if not cinta.Valid():
         raise RuntimeError("El nombre de la cinta no existe")
 
-    target_cinta = RDK.Item(target_name, robolink.ITEM_TYPE_TARGET)
-
-    if not target_cinta.Valid():
-        raise RuntimeError("El nombre del target no existe, revisa nombres")
-
-    tiempo_prev = time.perf_counter()
-    velocidad = 100.0
+    incremento = 20.0
 
     while stop_param is not None and int(RDK.getParam(stop_param) or 0) != 1:
-        tiempo_actual = time.perf_counter()
-        diferencia = tiempo_actual - tiempo_prev
-        incremento = velocidad * diferencia
 
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
         
-        tiempo_prev = tiempo_actual
         robomath.pause(0.01)
 
 """
@@ -43,20 +33,23 @@ def _mover_cinta(cinta_name: str, target_name: str, RDK : robolink.Robolink | No
 """
 
 def mover_cinta_ancha():
-    _mover_cinta("CintaAnchoIni", "T_CintaAnchaFin", stop_param="SensorCA")
+    _mover_cinta(var.cinta_ancha, "SensorCA")
 
 def mover_cinta_larga():
-    _mover_cinta("CintaLargoIni", "T_CintaLargaFin", stop_param="SensorCL")
+    _mover_cinta(var.cinta_larga, "SensorCL")
+
+def mover_cinta_tapa():
+    _mover_cinta(var.cinta_tapa, "SensorTapa")
 
 def mover_cinta_main(RDK : robolink.Robolink):
     simulation.waitDI("enCintaMain", 1)
     simulation.setDO("enCintaMain", 0)
     
-    _mover_cinta("CintaCuadroIni", "T_CintaCuadroFin", RDK, stop_param="SensorCC")
+    _mover_cinta(var.cinta_main, "SensorCC", RDK)
 
 def mover_cinta_cuadro_acabada():
     simulation.waitDI("EnCinta", 1)
     simulation.setDO("EnCinta", 0)
         
-    _mover_cinta("CintaCuadroFini", "CintaCuadroSoldadoFin")
+    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta")
     simulation.ocultar_objeto("planchaAcabada")

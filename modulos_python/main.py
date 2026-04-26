@@ -20,7 +20,7 @@ def getIniPose():
         var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent()))
 
 getIniPose()
-
+robomath.pause(0.5)
 
 def _thread_excepthook(args):
     RDK = robolink.Robolink()
@@ -36,6 +36,9 @@ def hilo_cinta_larga():
 def hilo_cinta_ancha():
     mc.mover_cinta_ancha()
 
+def hilo_cinta_tapa():
+    mc.mover_cinta_tapa()
+
 def hilo_yaskawa():
     """ que piezas pendientes tengo en cola """
     
@@ -48,30 +51,60 @@ def hilo_yaskawa():
     
     while True:
         
-        if not cola_ancha.empty():
-            obj1 = cola_ancha.get()
-            pick.pick_plancha_ancha()
-            
-            if obj1 is not None:
-                RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
-            
-            bending.bending_plancha_ancha()
-            place.place_cinta_main()
-            #ultima = "ancha"
-        elif not cola_larga.empty():
-            obj2 = cola_larga.get()
-            pick.pick_plancha_larga()
-            
-            if obj2 is not None:
-                RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
-            
-            bending.bending_plancha_larga()
-            place.place_cinta_main()
-            #ultima = "larga"
+        if ultima is None:
+            if not cola_ancha.empty():
+                obj1 = cola_ancha.get()
+                pick.pick_plancha_ancha()
+                
+                if obj1 is not None:
+                    RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
+                
+                bending.bending_plancha_ancha()
+                place.place_cinta_main()
+                ultima = "ancha"
+                var.alternancia.put(ultima)
 
+            elif not cola_larga.empty():
+                obj2 = cola_larga.get()
+                pick.pick_plancha_larga()
+                
+                if obj2 is not None:
+                    RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
+                
+                bending.bending_plancha_larga()
+                place.place_cinta_main()
+                ultima = "larga"
+                var.alternancia.put(ultima)
+            else:
+                RDK.ShowMessage(f"no esta haciendo nada el hilo_yaskawa", False)
+                robomath.pause(0.01)
+        elif ultima == "ancha":
+                if not cola_larga.empty():
+                    obj2 = cola_larga.get()
+                    pick.pick_plancha_larga()
+                    
+                    if obj2 is not None:
+                        RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
+                    
+                    bending.bending_plancha_larga()
+                    place.place_cinta_main()
+                    ultima = "larga"
+                    var.alternancia.put(ultima)
+        elif ultima == "larga":
+                if not cola_ancha.empty():
+                    obj1 = cola_ancha.get()
+                    pick.pick_plancha_ancha()
+                    
+                    if obj1 is not None:
+                        RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
+                    
+                    bending.bending_plancha_ancha()
+                    place.place_cinta_main()
+                    ultima = "ancha"
+                    var.alternancia.put(ultima)
         else:
-            RDK.ShowMessage(f"no esta haciendo nada el hilo_yaskawa", False)
             robomath.pause(0.01)
+
 
 def hilo_cinta_main():
     RDK = robolink.Robolink()
@@ -97,21 +130,15 @@ def hilo_sensorCL():
     sensor.detectar_objeto("SensorCL", "FramePlanchaLarga")
 
 def hilo_sensorCC():
-    sensor.detectar_objeto("SensorCC", "PlanchaCuadro")
+    sensor.detectar_objeto("SensorCC", "FramePlanchaMain")
 
-def hilo_loggs():
-    RDK = robolink.Robolink()
-    
-    cola_ancha = var.objetos_pendientes["SensorCA"]
-    cola_larga = var.objetos_pendientes["SensorCL"]
-    
-    while True:
-        RDK.ShowMessage(f"Objeto pendiente en ancha: {cola_ancha.qsize()} y larga: {cola_larga.qsize()}", False)
-        robomath.pause(0.5)
+def hilo_sensorTapa():
+    sensor.detectar_objeto("SensorTapa", "FrameTapa")
 
 threads = [
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
+    threading.Thread(target=hilo_cinta_tapa, name="cinta_thilo_cinta_tapa"),
     threading.Thread(target=hilo_yaskawa, name="yaskawa"),
     threading.Thread(target=hilo_cinta_main, name="cinta_main"),
     threading.Thread(target=hilo_place_mesa, name="place_mesa"),
@@ -119,7 +146,8 @@ threads = [
     threading.Thread(target=hilo_soldador, name="soldador"),
     threading.Thread(target=hilo_sensorCA, name="sensor_ca"),
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
-    threading.Thread(target=hilo_sensorCC, name="sensor_cc")
+    threading.Thread(target=hilo_sensorCC, name="sensor_cc"),
+    threading.Thread(target=hilo_sensorTapa, name="sensor_tapa")
 ]
 
 for t in threads:

@@ -7,6 +7,32 @@ from typing import Any
 
 JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "bbdd" / "parametros.json"
 
+robot_yaskawa = "Yaskawa MH24 Prensado"
+tool_yaskawa = "EPick Bend"
+
+robot_abb_p = "ABB Paletizado"
+tool_abb_p = "EPick Gripper"
+
+robot_abb_s = "ABB Soldador"
+tool_abb_s = "Welding Gun"
+
+cinta_larga = "CintaLargoIni"
+cinta_ancha = "CintaAnchoIni"
+cinta_main = "CintaCuadroIni"
+cinta_etiqueta = "CintaCuadroFini"
+cinta_tapa = "CintaTapaInit"
+
+mesa_giratoria = ""
+
+frame_pick = "Pick"
+frame_place = "Place"
+frame_bending = "Bending"
+frame_cinta_main = "FramePlanchaMain"
+frame_cinta_etiqueta = "CuadroAcabada"
+frame_welding = "RobotSoldador"
+frame_mesa_giratoria = "MesaGiratoria"
+frame_paletizado_mesa = "RobotPaletizado"
+
 objetos_tcp: dict[str, robolink.Item] = {}
 objeto_pose: dict[str, robomath.Mat] = {}
 objeto_parentIni: dict[str, str] = {}
@@ -16,6 +42,9 @@ objetos_pendientes: dict[str, queue.Queue[robolink.Item]] = {
     "SensorCL" : queue.Queue(),
     "SensorCC" : queue.Queue(),
 }
+
+alternancia : queue.Queue[str] = queue.Queue()
+
 
 def _estructura_json_vacia(): 
     return {

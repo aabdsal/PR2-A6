@@ -16,7 +16,7 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 
     RDK = robolink.Robolink()
 
-    r = RDK.Item("Yaskawa MH24", robolink.ITEM_TYPE_ROBOT)
+    r = RDK.Item("Yaskawa MH24 Prensado", robolink.ITEM_TYPE_ROBOT)
     sistRefBend = RDK.Item("Bending", robolink.ITEM_TYPE_FRAME)
     toolR = RDK.Item(tool_yaskawa, robolink.ITEM_TYPE_TOOL)
 

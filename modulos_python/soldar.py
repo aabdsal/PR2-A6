@@ -2,14 +2,13 @@ from robodk import robolink
 from typing import Optional
 RDK = robolink.Robolink()
 
-from modulos_python import giro, simulation
+from modulos_python import giro, simulation, var
 
 ACTION_RESET = -1
 ACTION_OFF = 0
 ACTION_ON = 1
 
 DEFAULT_COLOR = "black"
-DEFAULT_TOOL_NAME = "Fronius MTB500i Welding Gun"
 DEFAULT_OBJECT_NAME = "planchaLarga2"
 
 
@@ -47,7 +46,7 @@ def _resolve_spray_id(tool_name: Optional[str], action: int) -> int:
 
 def _apply_spray_action(
     action: int,
-    tool_name: Optional[str] = DEFAULT_TOOL_NAME,
+    tool_name: Optional[str] = var.tool_abb_s,
     object_name: Optional[str] = DEFAULT_OBJECT_NAME,
     color: str = DEFAULT_COLOR,
 ) -> int:
@@ -87,26 +86,28 @@ def _apply_spray_action(
 
 
 def soldar_ini(
-    tool_name: Optional[str] = DEFAULT_TOOL_NAME,
+    tool_name: Optional[str] = var.tool_abb_s,
     object_name: Optional[str] = DEFAULT_OBJECT_NAME,
     color: str = DEFAULT_COLOR,
 ) -> int:
     
-    r = RDK.Item("ABB IRB 1660-4/1.55(Soldador)", robolink.ITEM_TYPE_ROBOT)
-    toolR = RDK.Item("Fronius MTB500i Welding Gun", robolink.ITEM_TYPE_TOOL)
-    sistRefWeld = RDK.Item("RobotSoldador", robolink.ITEM_TYPE_FRAME)
-    sistRefMesa = RDK.Item("MesaGiratoria", robolink.ITEM_TYPE_FRAME)
+    r = RDK.Item(var.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
+    toolR = RDK.Item(var.tool_abb_s, robolink.ITEM_TYPE_TOOL)
+    sistRefWeld = RDK.Item(var.frame_welding, robolink.ITEM_TYPE_FRAME)
+    sistRefMesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
 
     simulation.waitDI("LasDos", 1)
     simulation.setDO("LasDos", 0)
 
     r.setFrame(sistRefWeld)
     r.setTool(toolR)
-    ini = RDK.Item("inici", robolink.ITEM_TYPE_TARGET)
+
+    ini = RDK.Item("Inici", robolink.ITEM_TYPE_TARGET)
     prePIS = RDK.Item("prePIS", robolink.ITEM_TYPE_TARGET)
     PIS = RDK.Item("PIS", robolink.ITEM_TYPE_TARGET)
     PFS = RDK.Item("PFS", robolink.ITEM_TYPE_TARGET)
     postPFS = RDK.Item("postPFS", robolink.ITEM_TYPE_TARGET)
+
     r.MoveJ(ini)
     for i in range(4):
         giro.giro_plancha(i)    
@@ -137,7 +138,7 @@ def soldar_ini(
     )
 
 
-def soldar_stop(tool_name: Optional[str] = DEFAULT_TOOL_NAME, clear_trace: bool = True):
+def soldar_stop(tool_name: Optional[str] = var.tool_abb_s, clear_trace: bool = True):
     spray_id = _apply_spray_action(action=ACTION_OFF, tool_name=tool_name)
     if clear_trace:
         _apply_spray_action(action=ACTION_RESET, tool_name=tool_name)
@@ -149,7 +150,7 @@ if __name__ == "__main__":
 
     action = ACTION_ON
     color = DEFAULT_COLOR
-    tool_name = DEFAULT_TOOL_NAME
+    tool_name = var.tool_abb_s
     object_name = DEFAULT_OBJECT_NAME
 
     if len(sys.argv) > 1:

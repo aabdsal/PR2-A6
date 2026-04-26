@@ -11,11 +11,10 @@ def place_cinta_main():
 
     RDK = robolink.Robolink()
 
-    tool_yaskawa = "EPick Bend"
-    r = RDK.Item("Yaskawa MH24", robolink.ITEM_TYPE_ROBOT)
-    sistRefPlace = RDK.Item("Place", robolink.ITEM_TYPE_FRAME)
-    sistRefCinta = RDK.Item("PlanchaCuadro", robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(tool_yaskawa, robolink.ITEM_TYPE_TOOL)
+    r = RDK.Item(var.robot_yaskawa, robolink.ITEM_TYPE_ROBOT)
+    sistRefPlace = RDK.Item(var.frame_place, robolink.ITEM_TYPE_FRAME)
+    sistRefCinta = RDK.Item(var.frame_cinta_main, robolink.ITEM_TYPE_FRAME)
+    toolR = RDK.Item(var.tool_yaskawa, robolink.ITEM_TYPE_TOOL)
 
     r.setFrame(sistRefPlace)
     r.setTool(toolR)
@@ -27,13 +26,14 @@ def place_cinta_main():
     r.Pause(1000)
     r.MoveL(place)
 
-    simulation.soltar_objeto(tool_yaskawa, sistRefCinta)
+    simulation.soltar_objeto(var.tool_yaskawa, sistRefCinta)
     
     r.MoveL(preplace)   
     r.Pause(1000)
 
-    sistRefBending = RDK.Item("Bending", robolink.ITEM_TYPE_FRAME)
+    sistRefBending = RDK.Item(var.frame_bending, robolink.ITEM_TYPE_FRAME)
     r.setFrame(sistRefBending)
+
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
     r.MoveJ(home)
     
@@ -49,22 +49,31 @@ def place_plancha_mesa():
     simulation.waitDI("SensorCC", 1)   
     RDK = robolink.Robolink()
     
-    tool_paletizado = "EPick Gripper"
-    r = RDK.Item("ABB IRB 1660-4/1.55 (paletizado)", robolink.ITEM_TYPE_ROBOT)
-    sistRefMesa = RDK.Item("DesplazP1", robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(tool_paletizado, robolink.ITEM_TYPE_TOOL)
+    r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
+    sistRefMesa = RDK.Item(var.frame_paletizado_mesa, robolink.ITEM_TYPE_FRAME)
+    toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
 
+    if not r.Valid() :
+        raise RuntimeError("El nombre del robot no existe, revisa nombres")
+    
+    if not sistRefMesa.Valid() :
+        raise RuntimeError("El nombre del frame no existe, revisa nombres")
+    
+    if not toolR.Valid() :
+        raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
+    
     r.setFrame(sistRefMesa)
     r.setTool(toolR)
 
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
-    prepick_cinta = RDK.Item("PrePickCinta", robolink.ITEM_TYPE_TARGET)
+    prepick_cinta = RDK.Item("PrePickCintaMain", robolink.ITEM_TYPE_TARGET)
+    prepick_cinta2 = RDK.Item("PrePickCintaMain2", robolink.ITEM_TYPE_TARGET)
 
     pregiro = RDK.Item("PreGiro", robolink.ITEM_TYPE_TARGET)
     acomodado1 = RDK.Item("Acomodado1", robolink.ITEM_TYPE_TARGET)
     acomodado2 = RDK.Item("Acomodado2", robolink.ITEM_TYPE_TARGET)
-    pick_cinta = RDK.Item("PickCinta", robolink.ITEM_TYPE_TARGET)
-    pick_cinta2 = RDK.Item("PickCinta2", robolink.ITEM_TYPE_TARGET)
+    pick_cinta = RDK.Item("PickCintaMain", robolink.ITEM_TYPE_TARGET)
+    pick_cinta2 = RDK.Item("PickCintaMain2", robolink.ITEM_TYPE_TARGET)
     preplace_larga = RDK.Item("PrePlaceLarga", robolink.ITEM_TYPE_TARGET)
     preplace_ancha = RDK.Item("PrePlaceAncha", robolink.ITEM_TYPE_TARGET)
     place_larga = RDK.Item("PlaceLarga", robolink.ITEM_TYPE_TARGET)
@@ -73,11 +82,13 @@ def place_plancha_mesa():
     r.MoveJ(ini)
     r.MoveJ(prepick_cinta)
 
-    if var.aux == 0:
+    elem = var.alternancia.get()
+
+    if elem == "larga":
         r.MoveL(pick_cinta)
         r.Pause(2000)
 
-        var.objetos_tcp[tool_paletizado] = simulation.adjuntar_objeto(toolR)
+        var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
         
         r.MoveJ(prepick_cinta)
         r.MoveJ(preplace_larga)
@@ -87,16 +98,17 @@ def place_plancha_mesa():
         simulation.setDO("EnMesa", 1)
         r.Pause(2000)
         
-        simulation.soltar_objeto(tool_paletizado, sistRefMesa)
+        simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
         
         giro.giro_mesa()
         r.MoveL(preplace_larga)
+        
     
-    elif var.aux == 1:
+    elif elem == "ancha":
         r.Pause(2000)
         r.MoveJ(pick_cinta2)
 
-        var.objetos_tcp[tool_paletizado] = simulation.adjuntar_objeto(toolR)
+        var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
         r.Pause(2000)
         
         r.MoveJ(prepick_cinta)
@@ -111,7 +123,7 @@ def place_plancha_mesa():
         r.MoveL(place_ancha)
         r.Pause(2000)
         
-        simulation.soltar_objeto(tool_paletizado, sistRefMesa)
+        simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
         simulation.setDO("EnMesa", 1)
         simulation.setDO("LasDos", 1)
         
@@ -128,10 +140,10 @@ def place_plancha_soldada():
     simulation.setDO("planchaSoldada", 0)
 
     RDK = robolink.Robolink()
-    tool_paletizado = "EPick Gripper"
-    r = RDK.Item("ABB IRB 1660-4/1.55 (paletizado)", robolink.ITEM_TYPE_ROBOT)
-    sistRefMesa = RDK.Item("RobotPaletizado", robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(tool_paletizado, robolink.ITEM_TYPE_TOOL)
+
+    r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
+    sistRefMesa = RDK.Item(var.frame_cinta_etiqueta, robolink.ITEM_TYPE_FRAME)
+    toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
     
     r.setFrame(sistRefMesa)
     r.setTool(toolR)
@@ -145,14 +157,14 @@ def place_plancha_soldada():
     r.MoveJ(prepick_cuadro)
     r.Pause(1000)
     r.MoveL(pick_cuadro)
-    var.objetos_tcp[tool_paletizado] = simulation.adjuntar_objeto(toolR)
+    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
     r.Pause(1000)
     r.MoveJ(prepick_cuadro)
     r.Pause(1000)
     r.MoveJ(preplace_cuadro)
     r.Pause(1000)
     r.MoveL(place_cuadro)
-    simulation.soltar_objeto(tool_paletizado, sistRefMesa)
+    simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
     r.Pause(2000)
     r.MoveJ(preplace_cuadro)
     simulation.setDO("EnCinta", 1)

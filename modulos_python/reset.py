@@ -32,6 +32,9 @@ def reset_objetos():
     for nombre in info_objetos:
         simulation.reemplazar_pos_objeto(nombre[0], nombre[1], nombre[2])
 
+def borrar_duplicados():
+    pass
+
 reset_param()
 reset_objetos()
 
@@ -39,7 +42,7 @@ reset_cinta("CintaLargoIni")
 reset_cinta("CintaAnchoIni")
 reset_cinta("CintaCuadroIni")
 reset_cinta("CintaTapaInit")
-reset_cinta("ABB IRBP A250 D1000")
+reset_cinta("ABB Mesa Giratoria")
 
 simulation.mostrar_objeto("planxaLarga")
 simulation.mostrar_objeto("planxaAncha")
