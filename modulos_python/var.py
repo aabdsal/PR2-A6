@@ -22,7 +22,7 @@ cinta_main = "CintaCuadroIni"
 cinta_etiqueta = "CintaCuadroFini"
 cinta_tapa = "CintaTapaInit"
 
-mesa_giratoria = ""
+mesa_giratoria = "Yaskawa Giratoria"
 
 frame_pick = "Pick"
 frame_place = "Place"
@@ -31,7 +31,7 @@ frame_cinta_main = "FramePlanchaMain"
 frame_cinta_etiqueta = "CuadroAcabada"
 frame_welding = "RobotSoldador"
 frame_mesa_giratoria = "MesaGiratoria"
-frame_paletizado_mesa = "RobotPaletizado"
+frame_paletizado_mesa = "Cinta_Mesa"
 
 objetos_tcp: dict[str, robolink.Item] = {}
 objeto_pose: dict[str, robomath.Mat] = {}

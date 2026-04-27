@@ -1,4 +1,9 @@
 from robodk import robolink
+from robodk import robomath
+from modulos_python import entorno
+
+entorno.preparar_entorno()
+
 from modulos_python import simulation, var, giro
 
 #  = pose local, posicion y orientacion respecto al frame de referencia
@@ -23,13 +28,13 @@ def place_cinta_main():
     place = RDK.Item("Place", robolink.ITEM_TYPE_TARGET)
     
     r.MoveJ(preplace)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveL(place)
 
     simulation.soltar_objeto(var.tool_yaskawa, sistRefCinta)
     
     r.MoveL(preplace)   
-    r.Pause(1000)
+    robomath.pause(0.5)
 
     sistRefBending = RDK.Item(var.frame_bending, robolink.ITEM_TYPE_FRAME)
     r.setFrame(sistRefBending)
@@ -40,10 +45,6 @@ def place_cinta_main():
     simulation.setDO("enCintaMain", 1)
 
 # programa de roboDK plancha en mesa
-"""
-    cambiar el tipo de movimientos que hacia antes usando el aux
-    mediante la cola de consumidores, productores
-"""
 def place_plancha_mesa():
 
     simulation.waitDI("SensorCC", 1)   
@@ -66,72 +67,55 @@ def place_plancha_mesa():
     r.setTool(toolR)
 
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
-    prepick_cinta = RDK.Item("PrePickCintaMain", robolink.ITEM_TYPE_TARGET)
-    prepick_cinta2 = RDK.Item("PrePickCintaMain2", robolink.ITEM_TYPE_TARGET)
+    prepick_cinta = RDK.Item("PrePickMain", robolink.ITEM_TYPE_TARGET)
 
-    pregiro = RDK.Item("PreGiro", robolink.ITEM_TYPE_TARGET)
-    acomodado1 = RDK.Item("Acomodado1", robolink.ITEM_TYPE_TARGET)
-    acomodado2 = RDK.Item("Acomodado2", robolink.ITEM_TYPE_TARGET)
-    pick_cinta = RDK.Item("PickCintaMain", robolink.ITEM_TYPE_TARGET)
-    pick_cinta2 = RDK.Item("PickCintaMain2", robolink.ITEM_TYPE_TARGET)
-    preplace_larga = RDK.Item("PrePlaceLarga", robolink.ITEM_TYPE_TARGET)
-    preplace_ancha = RDK.Item("PrePlaceAncha", robolink.ITEM_TYPE_TARGET)
-    place_larga = RDK.Item("PlaceLarga", robolink.ITEM_TYPE_TARGET)
-    place_ancha = RDK.Item("PlaceAncha", robolink.ITEM_TYPE_TARGET)
+    giro180 = RDK.Item("Giro180_P", robolink.ITEM_TYPE_TARGET)
+    pick_larga = RDK.Item("PickMainLarga", robolink.ITEM_TYPE_TARGET)
+    pick_ancha = RDK.Item("PickMainAncha", robolink.ITEM_TYPE_TARGET)
+    post_pick = RDK.Item("PostPick", robolink.ITEM_TYPE_TARGET)
+    preplace_main = RDK.Item("PrePlaceMain", robolink.ITEM_TYPE_TARGET)
+    place_main = RDK.Item("PlaceMain", robolink.ITEM_TYPE_TARGET)
 
     r.MoveJ(ini)
-    r.MoveJ(prepick_cinta)
+    r.MoveL(prepick_cinta)
+    robomath.pause(0.5)
 
     elem = var.alternancia.get()
-
+    
     if elem == "larga":
-        r.MoveL(pick_cinta)
-        r.Pause(2000)
-
-        var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
-        
-        r.MoveJ(prepick_cinta)
-        r.MoveJ(preplace_larga)
-        
-        r.MoveJ(place_larga)
-
-        simulation.setDO("EnMesa", 1)
-        r.Pause(2000)
-        
-        simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
-        
-        giro.giro_mesa()
-        r.MoveL(preplace_larga)
-        
-    
+        r.MoveL(pick_larga)
     elif elem == "ancha":
-        r.Pause(2000)
-        r.MoveJ(pick_cinta2)
-
-        var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
-        r.Pause(2000)
-        
-        r.MoveJ(prepick_cinta)
-        r.Pause(2000)
-        
-        r.MoveL(pregiro)
-        r.MoveJ(acomodado1) 
-        r.MoveJ(acomodado2)
-        
-        r.MoveL(preplace_ancha)
-        r.Pause(2000)
-        r.MoveL(place_ancha)
-        r.Pause(2000)
-        
-        simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
-        simulation.setDO("EnMesa", 1)
-        simulation.setDO("LasDos", 1)
-        
-        r.MoveL(preplace_ancha)
-
+        r.MoveL(pick_ancha)
     
+    robomath.pause(0.5)
+    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
+    
+    r.MoveL(prepick_cinta)
+    robomath.pause(0.5)
+    r.MoveL(post_pick)
+    robomath.pause(0.5)
+    r.MoveJ(giro180)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_main)
+    robomath.pause(0.5)
+    r.MoveL(place_main)
+
+    simulation.setDO("EnMesa", 1)
+
+    if elem == "ancha":
+        simulation.setDO("LasDos", 1)
+    
+    robomath.pause(0.5)
+    
+    simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
+    
+    if elem == "larga":
+        giro.giro_mesa()
+    
+    r.MoveL(preplace_main)
+
     r.MoveJ(ini)
-    r.Pause(2000)
+    robomath.pause(0.5)
 
 # programa de roboDK place plancha soldada
 def place_plancha_soldada():
@@ -155,19 +139,19 @@ def place_plancha_soldada():
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
     r.MoveJ(prepick_cuadro)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveL(pick_cuadro)
     var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveJ(prepick_cuadro)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveL(place_cuadro)
     simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
-    r.Pause(2000)
+    robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
     simulation.setDO("EnCinta", 1)
     r.MoveJ(ini)
     
-    
+place_plancha_mesa()
