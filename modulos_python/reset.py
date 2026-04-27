@@ -1,7 +1,9 @@
 from robodk import robolink
 from robodk import robomath
-from modulos_python import simulation, var
+from modulos_python import var
 import json
+
+from modulos_python import simulation
 
 def reset_cinta(nombre_cinta : str):
     RDK = robolink.Robolink()

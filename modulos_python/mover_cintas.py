@@ -1,7 +1,8 @@
 from robodk import robolink
 from robodk import robomath
-from modulos_python import simulation, var
-import time
+from modulos_python import var
+
+from modulos_python import simulation
 
 def _mover_cinta(cinta_name: str, stop_param: str, RDK : robolink.Robolink | None = None):
 

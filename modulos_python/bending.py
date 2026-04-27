@@ -1,7 +1,8 @@
 from robodk import robolink    # RoboDK API
 from robodk import robomath    # Robot toolbox
 
-from modulos_python import simulation, var
+from modulos_python import var
+from modulos_python import simulation
 
 def _transicion_objeto(obj_from, obj_to: str, frame, tool: robolink.Item):
     simulation.soltar_objeto(var.tool_yaskawa, frame)

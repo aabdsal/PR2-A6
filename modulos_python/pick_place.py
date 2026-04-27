@@ -1,6 +1,8 @@
 from robodk import robolink
 from robodk import robomath
-from modulos_python import simulation, var, giro
+from modulos_python import var
+from modulos_python import simulation
+from modulos_python import giro
 
 #  = pose local, posicion y orientacion respecto al frame de referencia
 # .PoseAbs() = pose global, posicion y orientacion respecto al mundo, es decir, la estacion

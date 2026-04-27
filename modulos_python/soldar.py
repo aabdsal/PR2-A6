@@ -1,7 +1,9 @@
 from robodk import robolink
 RDK = robolink.Robolink()
 
-from modulos_python import giro, simulation, var
+from modulos_python import simulation
+from modulos_python import giro
+from modulos_python import var
 
 ACTION_RESET = -1
 ACTION_OFF = 0

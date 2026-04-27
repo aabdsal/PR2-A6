@@ -5,7 +5,7 @@ import json
 import queue
 from typing import Any
 
-JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "bbdd" / "parametros.json"
+JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "database" / "parametros.json"
 
 robot_yaskawa = "Yaskawa MH24 Prensado"
 tool_yaskawa = "EPick Bend"

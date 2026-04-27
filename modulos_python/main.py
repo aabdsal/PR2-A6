@@ -1,10 +1,12 @@
 import threading
 import traceback
-from modulos_python.entorno import preparar_entorno
 
+from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import pick_place, bending, soldar, sensor, var
+from modulos_python import soldar
+from modulos_python import bending, pick_place, sensor
+from modulos_python import var
 from modulos_python import mover_cintas as mc
 from robodk import robolink
 from robodk import robomath
@@ -78,7 +80,6 @@ def hilo_yaskawa():
                 ultima = "larga"
                 var.alternancia.put(ultima)
             else:
-                RDK.ShowMessage(f"no esta haciendo nada el hilo_yaskawa", False)
                 robomath.pause(0.01)
         elif ultima == "ancha":
                 if not cola_larga.empty():

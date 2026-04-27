@@ -1,7 +1,9 @@
 from robodk import robolink    
 from robodk import robomath    
-from modulos_python import var, simulation
+from modulos_python import var
 from typing import List
+
+from modulos_python import simulation
 
 def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
 
