@@ -1,5 +1,4 @@
 from robodk import robolink
-from typing import Optional
 RDK = robolink.Robolink()
 
 from modulos_python import giro, simulation, var
@@ -9,15 +8,15 @@ ACTION_OFF = 0
 ACTION_ON = 1
 
 DEFAULT_COLOR = "black"
-DEFAULT_OBJECT_NAME = "planchaLarga2"
-
+DEFAULT_OBJECT_NAME = "planchaLarga2" 
+# cambiar el nom este per algun objecte que estiga en el frame de dins de la mesa giratoria
 
 def _ensure_simulation_mode():
     if RDK.RunMode() != robolink.RUNMODE_SIMULATE:
         raise RuntimeError("La soldadura simulada solo se puede ejecutar en RUNMODE_SIMULATE")
 
 
-def _resolve_spray_id(tool_name: Optional[str], action: int) -> int:
+def _resolve_spray_id(tool_name: str, action: int) -> int:
     info, data = RDK.Spray_GetStats()
     n_sprays_raw = data.size(1)
     if isinstance(n_sprays_raw, tuple):
@@ -46,8 +45,8 @@ def _resolve_spray_id(tool_name: Optional[str], action: int) -> int:
 
 def _apply_spray_action(
     action: int,
-    tool_name: Optional[str] = var.tool_abb_s,
-    object_name: Optional[str] = DEFAULT_OBJECT_NAME,
+    tool_name: str = var.tool_abb_s,
+    object_name: str = DEFAULT_OBJECT_NAME,
     color: str = DEFAULT_COLOR,
 ) -> int:
     _ensure_simulation_mode()
@@ -86,8 +85,8 @@ def _apply_spray_action(
 
 
 def soldar_ini(
-    tool_name: Optional[str] = var.tool_abb_s,
-    object_name: Optional[str] = DEFAULT_OBJECT_NAME,
+    tool_name: str = var.tool_abb_s,
+    object_name: str = DEFAULT_OBJECT_NAME,
     color: str = DEFAULT_COLOR,
 ) -> int:
     
@@ -138,7 +137,7 @@ def soldar_ini(
     )
 
 
-def soldar_stop(tool_name: Optional[str] = var.tool_abb_s, clear_trace: bool = True):
+def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):
     spray_id = _apply_spray_action(action=ACTION_OFF, tool_name=tool_name)
     if clear_trace:
         _apply_spray_action(action=ACTION_RESET, tool_name=tool_name)
@@ -170,11 +169,9 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         color = sys.argv[3].lower().strip()
 
-    print("Applying action: " + str(action) +"Using tool: " + str(tool_name) + "Using color: " + str(color))
-
     _apply_spray_action(
-        action=action,
-        tool_name=tool_name,
-        object_name=object_name,
-        color=color,
+        action = action,
+        tool_name = var.tool_abb_s,
+        object_name = object_name,
+        color = color,
     )

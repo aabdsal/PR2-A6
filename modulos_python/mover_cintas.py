@@ -21,17 +21,6 @@ def _mover_cinta(cinta_name: str, stop_param: str, RDK : robolink.Robolink | Non
         
         robomath.pause(0.01)
 
-"""
-    botella.Copy()
-    botellaCopia = RDK.Paste(sistRefCinta)
-    nbotella = int(RDK.getParam('num_botellas'))
-    nbotella = nbotella + 1
-    count = str(nbotella)
-    botellaCopia.setName('Botella' + count)
-    botellaCopia.setPose(botella.Pose()*robomath.transl(-INCREMENTO_MM*nbotella, 0, 0))
-    RDK.setParam('num_botellas', str(nbotella))
-"""
-
 def mover_cinta_ancha():
     _mover_cinta(var.cinta_ancha, "SensorCA")
 

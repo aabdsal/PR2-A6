@@ -32,6 +32,7 @@ frame_cinta_etiqueta = "CuadroAcabada"
 frame_welding = "RobotSoldador"
 frame_mesa_giratoria = "MesaGiratoria"
 frame_paletizado_mesa = "Cinta_Mesa"
+frame_paletizado = "Robot Paletizador"
 
 objetos_tcp: dict[str, robolink.Item] = {}
 objeto_pose: dict[str, robomath.Mat] = {}

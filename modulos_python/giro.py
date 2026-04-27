@@ -8,9 +8,6 @@ def giro_plancha(i : int):
     RDK = robolink.Robolink()
     mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
 
-    if i > 3:
-        return
-    
     esquina = "Esquina" + str(i)
     target_esquina = RDK.Item(esquina, robolink.ITEM_TYPE_TARGET)
     mesa.MoveJ(target_esquina)
@@ -22,6 +19,7 @@ def giro_mesa():
     target_giro = RDK.Item("Giro90", robolink.ITEM_TYPE_TARGET)
     mesa.MoveJ(target_giro)
 
+# quitar lo de mostrar/ocultar objeto del frame de la mesa giratoria
 def giro_final_plancha_soldada():
     RDK = robolink.Robolink()
     mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
@@ -31,4 +29,4 @@ def giro_final_plancha_soldada():
     sim.mostrar_objeto("planchaAcabada")
     sim.ocultar_objeto("planchaLarga2")
     sim.ocultar_objeto("planchaAncha2")
-    #var.plancha_acabada = True
+    sim.setDO("planchaSoldada", 1)

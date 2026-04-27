@@ -4,7 +4,7 @@ from modulos_python.entorno import preparar_entorno
 
 preparar_entorno()
 
-from modulos_python import pick, place, bending, soldar, sensor, var
+from modulos_python import pick_place, bending, soldar, sensor, var
 from modulos_python import mover_cintas as mc
 from robodk import robolink
 from robodk import robomath
@@ -17,7 +17,7 @@ def getIniPose():
         if isinstance(idx, str):
             idx = RDK.Item(idx) 
         
-        var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent()))
+        var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent().Name()))
 
 getIniPose()
 robomath.pause(0.5)
@@ -31,16 +31,18 @@ def _thread_excepthook(args):
 threading.excepthook = _thread_excepthook
 
 def hilo_cinta_larga():
-    mc.mover_cinta_larga()
+    while True:
+        mc.mover_cinta_larga()
 
 def hilo_cinta_ancha():
-    mc.mover_cinta_ancha()
+    while True:
+        mc.mover_cinta_ancha()
 
 def hilo_cinta_tapa():
-    mc.mover_cinta_tapa()
+    while True:        
+        mc.mover_cinta_tapa()
 
 def hilo_yaskawa():
-    """ que piezas pendientes tengo en cola """
     
     RDK = robolink.Robolink()
 
@@ -54,25 +56,25 @@ def hilo_yaskawa():
         if ultima is None:
             if not cola_ancha.empty():
                 obj1 = cola_ancha.get()
-                pick.pick_plancha_ancha()
+                pick_place.pick_plancha_ancha()
                 
                 if obj1 is not None:
                     RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
                 
                 bending.bending_plancha_ancha()
-                place.place_cinta_main()
+                pick_place.place_cinta_main()
                 ultima = "ancha"
                 var.alternancia.put(ultima)
 
             elif not cola_larga.empty():
                 obj2 = cola_larga.get()
-                pick.pick_plancha_larga()
+                pick_place.pick_plancha_larga()
                 
                 if obj2 is not None:
                     RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
                 
                 bending.bending_plancha_larga()
-                place.place_cinta_main()
+                pick_place.place_cinta_main()
                 ultima = "larga"
                 var.alternancia.put(ultima)
             else:
@@ -81,25 +83,25 @@ def hilo_yaskawa():
         elif ultima == "ancha":
                 if not cola_larga.empty():
                     obj2 = cola_larga.get()
-                    pick.pick_plancha_larga()
+                    pick_place.pick_plancha_larga()
                     
                     if obj2 is not None:
                         RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
                     
                     bending.bending_plancha_larga()
-                    place.place_cinta_main()
+                    pick_place.place_cinta_main()
                     ultima = "larga"
                     var.alternancia.put(ultima)
         elif ultima == "larga":
                 if not cola_ancha.empty():
                     obj1 = cola_ancha.get()
-                    pick.pick_plancha_ancha()
+                    pick_place.pick_plancha_ancha()
                     
                     if obj1 is not None:
                         RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
                     
                     bending.bending_plancha_ancha()
-                    place.place_cinta_main()
+                    pick_place.place_cinta_main()
                     ultima = "ancha"
                     var.alternancia.put(ultima)
         else:
@@ -111,13 +113,19 @@ def hilo_cinta_main():
     while True:
         mc.mover_cinta_main(RDK)
 
+# me falta revisar si me fa falta robolink, mirarme lo de duplicar objectes e implementar logica: 
+# cintas -> bending -> cinta main -> mesa giratoria -> soldar -> tapa -> mesa -> cuadro -> cinta main 2 -> etiqueta -> salida
 def hilo_place_mesa():
     while True:
-        place.place_plancha_mesa()
+        pick_place.place_plancha_mesa()
 
-def hilo_place_soldado():
+def hilo_place_tapa():
     while True:
-        place.place_plancha_soldada()
+        pick_place.place_tapa_en_mesa()
+
+def hilo_place_cuadro_acabado():
+    while True:
+        pick_place.place_cuadro_acabada()
 
 def hilo_soldador():
     while True:
@@ -138,11 +146,12 @@ def hilo_sensorTapa():
 threads = [
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
-    threading.Thread(target=hilo_cinta_tapa, name="cinta_thilo_cinta_tapa"),
+    threading.Thread(target=hilo_cinta_tapa, name="cinta_tapa"),
     threading.Thread(target=hilo_yaskawa, name="yaskawa"),
     threading.Thread(target=hilo_cinta_main, name="cinta_main"),
     threading.Thread(target=hilo_place_mesa, name="place_mesa"),
-    threading.Thread(target=hilo_place_soldado, name="place_soldado"),
+    threading.Thread(target=hilo_place_cuadro_acabado, name="place_cuadro"),
+    threading.Thread(target=hilo_place_tapa, name="place_tapa"),
     threading.Thread(target=hilo_soldador, name="soldador"),
     threading.Thread(target=hilo_sensorCA, name="sensor_ca"),
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),

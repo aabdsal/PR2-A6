@@ -3,22 +3,20 @@ from robodk import robomath    # Robot toolbox
 
 from modulos_python import simulation, var
 
-tool_yaskawa = "EPick Bend"
-
 def _transicion_objeto(obj_from, obj_to: str, frame, tool: robolink.Item):
-    simulation.soltar_objeto(tool_yaskawa, frame)
+    simulation.soltar_objeto(var.tool_yaskawa, frame)
     simulation.ocultar_objeto(obj_from)
     simulation.mostrar_objeto(obj_to)
-    var.objetos_tcp[tool_yaskawa] = simulation.adjuntar_objeto(tool, obj_to)
+    var.objetos_tcp[var.tool_yaskawa] = simulation.adjuntar_objeto(tool, obj_to)
 
 
 def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: str):
 
     RDK = robolink.Robolink()
 
-    r = RDK.Item("Yaskawa MH24 Prensado", robolink.ITEM_TYPE_ROBOT)
+    r = RDK.Item(var.robot_yaskawa, robolink.ITEM_TYPE_ROBOT)
     sistRefBend = RDK.Item("Bending", robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(tool_yaskawa, robolink.ITEM_TYPE_TOOL)
+    toolR = RDK.Item(var.tool_yaskawa, robolink.ITEM_TYPE_TOOL)
 
     # principio
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)

@@ -66,3 +66,29 @@ def setDO(param_name: str, valor: int):
     var.registrar_parametro_json(param_name)
     RDK.setParam(param_name, str(valor))
 
+def duplicar_objeto(object_name : robolink.Item):
+    
+    INCREMENTO_MM : int = 20
+    
+    object_name.Copy()
+    pasted = RDK.Paste(object_name.Parent())
+
+    duplicado: Optional[robolink.Item] = None
+    if isinstance(pasted, list):
+        if len(pasted) == 0:
+            raise Exception("No se pudo pegar el objeto duplicado")
+        duplicado = pasted[0]
+    else:
+        duplicado = pasted
+
+    if duplicado is None or not duplicado.Valid():
+        raise Exception("No se pudo crear el duplicado del objeto")
+    
+    param = int(RDK.getParam(object_name.Name()))
+    param = param + 1
+
+    duplicado.setName(object_name.Name() + "_" + str(param))
+    duplicado.setPose(object_name.Pose()*robomath.transl(-INCREMENTO_MM*param, 0, 0))
+    
+    RDK.setParam(object_name.Name(), str(param))
+
