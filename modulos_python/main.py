@@ -4,10 +4,9 @@ import traceback
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import soldar
-from modulos_python import bending, pick_place, sensor
-from modulos_python import var
+from modulos_python import bending, sensor, var, soldar
 from modulos_python import mover_cintas as mc
+from modulos_python import pick_place as pp
 from robodk import robolink
 from robodk import robomath
 
@@ -33,16 +32,16 @@ def _thread_excepthook(args):
 threading.excepthook = _thread_excepthook
 
 def hilo_cinta_larga():
-    while True:
-        mc.mover_cinta_larga()
+    #while True:
+    mc.mover_cinta_larga()
 
 def hilo_cinta_ancha():
-    while True:
-        mc.mover_cinta_ancha()
+    #while True:
+    mc.mover_cinta_ancha()
 
 def hilo_cinta_tapa():
-    while True:        
-        mc.mover_cinta_tapa()
+    #while True:        
+    mc.mover_cinta_tapa()
 
 def hilo_yaskawa():
     
@@ -57,52 +56,53 @@ def hilo_yaskawa():
         
         if ultima is None:
             if not cola_ancha.empty():
-                obj1 = cola_ancha.get()
-                pick_place.pick_plancha_ancha()
+                obj = cola_ancha.get()
                 
-                if obj1 is not None:
-                    RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
+                pp.pick_plancha_ancha(obj)
                 
-                bending.bending_plancha_ancha()
-                pick_place.place_cinta_main()
+                if obj is not None:
+                    RDK.ShowMessage(f"objeto consumido: {obj}", False)
+                
+                bending.bending_plancha_ancha(obj)
+                pp.place_cinta_main()
                 ultima = "ancha"
                 var.alternancia.put(ultima)
 
             elif not cola_larga.empty():
-                obj2 = cola_larga.get()
-                pick_place.pick_plancha_larga()
+                obj = cola_larga.get()
+                pp.pick_plancha_larga(obj)
                 
-                if obj2 is not None:
-                    RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
+                if obj is not None:
+                    RDK.ShowMessage(f"objeto consumido: {obj}", False)
                 
-                bending.bending_plancha_larga()
-                pick_place.place_cinta_main()
+                bending.bending_plancha_larga(obj)
+                pp.place_cinta_main()
                 ultima = "larga"
                 var.alternancia.put(ultima)
             else:
                 robomath.pause(0.01)
         elif ultima == "ancha":
                 if not cola_larga.empty():
-                    obj2 = cola_larga.get()
-                    pick_place.pick_plancha_larga()
+                    obj = cola_larga.get()
+                    pp.pick_plancha_larga(obj)
                     
-                    if obj2 is not None:
-                        RDK.ShowMessage(f"objeto consumido: {obj2.Name()}", False)
+                    if obj is not None:
+                        RDK.ShowMessage(f"objeto consumido: {obj}", False)
                     
-                    bending.bending_plancha_larga()
-                    pick_place.place_cinta_main()
+                    bending.bending_plancha_larga(obj)
+                    pp.place_cinta_main()
                     ultima = "larga"
                     var.alternancia.put(ultima)
         elif ultima == "larga":
                 if not cola_ancha.empty():
-                    obj1 = cola_ancha.get()
-                    pick_place.pick_plancha_ancha()
+                    obj = cola_ancha.get()
+                    pp.pick_plancha_ancha(obj)
                     
-                    if obj1 is not None:
-                        RDK.ShowMessage(f"objeto consumido: {obj1.Name()}", False)
+                    if obj is not None:
+                        RDK.ShowMessage(f"objeto consumido: {obj}", False)
                     
-                    bending.bending_plancha_ancha()
-                    pick_place.place_cinta_main()
+                    bending.bending_plancha_ancha(obj)
+                    pp.place_cinta_main()
                     ultima = "ancha"
                     var.alternancia.put(ultima)
         else:
@@ -118,15 +118,15 @@ def hilo_cinta_main():
 # cintas -> bending -> cinta main -> mesa giratoria -> soldar -> tapa -> mesa -> cuadro -> cinta main 2 -> etiqueta -> salida
 def hilo_place_mesa():
     while True:
-        pick_place.place_plancha_mesa()
+        pp.place_plancha_mesa()
 
 def hilo_place_tapa():
     while True:
-        pick_place.place_tapa_en_mesa()
+        pp.place_tapa_en_mesa()
 
 def hilo_place_cuadro_acabado():
     while True:
-        pick_place.place_cuadro_acabada()
+        pp.place_cuadro_acabada()
 
 def hilo_soldador():
     while True:

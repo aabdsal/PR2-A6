@@ -66,29 +66,44 @@ def setDO(param_name: str, valor: int):
     var.registrar_parametro_json(param_name)
     RDK.setParam(param_name, str(valor))
 
-def duplicar_objeto(object_name : robolink.Item):
+def duplicar_objeto(plantilla_name: str, frame_name: str):
+    plantilla_item = RDK.Item(plantilla_name, robolink.ITEM_TYPE_OBJECT)
+    frame_item = RDK.Item(frame_name, robolink.ITEM_TYPE_FRAME)
+
+    if not plantilla_item.Valid():
+        raise RuntimeError(f"El objeto plantilla '{plantilla_name}' no existe. Revisa los nombres.")
+
+    if not frame_item.Valid():
+        raise RuntimeError(f"El frame de destino '{frame_name}' no existe. Revisa los nombres.")
+
+    plantilla_item.Copy()
     
-    INCREMENTO_MM : int = 20
-    
-    object_name.Copy()
-    pasted = RDK.Paste(object_name.Parent())
+    pasted = RDK.Paste(frame_item)
 
     duplicado: Optional[robolink.Item] = None
     if isinstance(pasted, list):
         if len(pasted) == 0:
-            raise Exception("No se pudo pegar el objeto duplicado")
+            raise Exception("No se pudo pegar el objeto duplicado.")
         duplicado = pasted[0]
     else:
         duplicado = pasted
 
     if duplicado is None or not duplicado.Valid():
-        raise Exception("No se pudo crear el duplicado del objeto")
-    
-    param = int(RDK.getParam(object_name.Name()))
-    param = param + 1
+        raise Exception("No se pudo crear el duplicado del objeto.")
 
-    duplicado.setName(object_name.Name() + "_" + str(param))
-    duplicado.setPose(object_name.Pose()*robomath.transl(-INCREMENTO_MM*param, 0, 0))
+    duplicado.setPoseAbs(plantilla_item.PoseAbs())
+    duplicado.setVisible(True)
+
+    param_name = "count_" + plantilla_name
     
-    RDK.setParam(object_name.Name(), str(param))
+    if RDK.getParam(param_name) is None:
+        RDK.setParam(param_name, '0')
+
+    count = int(RDK.getParam(param_name)) + 1
+    RDK.setParam(param_name, str(count))
+    
+    nombre_base = plantilla_name.replace("plantilla_", "")
+    duplicado.setName(f"{nombre_base}_{count}")
+    
+    return duplicado
 

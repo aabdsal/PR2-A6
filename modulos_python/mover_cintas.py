@@ -4,22 +4,22 @@ from modulos_python import var
 
 from modulos_python import simulation
 
-def _mover_cinta(cinta_name: str, stop_param: str, RDK : robolink.Robolink | None = None):
+def _mover_cinta(cinta_name: str, param_sensor: str, RDK : robolink.Robolink | None = None):
 
     if RDK is None:
         RDK = robolink.Robolink()
     
     cinta = RDK.Item(cinta_name, robolink.ITEM_TYPE_ROBOT)
-    
     if not cinta.Valid():
         raise RuntimeError("El nombre de la cinta no existe")
 
-    incremento = 20.0
+    incremento = 15.0
 
-    while stop_param is not None and int(RDK.getParam(stop_param) or 0) != 1:
-
+    while param_sensor is not None and int(RDK.getParam(param_sensor) or 0) != 1:
+        
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
         
+
         robomath.pause(0.01)
 
 def mover_cinta_ancha():

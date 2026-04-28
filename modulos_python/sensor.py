@@ -12,7 +12,7 @@ def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : r
         simulation.setDO(nombre_sensor, 1)
 
         for idx in detectados:
-            var.objetos_pendientes[nombre_sensor].put(idx)
+            var.objetos_pendientes[nombre_sensor].put(idx.Name())
             RDK.ShowMessage(f"objeto {idx.Name() } detectado en {nombre_sensor}", False)
 
 def detectar_objeto(nombre_sensor, frame_name : str):

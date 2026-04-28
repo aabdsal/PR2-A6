@@ -7,7 +7,7 @@ from modulos_python import giro
 #  = pose local, posicion y orientacion respecto al frame de referencia
 # .PoseAbs() = pose global, posicion y orientacion respecto al mundo, es decir, la estacion
 
-def _pick_plancha(prepick_str, pick_str : str):
+def _pick_plancha(prepick_str, pick_str, obj_name : str):
     
     RDK = robolink.Robolink()
     
@@ -31,18 +31,19 @@ def _pick_plancha(prepick_str, pick_str : str):
     r.Pause(1000)
     r.MoveL(pick)
 
-    var.objetos_tcp[var.tool_yaskawa] = simulation.adjuntar_objeto(toolR)
+    var.objetos_tcp[var.tool_yaskawa] = simulation.adjuntar_objeto(toolR, obj_name)
     
     r.Pause(1000)
     r.MoveL(prepick)
 
     r.Pause(1000)
 
-def pick_plancha_larga():
-    _pick_plancha("PrePickLargo", "PickLargo")
+def pick_plancha_larga(obj_name : str):
+    _pick_plancha("PrePickLargo", "PickLargo", obj_name)
 
-def pick_plancha_ancha():
-    _pick_plancha("PrePickAncho", "PickAncho")
+def pick_plancha_ancha(obj_name : str):
+
+    _pick_plancha("PrePickAncho", "PickAncho", obj_name)
     
 def place_cinta_main():
     

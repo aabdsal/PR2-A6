@@ -43,9 +43,8 @@ reset_cinta(var.cinta_main)
 reset_cinta(var.cinta_tapa)
 reset_cinta(var.mesa_giratoria)
 
-simulation.mostrar_objeto("planxaLarga")
-simulation.mostrar_objeto("planxaAncha")
-
+simulation.mostrar_objeto("planchaLarga")
+simulation.mostrar_objeto("planchaAncha")
 simulation.ocultar_objeto("planchaLarga2")
 simulation.ocultar_objeto("planchaAncha2")
 simulation.ocultar_objeto("planchaAcabada")
