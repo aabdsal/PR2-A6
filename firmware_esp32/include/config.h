@@ -9,6 +9,9 @@
 //#define DEVICE_ESP_ID             "54CE0361421"   // ESP32 ID
 #define DEVICE_GIIROB_PR2_ID      "00" //"giirobpr2_00"
 
+// BUTTON
+#define BUTTON_PIN                0
+
 // WIFI
 #define NET_SSID                  "UPV-PSK"
 #define NET_PASSWD                "giirob-pr2-2023"
@@ -20,6 +23,7 @@
 #define MQTT_PASSWORD             "UPV2024"
 
 #define HELLO_TOPIC               "giirob/pr2/devices/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
+#define BUTTON_TOPIC              "giirob/pr2/devices/button"
 
 
 
