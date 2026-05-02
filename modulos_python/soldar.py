@@ -1,3 +1,5 @@
+"""Este módulo implementa la soldadura simulada del cuadro eléctrico."""
+
 from robodk import robolink
 RDK = robolink.Robolink()
 
@@ -11,14 +13,16 @@ ACTION_OFF = 0
 ACTION_ON = 1
 
 DEFAULT_COLOR = "black"
-# cambiar el nom este per algun objecte que estiga en el frame de dins de la mesa giratoria
+# TODO: Ajustar este nombre al objeto de referencia en el frame de la mesa giratoria.
 
 def _ensure_simulation_mode():
+    """Valida que la estación esté en modo simulación."""
     if RDK.RunMode() != robolink.RUNMODE_SIMULATE:
         raise RuntimeError("La soldadura simulada solo se puede ejecutar en RUNMODE_SIMULATE")
 
 
 def _resolve_spray_id(tool_name: str, action: int) -> int:
+    """Resuelve un spray_id válido a partir de la herramienta y la acción."""
     info, data = RDK.Spray_GetStats()
     n_sprays_raw = data.size(1)
     if isinstance(n_sprays_raw, tuple):
@@ -46,6 +50,7 @@ def _resolve_spray_id(tool_name: str, action: int) -> int:
 
 
 def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
+    """Aplica una acción de soldadura y devuelve el spray_id asociado."""
     _ensure_simulation_mode()
     spray_id = _resolve_spray_id(tool_name, action)
 
@@ -85,6 +90,7 @@ def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_nam
 
 
 def soldar_ini(tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR):
+    """Ejecuta la secuencia de soldadura con giros y trazas simuladas."""
     
     r = RDK.Item(variables.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
     toolR = RDK.Item(variables.tool_abb_s, robolink.ITEM_TYPE_TOOL)
@@ -139,18 +145,14 @@ def soldar_ini(tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR
 
 
 def soldar_stop(tool_name: str = variables.tool_abb_s, clear_trace: bool = True):
+    """Detiene la soldadura y opcionalmente limpia la traza."""
     spray_id = _apply_spray_action(action=ACTION_OFF, tool_name=tool_name)
     if clear_trace:
         _apply_spray_action(action=ACTION_RESET, tool_name=tool_name)
     return spray_id
 
 
-"""
-    Es una herramienta de testing y depuración. 
-    Te permite probar la funcionalidad de la 
-    soldadura de forma aislada, 
-    ejecutando solo el script
-"""
+# Herramienta de testing/depuración para ejecutar el script de forma aislada.
 if __name__ == "__main__":
     import sys
 

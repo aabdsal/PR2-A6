@@ -1,23 +1,21 @@
-"""Este módulo de python implementa los movimientos necesarios 
-tanto para hacer el prensado las planchas largas como anchas.
+"""Este módulo implementa los movimientos necesarios
+para el prensado de planchas largas y anchas.
 
-Es posible gracias a la API de RoboDK, el uso de variables 
-globales y simulaciones que representen acciones reales."""
+Se apoya en la API de RoboDK, variables globales y simulaciones
+que representan acciones reales.
+"""
 
 from robodk import robolink   
 from modulos_python import variables
 from modulos_python import simulation
 
 def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: robolink.Item):
-    """Esta función hace un intercambio entre el objeto 
-    que tiene el Yaskawa MH24 y el siguiente objeto que debe adjuntar.
+    """Intercambia el objeto que tiene el Yaskawa MH24 por el siguiente.
 
-    Además, para poder tener una cantidad infinita (o las que pida el usuario) de objetos 
-    se hace un duplicado del objeto que tiene que adjuntar el Yaskawa y se elimina el anterior, 
-    para no crear basura durante el proceso. Se hace uso de objetos plantilla definidos en variables.py
-    que estan en la posición absoluta del objeto que el robot va a adjuntar.
-
-    La parte de duplicado aún no es definitiva, por eso está comentada."""
+    Se apoya en objetos plantilla definidos en variables.py, ubicados en la
+    posición absoluta donde el robot debe recogerlos. La lógica de duplicado
+    y limpieza de objetos está pendiente y se mantiene comentada.
+    """
     
     RDK = robolink.Robolink()
 
@@ -42,16 +40,12 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
     #return nuevo_objeto.Name()
 
 def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: str):
-    """Este método realiza los movimientos del Yaskawa MH24 
-    y el intercambio de objetos necesarios. 
+    """Ejecuta la secuencia de movimientos del Yaskawa MH24.
 
-    Primero que todo, se establece la conexión con la estación de 
-    forma local mediante el robolink.Robolink() para evitar 
-    problemas con los hilos y se guardan todos los targets, 
-    frame, robot y tcp que se van a usar durante el movimiento.
-
-    Finalmente, una vez finalizado el bending, se establece una 
-    salida digital para proceder al place del objeto prensado a la cinta."""
+    Configura los items necesarios (robot, frame, herramienta y targets),
+    realiza el intercambio de objetos y, al finalizar, activa la salida
+    digital para permitir el place en la cinta.
+    """
 
     RDK = robolink.Robolink()
 
@@ -107,17 +101,18 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     simulation.setDO("BendingHecho", 1)
 
 def bending_plancha_larga(obj_name : str):
-    """Este método para por parámetro las targets 
-    y objetos para hacer un prensado de la plancha larga.
-    
-    Falta sustituir los dos últimos parámetros por objetos plantilla, 
-    ya que planchaLarga1 y planchaLarga2 no son consistentes en la 
-    estación y se van moviendo provocando que no sea útil hacer una duplicación de ellas"""
+    """Ejecuta el prensado de la plancha larga con los targets adecuados.
+
+    Nota: los objetos planchaLarga1 y planchaLarga2 no son consistentes en la
+    estación, por lo que se deberán sustituir por objetos plantilla.
+    """
 
     _bending_generico("Bend1", "Bend2", obj_name, "planchaLarga1", "planchaLarga2")
 
 def bending_plancha_ancha(obj_name : str):
-    """Este método hace lo mismo que el de arriba pero para 
-    la plancha ancha, y tambien falta sustituir los dos últimos parametros"""
+    """Ejecuta el prensado de la plancha ancha con los targets adecuados.
+
+    Nota: también falta sustituir los dos últimos parámetros por plantillas.
+    """
 
     _bending_generico("BendA1", "BendA2", obj_name, "planchaAncha1", "planchaAncha2")

@@ -1,4 +1,4 @@
-"""Este archivo implementa la solución para que un sensor detecte cualquier objeto."""
+"""Este archivo implementa la lógica para que un sensor detecte objetos."""
 
 from robodk import robolink    
 from robodk import robomath    
@@ -8,11 +8,7 @@ from typing import List
 from modulos_python import simulation
 
 def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
-    """Este método mira si hay algún objeto nuevo detectado en la lista 
-    y los añade a un diccionario que lleva como valor una cola de objetos pendientes, 
-    que son utiles para que el robot yaskawa sepa que hay un objeto esperando a ser cogido.
-    
-    También establece salidas digitales para el correcto funcionamiento de las cintas."""
+    """Añade objetos detectados a la cola del sensor y ajusta salidas digitales."""
     if detectados:
 
         simulation.setDO(nombre_sensor, 1)
@@ -24,15 +20,10 @@ def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : r
         simulation.setDO(nombre_sensor, 0)
 
 def detectar_objeto(nombre_sensor, frame_name : str):
-    """Este metodo es una gran solucion al problema de la simulacion en robodk, 
-    ya que la api de robodk ofrece la funcion sensor.Collision(obj) el cual 
-    devolvia si el sensor se habia chocado con un obj que tu mismo le pasas por parametro.
-    
-    Esto para un sensor es ineficiente, ya que el desconoce el nombre de los objetos 
-    que van a pasar por delante de él. Asi que se ha implementado gracias a las funciones 
-    .ItemList y .Parent una forma de que un sensor detecte todos los objetos de la cinta que colision con él.
+    """Detecta objetos que colisionan con un sensor en un frame concreto.
 
-    Se hace uso de algoritmos voraces y conjuntos se ha podido realizar esta operación.
+    Usa ItemList y Parent para identificar objetos dentro del frame y
+    comprobar colisiones sin conocer sus nombres previamente.
     """
     RDK = robolink.Robolink()
     
@@ -49,11 +40,8 @@ def detectar_objeto(nombre_sensor, frame_name : str):
 
     while True:
         
-        """ 
-            la lista se podria cargar solo una vez 
-            fuera del while o refrescarla bajo una condicion
-            pero es optimizacion, no logica.
-        """
+        # La lista se podría cargar una vez fuera del while o refrescarla
+        # bajo una condición, pero es optimización, no lógica.
         lista_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT, True)  
 
         detectados_actuales = set()

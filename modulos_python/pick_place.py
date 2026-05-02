@@ -1,3 +1,5 @@
+"""Este módulo es el que implementa todos los movimientos de los robots que se usan en la estación."""
+
 from robodk import robolink
 from robodk import robomath
 from modulos_python import variables
@@ -8,7 +10,8 @@ from modulos_python import giro
 # .PoseAbs() = pose global, posicion y orientacion respecto al mundo, es decir, la estacion
 
 def _pick_plancha(prepick_str, pick_str, obj_name : str):
-    
+    """Hace el pick desde las cintas iniciales para plancha larga o ancha."""
+
     RDK = robolink.Robolink()
     
     sistRefBending = RDK.Item(variables.frame_bending, robolink.ITEM_TYPE_FRAME)
@@ -39,13 +42,21 @@ def _pick_plancha(prepick_str, pick_str, obj_name : str):
     r.Pause(1000)
 
 def pick_plancha_larga(obj_name : str):
+    """Ejecuta el pick de una plancha larga usando los targets correctos."""
+
     _pick_plancha("PrePickLargo", "PickLargo", obj_name)
 
 def pick_plancha_ancha(obj_name : str):
+    """Ejecuta el pick de una plancha ancha usando los targets correctos."""
 
     _pick_plancha("PrePickAncho", "PickAncho", obj_name)
     
 def place_cinta_main():
+    """Lleva la plancha prensada a la cinta principal y notifica el estado.
+
+    Se activa cuando el prensado termina y envía una salida digital
+    indicando que la pieza ya está lista para avanzar.
+    """
     
     simulation.waitDI("BendingHecho", 1)
     simulation.setDO("BendingHecho", 0)
@@ -92,8 +103,12 @@ def place_cinta_main():
     
     simulation.setDO("enCintaMain", 1)
 
-# programa de roboDK plancha en mesa
 def place_plancha_mesa(nombre_objeto_coger : str):
+    """Hace un pick and place desde la cinta principal a la mesa giratoria.
+
+    También comunica si ya hay una plancha en la mesa o si ya están las dos
+    para pasar a la siguiente fase.
+    """
 
     simulation.waitDI("SensorCC", 1)   
     RDK = robolink.Robolink()
@@ -170,7 +185,8 @@ def place_plancha_mesa(nombre_objeto_coger : str):
     robomath.pause(0.5)
     
 def place_tapa_en_mesa():
-   
+    """Coloca la tapa sobre el cuadro ya soldado y notifica el estado."""
+
     simulation.waitDI("planchaSoldada", 1)
     simulation.setDO("planchaSoldada", 0)
 
@@ -219,9 +235,12 @@ def place_tapa_en_mesa():
     simulation.setDO("tapaPuesta", 1)
     r.MoveJ(ini)
 
-# programa de roboDK place plancha soldada
 def place_cuadro_acabada():
-    
+    """Devuelve el cuadro con tapa a la cinta de etiquetado.
+
+    Espera a la señal de tapa puesta y notifica cuando el cuadro está en la cinta.
+    """
+
     simulation.waitDI("tapaPuesta", 1)
     simulation.setDO("tapaPuesta", 0)
 
@@ -268,6 +287,6 @@ def place_cuadro_acabada():
     simulation.soltar_objeto(variables.tool_abb_p, frame_cinta)
     robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
-    simulation.setDO("EnCinta", 1)
+    simulation.setDO("EnCintaEtiquetar", 1)
     r.MoveJ(ini)
     

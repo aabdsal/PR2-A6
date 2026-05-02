@@ -1,23 +1,9 @@
-"""Este script de python forma parte de la carpeta modulos_python, 
-y es importante para el correcto funcionamiento de la estación.
+"""Este script forma parte de modulos_python y es clave para la estación.
 
-Primeramente, se guardan todos los nombres de robots, herramientas, 
-sistemas de referencia, cintas y plantillas de objetos que se 
-consideran que van a ser usados en la estación.
-
-Seguidamente, se hace uso de diccionarios (tablas hash) para guardar 
-distinta información necesaria tanto para cuando acabe el programa 
-como en tiempo de ejecuccion.
-
-Se hace uso tambíen de tabla hash con colas para guardar los objetos que 
-pasan por los determinados sensores que hay en toda la estación.
-
-También se implementa una cola para decidir los movimientos del 
-robot paletizado al coger una plancha ya prensada.
-
-Finalmente, se implementan métodos y funciones para guardar información 
-persistente en JSON sobre los parámetros de la estación,
-que son importantes para poder hacer el reset en python."""
+Guarda los nombres de robots, herramientas, frames, cintas y plantillas
+que se usan en la simulación. También mantiene estructuras en memoria
+para colas de sensores, alternancia y parámetros persistentes en JSON.
+"""
 
 from robodk import robolink
 from robodk import robomath
@@ -82,17 +68,14 @@ alternancia : queue.Queue[str] = queue.Queue()
 JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "database" / "parametros.json"
 
 def _estructura_json_vacia(): 
-    """Función que devuelve el par clave: parametros valor : [] 
-    en caso de que no el archivo no lo tenga creado"""
+    """Devuelve la estructura base para el archivo de parámetros."""
 
     return {
         "parametros": [],
     }
 
 def _cargar_json():
-    """Función que abre el archivo parametros.json, 
-    comprueba si esta vacia, si no, devuelve una lista
-    con los parámetros del archivo, esta función fue hecho con IA"""
+    """Abre parametros.json y devuelve la estructura normalizada."""
 
     if not JSON_PARAM_PATH.exists():
         return _estructura_json_vacia()
@@ -120,16 +103,14 @@ def _cargar_json():
         return _estructura_json_vacia()
 
 def _guardar_json(data: dict[str, list[str]]):
-    """Este método guarda nuevos parámetros detectados
-    en tiempo de ejecución en la ruta del archivo JSON_PARAM_PATH"""
+    """Guarda parámetros detectados en tiempo de ejecución."""
 
     JSON_PARAM_PATH.parent.mkdir(parents=True, exist_ok=True)
     with JSON_PARAM_PATH.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def registrar_parametro_json(valor: str):
-    """Este método es el que se encarga de cargar y actualizar la lista del 
-    archivo json mediante las funciones internas al script _cargar_json y _guardar_json"""
+    """Carga y actualiza la lista de parámetros en el JSON."""
     
     clave = "parametros"
     data = _cargar_json()

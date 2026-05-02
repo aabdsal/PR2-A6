@@ -1,13 +1,9 @@
-"""Este archivo de python es también de gran utilidad, 
-ya que realiza acciones importantes para la fluidez de la simulación en roboDK.
+"""Este archivo de Python es clave para la simulación en RoboDK.
 
-Se tienen implementadas metodos para ocultar, mostrar objetos, 
-reemplazas posicion,adjuntar o soltar un objeto, simular una 
-espera digital, establecer una salida digital y duplicar objetos.
-
-Todo es gracias a la API de RoboDK que tiene funciones built-in 
-muy útiles para conseguir información determindada de la estación
-y modificar la estación en tiempo de ejecución."""
+Incluye métodos para ocultar/mostrar objetos, reemplazar posiciones,
+adjuntar o soltar objetos, simular esperas digitales, establecer
+salidas digitales y duplicar objetos.
+"""
 
 from robodk import robolink    
 from robodk import robomath    
@@ -38,13 +34,11 @@ def mostrar_objeto(object_name: str):
     obj.setVisible(True)
 
 def reemplazar_pos_objeto(object_name, parent: str,  pose : robomath.Mat):
-    """Este método tiene la intención de reemplazar la posición del objeto 
-    que se le pasa por parametro, mediante su padre(frame) y la posicion 
-    a la que queremos que vaya. Sin embargo, al hacer uso de objetos plantilla 
-    no encuentro la necesidad de seguir manteniendo. 
-    
-    Aún esta por decidir el futuro de esta función, pero de momento no se usa en ninguna 
-    parte del código, en principio solo se iva a usar para el reset, pero aún no esta implementado y no creo que lo haga - Ali Abdelhamid"""
+    """Reemplaza la posición de un objeto respecto a su frame padre.
+
+    Actualmente no se usa en el flujo principal y podría quedar obsoleta
+    con el uso de objetos plantilla.
+    """
 
     item = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
     if not item.Valid():
@@ -60,11 +54,10 @@ def reemplazar_pos_objeto(object_name, parent: str,  pose : robomath.Mat):
     item.setPoseAbs(pose)
 
 def adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None):
-    """Esta función es muy interesante porque adjunta el objeto el robot resolviendolo de dos 
-    formas distintas. O mediante el padre de la herramienta o usando la funcion de la API de 
-    RoboDK AttachClosest, esta segunda realmente es muy inútil para procedimientos donde hay 
-    varios objetos cerca, por eso es más útil especificar el nombre del objeto a adjuntar 
-    y ponerlo en el sistema de referncia de la herramienta del robot"""
+    """Adjunta un objeto al TCP de la herramienta.
+
+    Si se indica un nombre, se adjunta ese objeto. Si no, se usa AttachClosest.
+    """
 
 
     if object_name is not None:
@@ -82,11 +75,10 @@ def adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None)
     return attached
 
 def soltar_objeto(tool_name: str, frame_name: robolink.Item):
-    """Está funciópn tambien suelta objetos de dos formas distintas, 
-    pero aqui nos aseguramos de que el objeto a soltar se encuentra 
-    en la herramienta del robot en tiempo de ejecución mediante 
-    un diccionario (tabla hash) con clave el nombre de la herramienta, 
-    que debe de ser único y como valor el objeto adjuntado en la herramienta del robot."""
+    """Suelta el objeto adjuntado en la herramienta dentro de un frame.
+
+    Usa un diccionario para asegurar qué objeto está adjuntado a cada TCP.
+    """
 
     if tool_name not in variables.objetos_tcp:
         return False
@@ -111,22 +103,15 @@ def waitDI(param_name : str, valor : int):
         robomath.pause(0.01)
 
 def setDO(param_name: str, valor: int):
-    """Este método tiene dos objetivos, guardar el parametros en el arhivo
-    json y establecer el valor deseado al parametro de la estación."""
+    """Guarda el parámetro en JSON y establece el valor en la estación."""
 
     variables.registrar_parametro_json(param_name)
     RDK.setParam(param_name, str(valor))
 
 def duplicar_objeto(plantilla_name: str, frame_name: str):
-    """Esta función crea un objeto duplicado a partir del nombre de un objeto 
-    plantilla y lo establece en el sistema de referencia indicacdo en el parámtro frame_name.
-    
-    Este método es una mejora al código que nos dio Marina en AvanzaCinta.py ya que el hecho de usar 
-    objetos plantilla que no se mueven nos elimina la preocupación de si un objeto 
-    aún esta en el mismo frame y la posición a la que hay que ponerlo.
-    
-    Opcionalmente, también se contabiliza el numero de objetos duplicados a partir de una plantilla 
-    para así tener información persistente en tiempo de ejecución.
+    """Crea un duplicado de un objeto plantilla dentro de un frame.
+
+    También contabiliza el número de duplicados para información persistente.
     """
 
     plantilla_item = RDK.Item(plantilla_name, robolink.ITEM_TYPE_OBJECT)

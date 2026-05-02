@@ -1,7 +1,5 @@
 """
-Este archivo es necesario para poder tratar a todos 
-los archivos de la carpeta como un mismo módulo.
+Este archivo permite tratar los scripts de la carpeta como un paquete.
 
-Así, conseguimos que al hacer import se sepa que 
-todos estos archivos pertenecen a la carpeta modulos_python.
+Así, al hacer import, se reconoce que pertenecen a modulos_python.
 """

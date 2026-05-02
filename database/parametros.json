@@ -7,6 +7,10 @@
     "SensorCC",
     "EnMesa",
     "LasDos",
+    "SensorTapa",
+    "planchaSoldada",
+    "tapaPuesta",
+    "EnCintaEtiquetar",
     "count_plantilla_planchaAncha",
     "count_plantilla_planchaLarga",
     "count_plantilla_planchaAncha1",
@@ -16,10 +20,6 @@
     "count_plantilla_planchaSoldada",
     "count_plantilla_tapaCuadro",
     "count_plantilla_cuadroConTapa",
-    "count_plantilla_cuadroEtiquetada",
-    "SensorTapa",
-    "planchaSoldada",
-    "tapaPuesta",
-    "EnCinta"
+    "count_plantilla_cuadroEtiquetada"
   ]
 }
