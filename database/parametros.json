@@ -6,9 +6,21 @@
     "enCintaMain",
     "SensorCC",
     "EnMesa",
-    "LasDos"
+    "LasDos",
+    "count_plantilla_planchaAncha",
+    "count_plantilla_planchaLarga",
+    "count_plantilla_planchaAncha1",
+    "count_plantilla_planchaAncha2",
+    "count_plantilla_planchaLarga1",
+    "count_plantilla_planchaLarga2",
+    "count_plantilla_planchaSoldada",
+    "count_plantilla_tapaCuadro",
+    "count_plantilla_cuadroConTapa",
+    "count_plantilla_cuadroEtiquetada",
+    "SensorTapa",
+    "planchaSoldada",
+    "tapaPuesta",
+    "EnCinta"
   ],
-  "info_objetos": {
-    
-  }
+  "info_objetos": {}
 }

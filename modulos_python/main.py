@@ -20,7 +20,7 @@ def getIniPose():
         
         var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent().Name()))
 
-getIniPose()
+#getIniPose()
 robomath.pause(0.5)
 
 def _thread_excepthook(args):
@@ -44,69 +44,24 @@ def hilo_cinta_tapa():
     mc.mover_cinta_tapa()
 
 def hilo_yaskawa():
-    
-    RDK = robolink.Robolink()
-
-    ultima = None
-    
     cola_ancha = var.objetos_pendientes["SensorCA"]
     cola_larga = var.objetos_pendientes["SensorCL"]
     
     while True:
-        
-        if ultima is None:
-            if not cola_ancha.empty():
-                obj = cola_ancha.get()
-                
-                pp.pick_plancha_ancha(obj)
-                
-                if obj is not None:
-                    RDK.ShowMessage(f"objeto consumido: {obj}", False)
-                
-                bending.bending_plancha_ancha(obj)
-                pp.place_cinta_main()
-                ultima = "ancha"
-                var.alternancia.put(ultima)
+        # Esta es una forma más simple y segura de alternar
+        # Espera a que haya una plancha larga disponible
+        nombre_larga = cola_larga.get() 
+        pp.pick_plancha_larga(nombre_larga)
+        bending.bending_plancha_larga(nombre_larga)
+        pp.place_cinta_main()
+        var.alternancia.put("larga") # Informa de que la siguiente es una larga
 
-            elif not cola_larga.empty():
-                obj = cola_larga.get()
-                pp.pick_plancha_larga(obj)
-                
-                if obj is not None:
-                    RDK.ShowMessage(f"objeto consumido: {obj}", False)
-                
-                bending.bending_plancha_larga(obj)
-                pp.place_cinta_main()
-                ultima = "larga"
-                var.alternancia.put(ultima)
-            else:
-                robomath.pause(0.01)
-        elif ultima == "ancha":
-                if not cola_larga.empty():
-                    obj = cola_larga.get()
-                    pp.pick_plancha_larga(obj)
-                    
-                    if obj is not None:
-                        RDK.ShowMessage(f"objeto consumido: {obj}", False)
-                    
-                    bending.bending_plancha_larga(obj)
-                    pp.place_cinta_main()
-                    ultima = "larga"
-                    var.alternancia.put(ultima)
-        elif ultima == "larga":
-                if not cola_ancha.empty():
-                    obj = cola_ancha.get()
-                    pp.pick_plancha_ancha(obj)
-                    
-                    if obj is not None:
-                        RDK.ShowMessage(f"objeto consumido: {obj}", False)
-                    
-                    bending.bending_plancha_ancha(obj)
-                    pp.place_cinta_main()
-                    ultima = "ancha"
-                    var.alternancia.put(ultima)
-        else:
-            robomath.pause(0.01)
+        # Espera a que haya una plancha ancha disponible
+        nombre_ancha = cola_ancha.get()
+        pp.pick_plancha_ancha(nombre_ancha)
+        bending.bending_plancha_ancha(nombre_ancha)
+        pp.place_cinta_main()
+        var.alternancia.put("ancha") # Informa de que la siguiente es una ancha
 
 
 def hilo_cinta_main():
@@ -117,8 +72,9 @@ def hilo_cinta_main():
 # me falta revisar si me fa falta robolink, mirarme lo de duplicar objectes e implementar logica: 
 # cintas -> bending -> cinta main -> mesa giratoria -> soldar -> tapa -> mesa -> cuadro -> cinta main 2 -> etiqueta -> salida
 def hilo_place_mesa():
+    cola_main = var.objetos_pendientes["SensorCC"]
     while True:
-        pp.place_plancha_mesa()
+        pp.place_plancha_mesa(cola_main.get())
 
 def hilo_place_tapa():
     while True:
@@ -132,6 +88,10 @@ def hilo_soldador():
     while True:
         soldar.soldar_ini()
 
+def hilo_cinta_etiquetado():
+    while True:
+        mc.mover_cinta_cuadro_acabada()
+
 def hilo_sensorCA():
     sensor.detectar_objeto("SensorCA", "FramePlanchaAncha")
 
@@ -144,6 +104,9 @@ def hilo_sensorCC():
 def hilo_sensorTapa():
     sensor.detectar_objeto("SensorTapa", "FrameTapa")
 
+def hilo_sensorEtiqueta():
+    sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
+
 threads = [
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
@@ -153,11 +116,13 @@ threads = [
     threading.Thread(target=hilo_place_mesa, name="place_mesa"),
     threading.Thread(target=hilo_place_cuadro_acabado, name="place_cuadro"),
     threading.Thread(target=hilo_place_tapa, name="place_tapa"),
+    threading.Thread(target=hilo_cinta_etiquetado, name="cinta_etiquetado"),
     threading.Thread(target=hilo_soldador, name="soldador"),
     threading.Thread(target=hilo_sensorCA, name="sensor_ca"),
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCC, name="sensor_cc"),
-    threading.Thread(target=hilo_sensorTapa, name="sensor_tapa")
+    threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
+    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
 ]
 
 for t in threads:

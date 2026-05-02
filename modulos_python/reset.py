@@ -45,6 +45,9 @@ reset_cinta(var.mesa_giratoria)
 
 simulation.mostrar_objeto("planchaLarga")
 simulation.mostrar_objeto("planchaAncha")
+simulation.mostrar_objeto("tapaCuadro")
+
 simulation.ocultar_objeto("planchaLarga2")
 simulation.ocultar_objeto("planchaAncha2")
-simulation.ocultar_objeto("planchaAcabada")
+simulation.ocultar_objeto("planchaSoldada")
+simulation.ocultar_objeto("cuadroConTapa")

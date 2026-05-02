@@ -12,15 +12,21 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
     if not obj_from.Valid():
         raise RuntimeError("objeto no existe, revisa nombres")
     
-    simulation.ocultar_objeto(obj_from.Name())
-    obj_from.Delete() # ¡Importante! Elimina el objeto viejo.
-
-    nuevo_objeto = simulation.duplicar_objeto(obj_to_plantilla, frame.Name())
-
-    var.objetos_tcp[var.tool_yaskawa] = simulation.adjuntar_objeto(tool, nuevo_objeto.Name())
+    obj_to = RDK.Item(obj_to_plantilla)
+    if not obj_to.Valid():
+        raise RuntimeError("objeto no existe, revisa nombres")
     
-    return nuevo_objeto.Name()
+    simulation.ocultar_objeto(obj_from.Name())
+    simulation.mostrar_objeto(obj_to.Name())
+    #obj_from.Delete() # ¡Importante! Elimina el objeto viejo.
 
+    #nuevo_objeto = simulation.duplicar_objeto(obj_to_plantilla, frame.Name())
+
+    var.objetos_tcp[var.tool_yaskawa] = simulation.adjuntar_objeto(tool, obj_to_plantilla)
+    
+    #return nuevo_objeto.Name()
+
+# [ThreadError] sensor_tapa: KeyError: 'SensorTapa'
 
 def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: str):
 
@@ -56,7 +62,8 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     bend1 = RDK.Item(bend_1, robolink.ITEM_TYPE_TARGET)
     r.MoveL(bend1)
 
-    nombre1 = _transicion_objeto(obj_0, obj_1, sistRefBend, toolR)
+    #nombre1 = 
+    _transicion_objeto(obj_0, obj_1, sistRefBend, toolR)
 
     r.MoveL(abreprensa1)
     r.MoveL(retract1)
@@ -69,15 +76,17 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     bend2 = RDK.Item(bend_2, robolink.ITEM_TYPE_TARGET)
     r.MoveL(bend2)
 
-    _transicion_objeto(nombre1, obj_2, sistRefBend, toolR)
+    _transicion_objeto(obj_1, obj_2, sistRefBend, toolR)
 
     r.MoveL(abreprensa2)
     r.MoveL(retract2)
 
     simulation.setDO("BendingHecho", 1)
 
+#despues de comprobar que se hace todo un cuadro bien, sustituir los dos parametros por "plantilla_"
+
 def bending_plancha_larga(obj_name : str):
-    _bending_generico("Bend1", "Bend2", obj_name, "plantilla_planchaLarga1", "plantilla_planchaLarga2")
+    _bending_generico("Bend1", "Bend2", obj_name, "planchaLarga1", "planchaLarga2")
 
 def bending_plancha_ancha(obj_name : str):
-    _bending_generico("BendA1", "BendA2", obj_name, "plantilla_planchaAncha1", "plantilla_planchaAncha2")
+    _bending_generico("BendA1", "BendA2", obj_name, "planchaAncha1", "planchaAncha2")

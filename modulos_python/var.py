@@ -28,11 +28,11 @@ frame_pick = "Pick"
 frame_place = "Place"
 frame_bending = "Bending"
 frame_cinta_main = "FramePlanchaMain"
-frame_cinta_etiqueta = "CuadroAcabada"
 frame_welding = "RobotSoldador"
-frame_mesa_giratoria = "MesaGiratoria"
-frame_paletizado_mesa = "Cinta_Mesa"
+frame_mesa_giratoria = "Engranaje"
+frame_paletizado_cinta_mesa = "Cinta_Mesa"
 frame_paletizado = "RobotPaletizado"
+frame_cinta_etiqueta = "CuadroAcabada"
 
 objetos_tcp: dict[str, robolink.Item] = {}
 objeto_pose: dict[str, robomath.Mat] = {}
@@ -42,6 +42,8 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorCA" : queue.Queue(),
     "SensorCL" : queue.Queue(),
     "SensorCC" : queue.Queue(),
+    "SensorTapa" : queue.Queue(),
+    "SensorEtiqueta" : queue.Queue(),
 }
 
 alternancia : queue.Queue[str] = queue.Queue()
@@ -54,8 +56,8 @@ plantilla = {
     "plantilla_planchaLarga1"
     "plantilla_planchaLarga2"
     "plantilla_planchaSoldada"
-    "plantilla_tapa"
-    "plantilla_cuadroAcabada"
+    "plantilla_tapaCuadro"
+    "plantilla_cuadroConTapa"
     "plantilla_cuadroEtiquetada"
 }
 

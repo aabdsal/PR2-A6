@@ -93,27 +93,26 @@ def place_cinta_main():
     simulation.setDO("enCintaMain", 1)
 
 # programa de roboDK plancha en mesa
-def place_plancha_mesa():
+def place_plancha_mesa(nombre_objeto_coger : str):
 
     simulation.waitDI("SensorCC", 1)   
     RDK = robolink.Robolink()
     
     r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
-    sistRefMesa = RDK.Item(var.frame_paletizado_mesa, robolink.ITEM_TYPE_FRAME)
+    frame_cinta = RDK.Item(var.frame_paletizado_cinta_mesa, robolink.ITEM_TYPE_FRAME)
+    frame_paletizado = RDK.Item(var.frame_paletizado, robolink.ITEM_TYPE_FRAME)
+    frame_mesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
     toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
 
     if not r.Valid() :
         raise RuntimeError("El nombre del robot no existe, revisa nombres")
     
-    if not sistRefMesa.Valid() :
+    if not frame_paletizado.Valid() :
         raise RuntimeError("El nombre del frame no existe, revisa nombres")
     
     if not toolR.Valid() :
         raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
     
-    r.setFrame(sistRefMesa)
-    r.setTool(toolR)
-
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
     prepick_cinta = RDK.Item("PrePickMain", robolink.ITEM_TYPE_TARGET)
 
@@ -124,10 +123,15 @@ def place_plancha_mesa():
     preplace_main = RDK.Item("PrePlaceMain", robolink.ITEM_TYPE_TARGET)
     place_main = RDK.Item("PlaceMain", robolink.ITEM_TYPE_TARGET)
 
+    r.setFrame(frame_paletizado)
+    r.setTool(toolR)
+    RDK.ShowMessage("antes de moverse a ini", False)
     r.MoveJ(ini)
+
+    r.setFrame(frame_cinta)
+    RDK.ShowMessage("antes de moverse a prepick cinta", False)
     r.MoveL(prepick_cinta)
     robomath.pause(0.5)
-
     elem = var.alternancia.get()
     
     if elem == "larga":
@@ -136,7 +140,7 @@ def place_plancha_mesa():
         r.MoveL(pick_ancha)
     
     robomath.pause(0.5)
-    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
+    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR, nombre_objeto_coger)
     
     r.MoveL(prepick_cinta)
     robomath.pause(0.5)
@@ -155,61 +159,15 @@ def place_plancha_mesa():
     
     robomath.pause(0.5)
     
-    simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
-    
-    if elem == "larga":
-        giro.giro_mesa()
+    simulation.soltar_objeto(var.tool_abb_p, frame_mesa)
     
     r.MoveL(preplace_main)
 
+    if elem == "larga":
+        giro.giro_mesa()
+
     r.MoveJ(ini)
     robomath.pause(0.5)
-
-# programa de roboDK place plancha soldada
-def place_cuadro_acabada():
-    
-    simulation.waitDI("tapaPuesta", 1)
-    simulation.setDO("tapaPuesta", 0)
-
-    RDK = robolink.Robolink()
-
-    r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
-    sistRefMesa = RDK.Item(var.frame_cinta_etiqueta, robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
-    
-    if not r.Valid() :
-        raise RuntimeError("El nombre del robot no existe, revisa nombres")
-    
-    if not sistRefMesa.Valid() :
-        raise RuntimeError("El nombre del frame no existe, revisa nombres")
-    
-    if not toolR.Valid() :
-        raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
-    
-    r.setFrame(sistRefMesa)
-    r.setTool(toolR)
-    
-    prepick_cuadro = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
-    pick_cuadro = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
-    preplace_cuadro = RDK.Item("PrePlaceCuadro", robolink.ITEM_TYPE_TARGET)
-    place_cuadro = RDK.Item("PlaceCuadro", robolink.ITEM_TYPE_TARGET)
-    ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
-
-    r.MoveJ(prepick_cuadro)
-    robomath.pause(0.5)
-    r.MoveL(pick_cuadro)
-    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR)
-    robomath.pause(0.5)
-    r.MoveJ(prepick_cuadro)
-    robomath.pause(0.5)
-    r.MoveJ(preplace_cuadro)
-    robomath.pause(0.5)
-    r.MoveL(place_cuadro)
-    simulation.soltar_objeto(var.tool_abb_p, sistRefMesa)
-    robomath.pause(0.5)
-    r.MoveJ(preplace_cuadro)
-    simulation.setDO("EnCinta", 1)
-    r.MoveJ(ini)
     
 def place_tapa_en_mesa():
    
@@ -234,10 +192,10 @@ def place_tapa_en_mesa():
     r.setFrame(sistRefMesa)
     r.setTool(toolR)
     
-    prepick_tapa = RDK.Item("PrePicktapa", robolink.ITEM_TYPE_TARGET)
-    pick_tapa = RDK.Item("Picktapa", robolink.ITEM_TYPE_TARGET)
-    preplace_tapa = RDK.Item("PrePlacetapa", robolink.ITEM_TYPE_TARGET)
-    place_tapa = RDK.Item("Placetapa", robolink.ITEM_TYPE_TARGET)
+    prepick_tapa = RDK.Item("PrePickTapa", robolink.ITEM_TYPE_TARGET)
+    pick_tapa = RDK.Item("PickTapa", robolink.ITEM_TYPE_TARGET)
+    preplace_tapa = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
+    place_tapa = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
     r.MoveJ(prepick_tapa)
@@ -254,6 +212,62 @@ def place_tapa_en_mesa():
     robomath.pause(0.5)
     r.MoveJ(preplace_tapa)
 
+    simulation.ocultar_objeto("tapaCuadro")
+    simulation.ocultar_objeto("planchaSoldada")
+    simulation.mostrar_objeto("cuadroConTapa")
+
     simulation.setDO("tapaPuesta", 1)
+    r.MoveJ(ini)
+
+# programa de roboDK place plancha soldada
+def place_cuadro_acabada():
+    
+    simulation.waitDI("tapaPuesta", 1)
+    simulation.setDO("tapaPuesta", 0)
+
+    RDK = robolink.Robolink()
+
+    r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
+    
+    frame_mesa = RDK.Item(var.frame_paletizado, robolink.ITEM_TYPE_FRAME)
+    frame_cinta = RDK.Item(var.frame_cinta_etiqueta, robolink.ITEM_TYPE_FRAME)
+
+    toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
+    
+    if not r.Valid() :
+        raise RuntimeError("El nombre del robot no existe, revisa nombres")
+    
+    if not frame_mesa.Valid() :
+        raise RuntimeError("El nombre del frame mesa no existe, revisa nombres")
+    
+    if not frame_mesa.Valid() :
+        raise RuntimeError("El nombre del frame cinta etiquta no existe, revisa nombres")
+    
+    if not toolR.Valid() :
+        raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
+    
+    r.setFrame(frame_mesa)
+    r.setTool(toolR)
+    
+    prepick_cuadro = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
+    pick_cuadro = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
+    preplace_cuadro = RDK.Item("PrePlaceCuadro", robolink.ITEM_TYPE_TARGET)
+    place_cuadro = RDK.Item("PlaceCuadro", robolink.ITEM_TYPE_TARGET)
+    ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
+
+    r.MoveJ(prepick_cuadro)
+    robomath.pause(0.5)
+    r.MoveL(pick_cuadro)
+    var.objetos_tcp[var.tool_abb_p] = simulation.adjuntar_objeto(toolR, "cuadroConTapa")
+    robomath.pause(0.5)
+    r.MoveJ(prepick_cuadro)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_cuadro)
+    robomath.pause(0.5)
+    r.MoveL(place_cuadro)
+    simulation.soltar_objeto(var.tool_abb_p, frame_cinta)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_cuadro)
+    simulation.setDO("EnCinta", 1)
     r.MoveJ(ini)
     

@@ -42,4 +42,4 @@ def mover_cinta_cuadro_acabada():
     simulation.setDO("EnCinta", 0)
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta")
-    simulation.ocultar_objeto("planchaAcabada")
+    simulation.ocultar_objeto("cuadroConTapa")

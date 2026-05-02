@@ -4,13 +4,13 @@ RDK = robolink.Robolink()
 from modulos_python import simulation
 from modulos_python import giro
 from modulos_python import var
+from typing import Optional
 
 ACTION_RESET = -1
 ACTION_OFF = 0
 ACTION_ON = 1
 
 DEFAULT_COLOR = "black"
-DEFAULT_OBJECT_NAME = "planchaLarga2" 
 # cambiar el nom este per algun objecte que estiga en el frame de dins de la mesa giratoria
 
 def _ensure_simulation_mode():
@@ -45,12 +45,7 @@ def _resolve_spray_id(tool_name: str, action: int) -> int:
     return spray_id
 
 
-def _apply_spray_action(
-    action: int,
-    tool_name: str = var.tool_abb_s,
-    object_name: str = DEFAULT_OBJECT_NAME,
-    color: str = DEFAULT_COLOR,
-) -> int:
+def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
     _ensure_simulation_mode()
     spray_id = _resolve_spray_id(tool_name, action)
 
@@ -64,12 +59,18 @@ def _apply_spray_action(
 
     if action == ACTION_ON:
         if spray_id < 0:
-            tool = RDK.Item("", robolink.ITEM_TYPE_TOOL)
-            obj = RDK.Item("", robolink.ITEM_TYPE_OBJECT)
-            if tool_name is not None:
-                tool = RDK.Item(tool_name, robolink.ITEM_TYPE_TOOL)
-            if object_name is not None:
-                obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
+            if not isinstance(object_name, str):
+                raise ValueError("Se requiere un nombre de objeto válido para iniciar la soldadura.")
+
+            tool = RDK.Item(tool_name, robolink.ITEM_TYPE_TOOL)
+            obj = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
+
+            if not tool.Valid():
+                raise ValueError(f"La herramienta de soldadura '{tool_name}' no es válida o no se proporcionó.")
+            
+            # El objeto puede ser opcional para Spray_Add, pero en nuestro caso es necesario
+            if not obj.Valid():
+                raise ValueError(f"El objeto a soldar '{object_name}' no es válido o no se proporcionó.")
 
             options_command = (
                 "NO_PROJECT PARTICLE=SPHERE(2,8,1,1,1) STEP=1x0 RAND=0 COLOR="
@@ -77,66 +78,64 @@ def _apply_spray_action(
             )
             spray_id = int(RDK.Spray_Add(tool, obj, options_command))
 
-        if tool_name is not None:
-            RDK.setParam(tool_name, str(spray_id))
-
         RDK.Spray_SetState(robolink.SPRAY_ON, spray_id)
         return spray_id
 
     raise ValueError("Accion de soldadura no valida: " + str(action))
 
 
-def soldar_ini(
-    tool_name: str = var.tool_abb_s,
-    object_name: str = DEFAULT_OBJECT_NAME,
-    color: str = DEFAULT_COLOR,
-) -> int:
+def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     
     r = RDK.Item(var.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
     toolR = RDK.Item(var.tool_abb_s, robolink.ITEM_TYPE_TOOL)
-    sistRefWeld = RDK.Item(var.frame_welding, robolink.ITEM_TYPE_FRAME)
-    sistRefMesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
+    frame_weld = RDK.Item(var.frame_welding, robolink.ITEM_TYPE_FRAME)
 
+    frame_mesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
+    piezas_en_mesa = [item for item in frame_mesa.Childs() if item.Type() == robolink.ITEM_TYPE_OBJECT]
+    
     simulation.waitDI("LasDos", 1)
     simulation.setDO("LasDos", 0)
 
-    r.setFrame(sistRefWeld)
+    r.setFrame(frame_weld)
     r.setTool(toolR)
 
-    ini = RDK.Item("Inici", robolink.ITEM_TYPE_TARGET)
+    ini = RDK.Item("Inicio_Soldador", robolink.ITEM_TYPE_TARGET)
     prePIS = RDK.Item("prePIS", robolink.ITEM_TYPE_TARGET)
-    PIS = RDK.Item("PIS", robolink.ITEM_TYPE_TARGET)
-    PFS = RDK.Item("PFS", robolink.ITEM_TYPE_TARGET)
+    targetPIS = RDK.Item("PIS", robolink.ITEM_TYPE_TARGET)
+    targetPFS = RDK.Item("PFS", robolink.ITEM_TYPE_TARGET)
     postPFS = RDK.Item("postPFS", robolink.ITEM_TYPE_TARGET)
 
     r.MoveJ(ini)
     for i in range(4):
         giro.giro_plancha(i)    
         r.MoveJ(prePIS)
-        r.MoveL(PIS)
+        r.MoveL(targetPIS)
         r.Pause(500)
-        r.setFrame(sistRefMesa)
+        r.setFrame(frame_mesa)
+
+        
         _apply_spray_action(
             action=ACTION_ON,
+            object_name="planchaLarga2",
             tool_name=tool_name,
-            object_name=object_name,
             color=color,
         )
-        r.setFrame(sistRefWeld)
-        r.MoveL(PFS)
+        
+        r.setFrame(frame_weld)
+        r.MoveL(targetPFS)
         soldar_stop(tool_name=tool_name)
         r.MoveL(postPFS)
 
-        giro.giro_final_plancha_soldada()
+    giro.giro_final_plancha_soldada()
     
     simulation.setDO("planchaSoldada", 1)
 
-    return _apply_spray_action(
-        action=ACTION_ON,
-        tool_name=tool_name,
-        object_name=object_name,
-        color=color,
-    )
+    # 4. Transformación final: Elimina las piezas viejas y crea la nueva
+    #for pieza in piezas_en_mesa:
+       # pieza.Delete()
+
+    # Crea el nuevo cuadro soldado a partir de una plantilla
+    #simulation.duplicar_objeto("plantilla_cuadro_soldado", frame_mesa.Name())
 
 
 def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):
@@ -146,13 +145,18 @@ def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):
     return spray_id
 
 
+"""
+    Es una herramienta de testing y depuración. 
+    Te permite probar la funcionalidad de la 
+    soldadura de forma aislada, 
+    ejecutando solo el script
+"""
 if __name__ == "__main__":
     import sys
 
     action = ACTION_ON
     color = DEFAULT_COLOR
     tool_name = var.tool_abb_s
-    object_name = DEFAULT_OBJECT_NAME
 
     if len(sys.argv) > 1:
         action_str = sys.argv[1].strip().upper()
@@ -174,6 +178,5 @@ if __name__ == "__main__":
     _apply_spray_action(
         action = action,
         tool_name = var.tool_abb_s,
-        object_name = object_name,
         color = color,
     )
