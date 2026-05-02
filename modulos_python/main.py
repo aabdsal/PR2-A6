@@ -4,23 +4,12 @@ import traceback
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import bending, sensor, var, soldar
+from modulos_python import bending, sensor, soldar, variables
 from modulos_python import mover_cintas as mc
 from modulos_python import pick_place as pp
 from robodk import robolink
 from robodk import robomath
 
-def getIniPose():
-    RDK = robolink.Robolink()
-    lista_ini_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT)
-
-    for idx in lista_ini_objetos:
-        if isinstance(idx, str):
-            idx = RDK.Item(idx) 
-        
-        var.registrar_info_objeto_json(idx.Name(), str(idx.Pose()), str(idx.Parent().Name()))
-
-#getIniPose()
 robomath.pause(0.5)
 
 def _thread_excepthook(args):
@@ -44,8 +33,8 @@ def hilo_cinta_tapa():
     mc.mover_cinta_tapa()
 
 def hilo_yaskawa():
-    cola_ancha = var.objetos_pendientes["SensorCA"]
-    cola_larga = var.objetos_pendientes["SensorCL"]
+    cola_ancha = variables.objetos_pendientes["SensorCA"]
+    cola_larga = variables.objetos_pendientes["SensorCL"]
     
     while True:
         # Esta es una forma más simple y segura de alternar
@@ -54,14 +43,14 @@ def hilo_yaskawa():
         pp.pick_plancha_larga(nombre_larga)
         bending.bending_plancha_larga(nombre_larga)
         pp.place_cinta_main()
-        var.alternancia.put("larga") # Informa de que la siguiente es una larga
+        variables.alternancia.put("larga") # Informa de que la siguiente es una larga
 
         # Espera a que haya una plancha ancha disponible
         nombre_ancha = cola_ancha.get()
         pp.pick_plancha_ancha(nombre_ancha)
         bending.bending_plancha_ancha(nombre_ancha)
         pp.place_cinta_main()
-        var.alternancia.put("ancha") # Informa de que la siguiente es una ancha
+        variables.alternancia.put("ancha") # Informa de que la siguiente es una ancha
 
 
 def hilo_cinta_main():
@@ -72,7 +61,7 @@ def hilo_cinta_main():
 # me falta revisar si me fa falta robolink, mirarme lo de duplicar objectes e implementar logica: 
 # cintas -> bending -> cinta main -> mesa giratoria -> soldar -> tapa -> mesa -> cuadro -> cinta main 2 -> etiqueta -> salida
 def hilo_place_mesa():
-    cola_main = var.objetos_pendientes["SensorCC"]
+    cola_main = variables.objetos_pendientes["SensorCC"]
     while True:
         pp.place_plancha_mesa(cola_main.get())
 

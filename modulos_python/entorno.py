@@ -1,8 +1,16 @@
+"""Este archivo de python es de suma relevancia ya que nos permite
+poder usar todos los otros scripts de python de la carpeta sin la necesidad
+de tener que importarlos a la estación de robodk. 
+Funciona para cualquier ordenador con cualquier sistema operativo que soporte python"""
+
 import os
 import sys
 from robodk import robolink   
 
 def preparar_entorno():
+    """Este metodo a partir de la ruta de la estación de robodk guarda 
+    la ruta de toda la carpeta y lo añade a la ruta del sistema en tiempo de ejecución"""
+    
     RDK = robolink.Robolink()
     rdk_file_param = RDK.getParam(robolink.FILE_OPENSTATION)
 

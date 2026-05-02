@@ -3,7 +3,7 @@ RDK = robolink.Robolink()
 
 from modulos_python import simulation
 from modulos_python import giro
-from modulos_python import var
+from modulos_python import variables
 from typing import Optional
 
 ACTION_RESET = -1
@@ -45,7 +45,7 @@ def _resolve_spray_id(tool_name: str, action: int) -> int:
     return spray_id
 
 
-def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
+def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
     _ensure_simulation_mode()
     spray_id = _resolve_spray_id(tool_name, action)
 
@@ -84,13 +84,13 @@ def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_nam
     raise ValueError("Accion de soldadura no valida: " + str(action))
 
 
-def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
+def soldar_ini(tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR):
     
-    r = RDK.Item(var.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
-    toolR = RDK.Item(var.tool_abb_s, robolink.ITEM_TYPE_TOOL)
-    frame_weld = RDK.Item(var.frame_welding, robolink.ITEM_TYPE_FRAME)
+    r = RDK.Item(variables.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
+    toolR = RDK.Item(variables.tool_abb_s, robolink.ITEM_TYPE_TOOL)
+    frame_weld = RDK.Item(variables.frame_welding, robolink.ITEM_TYPE_FRAME)
 
-    frame_mesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
+    frame_mesa = RDK.Item(variables.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
     piezas_en_mesa = [item for item in frame_mesa.Childs() if item.Type() == robolink.ITEM_TYPE_OBJECT]
     
     simulation.waitDI("LasDos", 1)
@@ -138,7 +138,7 @@ def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     #simulation.duplicar_objeto("plantilla_cuadro_soldado", frame_mesa.Name())
 
 
-def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):
+def soldar_stop(tool_name: str = variables.tool_abb_s, clear_trace: bool = True):
     spray_id = _apply_spray_action(action=ACTION_OFF, tool_name=tool_name)
     if clear_trace:
         _apply_spray_action(action=ACTION_RESET, tool_name=tool_name)
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
     action = ACTION_ON
     color = DEFAULT_COLOR
-    tool_name = var.tool_abb_s
+    tool_name = variables.tool_abb_s
 
     if len(sys.argv) > 1:
         action_str = sys.argv[1].strip().upper()
@@ -177,6 +177,6 @@ if __name__ == "__main__":
 
     _apply_spray_action(
         action = action,
-        tool_name = var.tool_abb_s,
+        tool_name = variables.tool_abb_s,
         color = color,
     )

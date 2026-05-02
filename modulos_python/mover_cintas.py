@@ -1,6 +1,6 @@
 from robodk import robolink
 from robodk import robomath
-from modulos_python import var
+from modulos_python import variables
 
 from modulos_python import simulation
 
@@ -23,23 +23,23 @@ def _mover_cinta(cinta_name: str, param_sensor: str, RDK : robolink.Robolink | N
         robomath.pause(0.01)
 
 def mover_cinta_ancha():
-    _mover_cinta(var.cinta_ancha, "SensorCA")
+    _mover_cinta(variables.cinta_ancha, "SensorCA")
 
 def mover_cinta_larga():
-    _mover_cinta(var.cinta_larga, "SensorCL")
+    _mover_cinta(variables.cinta_larga, "SensorCL")
 
 def mover_cinta_tapa():
-    _mover_cinta(var.cinta_tapa, "SensorTapa")
+    _mover_cinta(variables.cinta_tapa, "SensorTapa")
 
 def mover_cinta_main(RDK : robolink.Robolink):
     simulation.waitDI("enCintaMain", 1)
     simulation.setDO("enCintaMain", 0)
     
-    _mover_cinta(var.cinta_main, "SensorCC", RDK)
+    _mover_cinta(variables.cinta_main, "SensorCC", RDK)
 
 def mover_cinta_cuadro_acabada():
     simulation.waitDI("EnCinta", 1)
     simulation.setDO("EnCinta", 0)
         
-    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta")
+    _mover_cinta(variables.cinta_etiqueta, "SensorEtiqueta")
     simulation.ocultar_objeto("cuadroConTapa")
