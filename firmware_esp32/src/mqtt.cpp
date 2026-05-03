@@ -107,7 +107,16 @@ void mqtt_publish(const char* topic, String outgoingMessage) {
   traceln("~~>> PUBLISHING an MQTT message:");
   traceln(topic);
   traceln(outgoingMessage);
-  mqttClient.publish(topic, outgoingMessage.c_str());
+  bool ok = mqttClient.subscribe(topic);
+  if (ok)
+  { 
+    debugln("-=- MQTT subscribe succeeded");
+  }
+  
+  else 
+  {
+    errorln("-X- MQTT subscribe failed");
+  }
 }
 
 
@@ -120,6 +129,15 @@ void mqtt_subscribe(const char* topic) {
 
   trace("Subscribed to topic: ");
   traceln(topic);
-  mqttClient.subscribe(topic);
+  bool ok = mqttClient.subscribe(topic);
+  if (ok)
+  { 
+    debugln("-=- MQTT subscribe succeeded");
+  }
+
+  else 
+  {
+    errorln("-X- MQTT subscribe failed");
+  }
 }
 

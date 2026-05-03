@@ -2,6 +2,7 @@
 #include "config.h"
 #include "c_logger.h"
 #include "mqtt.h"
+#include "funciones.h"
 
 void suscribirseATopics() {
   
@@ -44,12 +45,16 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
   // If a message is received on the topic ...
   if (strcmp(topic, HELLO_TOPIC) == 0 ) {
     if(msg == "on") {
-      infoln("TODO: Encender el led interno");
+      infoln("Encender el led interno");
+      setInternalLed(1);
     }
     else if (msg == "off") {
-      infoln("TODO: Apagar el led interno");
+      infoln("Apagar el led interno");
+      setInternalLed(0);
     }
-    else warnln("**>> Solicitud no reconocida!");
+    else {
+      warnln("**>> Solicitud no reconocida!");
+    }
   }
 
 }

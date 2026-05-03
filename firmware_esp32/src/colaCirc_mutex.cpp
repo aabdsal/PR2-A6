@@ -1,3 +1,5 @@
+
+/*
 #include <Arduino.h>
 
 #define BUFSIZE 10          // Número máximo de elementos
@@ -7,7 +9,7 @@ portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED; // Mutex para la sección c
 /* 
     NOTA: Uso de uint32_t en vez de int para asegurar 32 bits, 
     son buenas prácticas de programación de sistemas empotrados
-*/
+
 
 typedef struct
 { 
@@ -47,7 +49,7 @@ void listar(Buffer_Circ *lista);          // Listar los elementos del buffer
     críticas y ISR, con solo accesos a memoria compartida, 
     con variables locales que copien los datos protegidos antes 
     de salir de la sección crítica (Ejemplo de uso en la sección crítica del loop). 
-*/ 
+
 
 // Interrupción que hace el papel de un productor e intenta evitar rebotes (aunque no me acaba de funcionar)
 void IRAM_ATTR productor_isr() 
@@ -59,7 +61,7 @@ void IRAM_ATTR productor_isr()
     NOTA: Técnica de debounce por software, 
     vista en IIS, en el tema de buenas prácticas, 
     no es la mejor pero es la más fácil de implementar.
-  */
+  
   if (now - lastTime < 50000)
   {  
     return;
@@ -188,3 +190,4 @@ uint32_t getTam(Buffer_Circ *lista)
 }
 
 
+*/

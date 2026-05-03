@@ -37,6 +37,20 @@ void handleButtonState(bool pressed) {
   previousPressed = pressed;
   setInternalLed(pressed ? 1 : 0);
 }
-
+/*
+long leerUltrasonidos() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  
+  // Calculating the distance
+  // Speed of sound wave divided by 2 (go and back)
+  return duration * 0.034 / 2;
+}
+*/
 
 
