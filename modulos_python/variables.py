@@ -2,8 +2,7 @@
 
 Guarda los nombres de robots, herramientas, frames, cintas y plantillas
 que se usan en la simulación. También mantiene estructuras en memoria
-para colas de sensores, alternancia y parámetros persistentes en JSON.
-"""
+para colas de sensores, alternancia y parámetros persistentes en JSON."""
 
 from robodk import robolink
 from robodk import robomath

@@ -1,8 +1,7 @@
 """Este módulo realiza las conexiones al broker MQTT para
 suscribirse a los topics necesarios y recibir/enviar mensajes.
 
-Aún no se ha integrado con la estación de RoboDK.
-"""
+Aún no se ha integrado con la estación de RoboDK."""
 
 from robodk import robolink    
 from robodk import robomath    
@@ -10,44 +9,58 @@ RDK = robolink.Robolink()
 
 import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
 
-import RobotController as rc  # type: ignore[reportMissingImports]
-
 broker = "mqtt.dsic.upv.es"
 port = 1883
 user = "giirob"
 passwd = "UPV2024"
-base_topic = "giirob/pr2_a6/station/"
-station_name = "demo"
-station_commands_topic = base_topic+station_name+"/commands"
-station_status_topic = base_topic+station_name+"/status"
+
+# topics que hay en el config.h del firmware_esp32
+hello_topic = "giirob/pr2/devices/hello"
+button_topic = "giirob/pr2/devices/button"
+emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
 
 
-def on_message(mqttc, obj, msg):
+def recibir_menssage(mqttc, obj, msg):
     """Decodifica el mensaje y delega la acción al controlador."""
     payload = msg.payload.decode('utf-8')
     topic = msg.topic
     qos = msg.qos
-    rc.handle_message(mqttc, topic, payload)
 
-var_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-var_mqtt.on_message = on_message
+    handle_message(mqttc, topic, payload)
 
-var_mqtt.username_pw_set(username = user, password = passwd)
-var_mqtt.connect(broker, port, 60)
-var_mqtt.subscribe(station_commands_topic, 0)
+var_mqtt = None
+def conectar():
+    global var_mqtt
+    var_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    var_mqtt.on_message = recibir_menssage
 
-var_mqtt.publish(station_status_topic, "ready")
+    var_mqtt.username_pw_set(username = user, password = passwd)
+    var_mqtt.connect(broker, port, 60)
 
-var_mqtt.loop_forever()
+    var_mqtt.subscribe(hello_topic, 0)
+    var_mqtt.subscribe(button_topic, 0)
+    var_mqtt.subscribe(emergency_stop_topic, 0)
+
+    var_mqtt.publish(hello_topic, "Hola desde la simulacion de RoboDK en python")
+
+    var_mqtt.loop_start()
+
+def enviar_message(topic, mensaje : str):
+    global var_mqtt
+
+    if var_mqtt is None:
+        raise Exception("mqtt no conectado")
+
+    var_mqtt.publish(topic, mensaje)
+
 
 def handle_message(mqttc, topic, payload):
     """Este método gestiona las acciones que hara la estacion con los 
     robots al recibir ciertos mensajes por cada topic correspondiente"""
     
-    if topic == station_commands_topic:
-        pass
-    elif topic == station_status_topic:
-        pass
+    if topic == emergency_stop_topic and payload == "para":
+        # hacer que pare la simulacion
+        robomath.pause(100000)
 
 
 

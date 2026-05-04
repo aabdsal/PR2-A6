@@ -1,8 +1,9 @@
-"""Este módulo implementa los movimientos necesarios
+"""
+Este módulo implementa los movimientos necesarios
 para el prensado de planchas largas y anchas.
 
-Se apoya en la API de RoboDK, variables globales y simulaciones
-que representan acciones reales.
+Se apoya en la API de RoboDK, variables globales 
+y simulaciones que representan acciones reales.
 """
 
 from robodk import robolink   

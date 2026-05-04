@@ -55,8 +55,7 @@ def place_cinta_main():
     """Lleva la plancha prensada a la cinta principal y notifica el estado.
 
     Se activa cuando el prensado termina y envía una salida digital
-    indicando que la pieza ya está lista para avanzar.
-    """
+    indicando que la pieza ya está lista para avanzar."""
     
     simulation.waitDI("BendingHecho", 1)
     simulation.setDO("BendingHecho", 0)
@@ -107,8 +106,7 @@ def place_plancha_mesa(nombre_objeto_coger : str):
     """Hace un pick and place desde la cinta principal a la mesa giratoria.
 
     También comunica si ya hay una plancha en la mesa o si ya están las dos
-    para pasar a la siguiente fase.
-    """
+    para pasar a la siguiente fase."""
 
     simulation.waitDI("SensorCC", 1)   
     RDK = robolink.Robolink()
@@ -238,8 +236,7 @@ def place_tapa_en_mesa():
 def place_cuadro_acabada():
     """Devuelve el cuadro con tapa a la cinta de etiquetado.
 
-    Espera a la señal de tapa puesta y notifica cuando el cuadro está en la cinta.
-    """
+    Espera a la señal de tapa puesta y notifica cuando el cuadro está en la cinta."""
 
     simulation.waitDI("tapaPuesta", 1)
     simulation.setDO("tapaPuesta", 0)

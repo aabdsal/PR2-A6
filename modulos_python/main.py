@@ -1,23 +1,23 @@
-"""
-Archivo principal que ejecuta todas las acciones de los distintos módulos.
+"""Archivo principal que ejecuta todas las acciones de los distintos módulos.
 
 Se caracteriza por el uso de hilos para cada acción o conjunto de acciones
 necesarias para la automatización de cuadros eléctricos.
 
 El uso de hilos permite ejecutar instancias en paralelo, por ejemplo mover
-cintas o coordinar robots simultáneamente.
-"""
+cintas o coordinar robots simultáneamente."""
 
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import bending, sensor, soldar, variables
+from modulos_python import bending, sensor, soldar, variables, mqtt
 from modulos_python import mover_cintas as mc
 from modulos_python import pick_place as pp
 from robodk import robolink
 import threading
 
 # TODO: Revisar si `robolink` es necesario y definir la lógica del flujo completo.
+
+mqtt.conectar()
 
 def _thread_excepthook(args):
     """Se hace uso de este método interno para imprimir por pantalla los errores que 
@@ -124,6 +124,7 @@ def hilo_sensorTapa():
 def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
     sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
+
 
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 

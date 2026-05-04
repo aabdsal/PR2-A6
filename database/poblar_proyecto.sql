@@ -119,11 +119,44 @@ VALUES
 -- ============================================
 -- ESTACIONES
 -- ============================================
-INSERT INTO estacion (id_estacion, nombre, zona)
-VALUES ('ES01', 'Estacion unica');
-('ZN01', 'ES01', 'plegado'),
-('ZN02', 'ES01', 'prensado'),
-('ZN03', 'ES01', 'etiquetado');
+INSERT INTO estacion (id_estacion, nombre)
+VALUES
+('ES01', 'estacion 1'),
+('ES02', 'estacion 2'),
+('ES03', 'estacion 3'),
+('ES04', 'estacion 4'),
+('ES05', 'estacion 5'),
+('ES06', 'estacion 6');
+
+-- ============================================
+-- ZONAS ESTACION
+-- ============================================
+INSERT INTO zona_estacion (id_estacion, zona)
+VALUES
+('ES01', 'plegado'),
+('ES01', 'prensado'),
+('ES01', 'etiquetado'),
+('ES01', 'soldadura'),
+('ES02', 'plegado'),
+('ES02', 'prensado'),
+('ES02', 'etiquetado'),
+('ES02', 'soldadura'),
+('ES03', 'plegado'),
+('ES03', 'prensado'),
+('ES03', 'etiquetado'),
+('ES03', 'soldadura'),
+('ES04', 'plegado'),
+('ES04', 'prensado'),
+('ES04', 'etiquetado'),
+('ES04', 'soldadura'),
+('ES05', 'plegado'),
+('ES05', 'prensado'),
+('ES05', 'etiquetado'),
+('ES05', 'soldadura'),
+('ES06', 'plegado'),
+('ES06', 'prensado'),
+('ES06', 'etiquetado'),
+('ES06', 'soldadura');
 
 -- ============================================
 -- SUPERVISORES
