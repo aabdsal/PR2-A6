@@ -15,11 +15,6 @@ void suscribirseATopics() {
 
 void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
 
-  // TODO: Controlador que gestiona la recepción de datos
-
-  // A partir de aquí debemos gestionar los mensajes
-  //  recibidos por los diferentes topics (canales)
-  //
   
   // If a message is received on the topic ...
     if (strcmp(topic, HELLO_TOPIC) == 0 ) {
@@ -31,12 +26,29 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
         infoln("Apagar el led interno (remote)");
         setInternalLedFromRemote(0);
       }
-      else {
-        warnln("**>> Solicitud no reconocida!");
-      }
+      
     }
 
+    if (strcmp(topic, ESTADO_PROCESO_TOPIC) == 0 ) {
+      infoln("Mensaje recibido en topic ESTADO_PROCESO_TOPIC:");
+      infoln(incomingMessage);
 
+      if (incomingMessage == "proc1") {
+        infoln("Ejecutando proceso 1...");
+        setLedProceso(1);
+      }
+      else if (incomingMessage == "proc2") {
+        infoln("Ejecutando proceso 2...");
+        setLedProceso(2);
+      }
+      else if (incomingMessage == "proc3") {
+        infoln("Ejecutando proceso 3...");
+        setLedProceso(3);
+      }
+     
+    }
+
+      
 
 
 }

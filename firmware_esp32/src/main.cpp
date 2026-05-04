@@ -49,13 +49,13 @@ void setup() {
 #endif
 
   // Nos conectamos a la wifi
-  //wifi_connect();
+  wifi_connect();
 
   // Nos conectamos al broker MQTT, indicando un 'client-id'
-  //mqtt_connect(deviceID);
+  mqtt_connect(deviceID);
 
   // TODO: completar esta función (g_comunicaciones.ino)
-  //suscribirseATopics();
+  suscribirseATopics();
 
   // TODO: completar esta función (s_setup.ino)
   on_setup();
@@ -65,8 +65,8 @@ void setup() {
 void loop() {
 
   // NO QUITAR (jjfons)
-  //wifi_loop();
-  //mqtt_loop();
+  wifi_loop();
+  mqtt_loop();
 
   // TODO: completar esta función (w_loop.ino)
   on_loop();

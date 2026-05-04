@@ -19,7 +19,7 @@
 // ULTRASONIC SENSOR
 #define TRIG_PIN                  4
 #define ECHO_PIN                  5
-#define DISTANCIA_EMERGENCIA      30 //30cm de puro placer
+#define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
 
 // WIFI
 #define NET_SSID                  "DIGIFIBRA-RC6D"
@@ -34,6 +34,7 @@
 #define HELLO_TOPIC               "giirob/pr2/devices/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
 #define BUTTON_TOPIC              "giirob/pr2/devices/button"
 #define EMERGENCY_STOP_TOPIC      "giirob/pr2/devices/emergency_stop"
+#define ESTADO_PROCESO_TOPIC      "giirob/pr2/devices/estado_proceso"
 
 
 
