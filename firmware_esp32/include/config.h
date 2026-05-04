@@ -19,14 +19,14 @@
 // ULTRASONIC SENSOR
 #define TRIG_PIN                  4
 #define ECHO_PIN                  5
-#define DISTANCIA_EMERGENCIA      30 // cm
+#define DISTANCIA_EMERGENCIA      30 //30cm de puro placer
 
 // WIFI
 #define NET_SSID                  "DIGIFIBRA-RC6D"
-#define NET_PASSWD                "S5ZDsNzsR7Re"
+#define NET_PASSWD                ""
 
 // MQTT
-#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
+#define MQTT_SERVER_IP            "172.18.204.242"
 #define MQTT_SERVER_PORT          1883
 #define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
 #define MQTT_PASSWORD             "UPV2024"

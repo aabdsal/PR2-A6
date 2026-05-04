@@ -8,6 +8,8 @@ void suscribirseATopics() {
   
   // TODO: añadir suscripciones a los topics MQTT ...
   mqtt_subscribe(HELLO_TOPIC);
+  //mqtt_subscribe(BUTTON_TOPIC);
+  mqtt_subscribe(EMERGENCY_STOP_TOPIC);
 
 }
 
@@ -33,6 +35,9 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
         warnln("**>> Solicitud no reconocida!");
       }
     }
+
+
+
 
 }
 

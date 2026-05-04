@@ -58,13 +58,13 @@ void handleButtonState(bool pressed) {
 
   if (pressed && !previousPressed) {
     infoln("Button pressed");
-    enviarMensajePorTopic(BUTTON_TOPIC, String("esta polsat"));
+    //enviarMensajePorTopic(BUTTON_TOPIC, String("esta polsat"));
   }
 
   previousPressed = pressed;
   setInternalLed(pressed ? 1 : 0);
 }
-/*
+
 long leerUltrasonidos() {
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);
@@ -78,6 +78,6 @@ long leerUltrasonidos() {
   // Speed of sound wave divided by 2 (go and back)
   return duration * 0.034 / 2;
 }
-*/
+
 
 
