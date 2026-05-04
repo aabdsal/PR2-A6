@@ -26,7 +26,7 @@
 #define NET_PASSWD                "S5ZDsNzsR7Re"
 
 // MQTT
-#define MQTT_SERVER_IP            "192.168.1.153"
+#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
 #define MQTT_SERVER_PORT          1883
 #define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
 #define MQTT_PASSWORD             "UPV2024"

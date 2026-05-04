@@ -18,44 +18,21 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
   // A partir de aquí debemos gestionar los mensajes
   //  recibidos por los diferentes topics (canales)
   //
-
-  // Test JSON
-  JsonDocument doc;
-   // Parse the JSON input
-  DeserializationError err = deserializeJson(doc, incomingMessage);
-  // Parsing succeeded?
-  if (err) {
-    warn(F("deserializeJson() returned ")); warnln(err.f_str());
-    return;
-  }
-
-  String msg = doc["message"];
-  info("(JSON) Rebut message: "); infoln(msg);
-
-  int lum = doc["luminosidad"];
-  info("(JSON) Rebut luminosidad: "); infoln(lum);
-
-  const char* temp = doc["temperatura"];
-  info("(JSON) Rebut temperatura: "); infoln(temp);
-  // Test JSON
-
-
-
-
+  
   // If a message is received on the topic ...
-  if (strcmp(topic, HELLO_TOPIC) == 0 ) {
-    if(msg == "on") {
-      infoln("Encender el led interno");
-      setInternalLed(1);
+    if (strcmp(topic, HELLO_TOPIC) == 0 ) {
+      if(incomingMessage == "on") {
+        infoln("Encender el led interno (remote)");
+        setInternalLedFromRemote(1);
+      }
+      else if (incomingMessage == "off") {
+        infoln("Apagar el led interno (remote)");
+        setInternalLedFromRemote(0);
+      }
+      else {
+        warnln("**>> Solicitud no reconocida!");
+      }
     }
-    else if (msg == "off") {
-      infoln("Apagar el led interno");
-      setInternalLed(0);
-    }
-    else {
-      warnln("**>> Solicitud no reconocida!");
-    }
-  }
 
 }
 

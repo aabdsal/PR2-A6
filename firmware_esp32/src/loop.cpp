@@ -27,7 +27,7 @@ void on_loop() {
   if (now - lastMsg > sensorsUpdateInterval ) {
     lastMsg = now;
      // Heartbeat: publish a small JSON message indicating device is alive
-     String hb = String("{\"message\":\"im alive\",\"device\":\"") + deviceID + String("\"}");
+     String hb = String("Esp32 is alive");
      enviarMensajePorTopic(HELLO_TOPIC, hb);
     
     //

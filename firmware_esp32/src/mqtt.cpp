@@ -99,45 +99,31 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
 }
 
 void mqtt_publish(const char* topic, String outgoingMessage) {
-  if ( !mqttClient.connected() ) {
-    errorln("Cannot send message through the topic ... the MQTT Client is disconnected!!");
-    return;
-  }
-
   traceln("~~>> PUBLISHING an MQTT message:");
   traceln(topic);
   traceln(outgoingMessage);
-  bool ok = mqttClient.subscribe(topic);
-  if (ok)
-  { 
-    debugln("-=- MQTT subscribe succeeded");
+
+  if (!mqttClient.connected()) {
+    warnln("-X- Cannot publish, MQTT client not connected");
+    // Try a quick reconnect attempt
+    mqtt_reconnect(1);
+    if (!mqttClient.connected()) {
+      warnln("-X- Publish aborted, still disconnected");
+      return;
+    }
   }
-  
-  else 
-  {
-    errorln("-X- MQTT subscribe failed");
+
+  boolean ok = mqttClient.publish(topic, outgoingMessage.c_str());
+  if (ok) {
+    debugln("-> Publish OK");
+  } else {
+    warnln("-> Publish FAILED");
   }
 }
 
-
 void mqtt_subscribe(const char* topic) {
-  if ( !mqttClient.connected() ) {
-    errorln("Cannot subscribe to topic ... the MQTT Client is disconnected!!");
-    return;
-  }
-
-
   trace("Subscribed to topic: ");
   traceln(topic);
-  bool ok = mqttClient.subscribe(topic);
-  if (ok)
-  { 
-    debugln("-=- MQTT subscribe succeeded");
-  }
-
-  else 
-  {
-    errorln("-X- MQTT subscribe failed");
-  }
+  mqttClient.subscribe(topic);
 }
 
