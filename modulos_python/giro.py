@@ -2,7 +2,7 @@
 
 from robodk import robolink
 from modulos_python import simulation as sim
-from modulos_python import variables
+from modulos_python import variables as var
 
 
 def giro_plancha(i : int):
@@ -11,7 +11,7 @@ def giro_plancha(i : int):
     Se usa durante la soldadura para acercar la pieza al robot soldador."""
 
     RDK = robolink.Robolink()
-    mesa = RDK.Item(variables.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
+    mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
 
     if not mesa.Valid():
         raise RuntimeError("Nombre de la mesa inválido. Revisa nombres")
@@ -28,7 +28,7 @@ def giro_mesa():
     """Gira la mesa 90 grados para orientar la primera plancha en la mesa."""
 
     RDK = robolink.Robolink()
-    mesa = RDK.Item(variables.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
+    mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
 
     target_giro = RDK.Item("Giro90", robolink.ITEM_TYPE_TARGET)
     mesa.MoveJ(target_giro)
@@ -37,11 +37,10 @@ def giro_mesa():
 def giro_final_plancha_soldada():
     """Realiza el giro final del cuadro soldado para preparar la tapa.
 
-    Al finalizar, se activa la salida digital planchaSoldada.
-    """
+    Al finalizar, se activa la salida digital planchaSoldada."""
 
     RDK = robolink.Robolink()
-    mesa = RDK.Item(variables.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
+    mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
 
     if not mesa.Valid():
         raise RuntimeError("Nombre de la mesa inválido. Revisa nombres")
@@ -52,7 +51,10 @@ def giro_final_plancha_soldada():
         raise RuntimeError("Target final inválido. Revisa nombres")
     
     mesa.MoveJ(target_final)
+
+    # TODO: Sustituir aqui con delete i duplicar
     sim.mostrar_objeto("planchaSoldada")
     sim.ocultar_objeto("planchaLarga2")
     sim.ocultar_objeto("planchaAncha2")
+
     sim.setDO("planchaSoldada", 1)

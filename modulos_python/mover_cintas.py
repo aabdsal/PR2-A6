@@ -5,10 +5,11 @@ Queda por decidir si el duplicado de objetos se implementa aquí o en otro sitio
 
 from robodk import robolink
 from robodk import robomath
-from modulos_python import variables, simulation
+from modulos_python import variables as var
+from modulos_python import simulation as sim
 import time
 
-def _mover_cinta(cinta_name, param_sensor, objeto_plantilla, frame_name: str, RDK : robolink.Robolink | None = None):
+def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None, RDK : robolink.Robolink | None = None):
     """Mueve una cinta mientras el sensor no detecte ningún objeto.
 
     Si no se recibe un Robolink, crea una conexión local para permitir
@@ -22,32 +23,36 @@ def _mover_cinta(cinta_name, param_sensor, objeto_plantilla, frame_name: str, RD
         raise RuntimeError("El nombre de la cinta no existe")
 
     incremento = 15.0
-    
+    last_spawn = 0.0
+    spawn_every_s = 1.5  
+
     while param_sensor is not None and int(RDK.getParam(param_sensor) or 0) != 1:
         
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
         
-        #implementar lo de duplicar objeto aqui cada x segundos
-        #simulation.duplicar_objeto(objeto_plantilla, frame_name)
+        if objeto_plantilla is not None:
+            if objeto_plantilla and time.monotonic() - last_spawn >= spawn_every_s:
+                sim.duplicar_objeto(objeto_plantilla, frame_name)
+                last_spawn = time.monotonic()
 
         robomath.pause(0.01)
 
 def mover_cinta_ancha():
     """Método que mueve la cinta por donde pasan las planchas anchas, 
     y el sensor encargado de notificar si hay objeto es el SensorCA"""
-    _mover_cinta(variables.cinta_ancha, "SensorCA", "", "")
+    _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaLarga", var.plantilla["ancha"])
 
 def mover_cinta_larga():
     """Método que mueve la cinta por donde pasan las planchas largas, 
     y el sensor encargado de notificar si hay objeto es el SensorCL"""
 
-    _mover_cinta(variables.cinta_larga, "SensorCL", "", "")
+    _mover_cinta(var.cinta_larga, "SensorCL", "FramePlanchaLarga", var.plantilla["larga"])
 
 def mover_cinta_tapa():
     """Método que mueve la cinta por donde pasan las tapas, 
     y el sensor encargado de notificar si hay objeto es el SensorTapa"""
 
-    _mover_cinta(variables.cinta_tapa, "SensorTapa", "" ,"")
+    _mover_cinta(var.cinta_tapa, "SensorTapa","FrameTapa", var.plantilla["tapa"])
 
 def mover_cinta_main(RDK : robolink.Robolink):
     """Método que mueve la cinta principal, donde van las planchasLargas2 
@@ -55,10 +60,10 @@ def mover_cinta_main(RDK : robolink.Robolink):
 
     Implementa una espera digital que se activa cuando el yaskawa pone una plancha prensada en la cinta"""
 
-    simulation.waitDI("enCintaMain", 1)
-    simulation.setDO("enCintaMain", 0)
+    sim.waitDI("enCintaMain", 1)
+    sim.setDO("enCintaMain", 0)
     
-    _mover_cinta(variables.cinta_main, "SensorCC", "", "", RDK)
+    _mover_cinta(var.cinta_main, "SensorCC", "FramePlanchaMain", RDK=RDK)
 
 def mover_cinta_cuadro_acabada():
     """Mueve la cinta final donde salen los cuadros eléctricos hacia el túnel.
@@ -67,9 +72,10 @@ def mover_cinta_cuadro_acabada():
     pone el cuadro con tapa en la cinta. Falta la lógica para detenerse
     2 segundos en el túnel de etiquetado."""
 
-    simulation.waitDI("EnCintaEtiquetar", 1)
-    simulation.setDO("EnCintaEtiquetar", 0)
+    sim.waitDI("EnCintaEtiquetar", 1)
+    sim.setDO("EnCintaEtiquetar", 0)
         
-    _mover_cinta(variables.cinta_etiqueta, "SensorEtiqueta", "" , "")
-    simulation.ocultar_objeto("cuadroConTapa") # sustituir por objeto que hay en la cola, falta implementación
-    # tambien faltaria eliminar ese objeto para que no se guarde basura en la estació
+    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "" , "")
+
+    # TODO: Sustituir aqui con delete i duplicar mediante cola
+    sim.ocultar_objeto("cuadroConTapa") 

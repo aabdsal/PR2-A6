@@ -6,27 +6,28 @@ ocultar/mostrar para mantener la simulación coherente."""
 
 from robodk import robolink
 from robodk import robomath
-from modulos_python import variables
+from modulos_python import variables as var
 import json
 
 from modulos_python import simulation
 
-def reset_cinta(nombre_cinta : str):
+def reset_cinta(mecanismos : list[str]):
     """Devuelve la cinta a la posición 0 y valida que exista el mecanismo."""
     RDK = robolink.Robolink()
 
-    item_cinta = RDK.Item(nombre_cinta, robolink.ITEM_TYPE_ROBOT)
-    if not item_cinta.Valid():
-        raise RuntimeError(RDK.ShowMessage(f"Cinta: {nombre_cinta} no existe, revisa nombres"))
-    
-    item_cinta.setJoints(robomath.Mat([[0]]))
+    for nombre_cinta in mecanismos:
+        item_cinta = RDK.Item(nombre_cinta, robolink.ITEM_TYPE_ROBOT)
+        if not item_cinta.Valid():
+            raise RuntimeError(RDK.ShowMessage(f"Cinta: {nombre_cinta} no existe, revisa nombres"))
+        
+        item_cinta.setJoints(robomath.Mat([[0]]))
 
 def reset_param():
     """Carga los parámetros del JSON persistente y los reinicia a 0."""
 
-    if not variables.JSON_PARAM_PATH.exists():
+    if not var.JSON_PARAM_PATH.exists():
         return
-    with variables.JSON_PARAM_PATH.open("r", encoding="utf-8") as f:
+    with var.JSON_PARAM_PATH.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
     parametros = data.get("parametros", []) if isinstance(data, dict) else data
@@ -38,9 +39,9 @@ def reset_objetos():
 
     Se mantiene temporalmente; se pretende sustituir por duplicado/eliminación."""
 
-    if not variables.JSON_PARAM_PATH.exists():
+    if not var.JSON_PARAM_PATH.exists():
         return
-    with variables.JSON_PARAM_PATH.open("r", encoding="utf-8") as f:
+    with var.JSON_PARAM_PATH.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
     info_objetos = data.get("info_objetos", {}) if isinstance(data, dict) else data
@@ -49,12 +50,7 @@ def reset_objetos():
 
 # Llamadas a las funciones de reset
 reset_param()
-# TODO: Simplificar pasando una lista con los nombres de todas las cintas.
-reset_cinta(variables.cinta_larga)
-reset_cinta(variables.cinta_ancha)
-reset_cinta(variables.cinta_main)
-reset_cinta(variables.cinta_tapa)
-reset_cinta(variables.mesa_giratoria)
+reset_cinta(var.mecanismos)
 
 
 # TODO: Revisar esta parte cuando la duplicación sea consistente.
