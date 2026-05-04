@@ -8,8 +8,7 @@ from modulos_python import variables
 def giro_plancha(i : int):
     """Mueve la mesa giratoria a una esquina predefinida (Esquina0..Esquina3).
 
-    Se usa durante la soldadura para acercar la pieza al robot soldador.
-    """
+    Se usa durante la soldadura para acercar la pieza al robot soldador."""
 
     RDK = robolink.Robolink()
     mesa = RDK.Item(variables.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)

@@ -2,8 +2,7 @@
 
 Establece parámetros a 0 y devuelve las cintas a su posición original.
 Mientras no exista una duplicación consistente de objetos, se usan
-ocultar/mostrar para mantener la simulación coherente.
-"""
+ocultar/mostrar para mantener la simulación coherente."""
 
 from robodk import robolink
 from robodk import robomath
@@ -37,8 +36,7 @@ def reset_param():
 def reset_objetos():
     """Función obsoleta para reemplazar posiciones de objetos.
 
-    Se mantiene temporalmente; se pretende sustituir por duplicado/eliminación.
-    """
+    Se mantiene temporalmente; se pretende sustituir por duplicado/eliminación."""
 
     if not variables.JSON_PARAM_PATH.exists():
         return

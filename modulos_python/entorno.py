@@ -1,7 +1,6 @@
 """Este archivo prepara el entorno para poder usar los scripts de la carpeta
 sin tener que importarlos manualmente en la estación de RoboDK.
-Funciona en cualquier sistema que soporte Python.
-"""
+Funciona en cualquier sistema que soporte Python."""
 
 import os
 import sys

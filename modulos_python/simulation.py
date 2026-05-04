@@ -2,8 +2,7 @@
 
 Incluye métodos para ocultar/mostrar objetos, reemplazar posiciones,
 adjuntar o soltar objetos, simular esperas digitales, establecer
-salidas digitales y duplicar objetos.
-"""
+salidas digitales y duplicar objetos."""
 
 from robodk import robolink    
 from robodk import robomath    
@@ -37,8 +36,7 @@ def reemplazar_pos_objeto(object_name, parent: str,  pose : robomath.Mat):
     """Reemplaza la posición de un objeto respecto a su frame padre.
 
     Actualmente no se usa en el flujo principal y podría quedar obsoleta
-    con el uso de objetos plantilla.
-    """
+    con el uso de objetos plantilla."""
 
     item = RDK.Item(object_name, robolink.ITEM_TYPE_OBJECT)
     if not item.Valid():
@@ -56,8 +54,7 @@ def reemplazar_pos_objeto(object_name, parent: str,  pose : robomath.Mat):
 def adjuntar_objeto(tool_name: robolink.Item, object_name: Optional[str] = None):
     """Adjunta un objeto al TCP de la herramienta.
 
-    Si se indica un nombre, se adjunta ese objeto. Si no, se usa AttachClosest.
-    """
+    Si se indica un nombre, se adjunta ese objeto. Si no, se usa AttachClosest."""
 
 
     if object_name is not None:
