@@ -4,19 +4,6 @@ from modulos_python import mqtt
 from datetime import datetime
 import time
 
-
-
-# --- Variables y Configuración MQTT (de mqtt.py) ---
-broker = "mqtt.dsic.upv.es"
-port = 1883
-user = "giirob"
-passwd = "UPV2024"
-
-# Topics definidos
-hello_topic = "giirob/pr2/devices/hello"
-button_topic = "giirob/pr2/devices/button"
-emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
-
 # --- Variables Globales de Estado ---
 conn = None
 cur = None
@@ -54,13 +41,13 @@ def conectar_bd():
 
 def buscar_pedido_pendiente(cursor):
     """Busca el pedido más urgente con unidades por fabricar."""
-    sql = "SELECT id_pedido, cantidad_sol, cantidad_fab FROM pedido WHERE cantidad_fab < cantidad_sol ORDER BY fecha_lim ASC LIMIT 1"
+    sql = "SELECT id_pedido, cantidad_sol, cantidad_fab FROM pedido WHERE cantidad_fab < cantidad_sol ORDER BY fecha_lim ASC"
     cursor.execute(sql)
     return cursor.fetchone()
 
 
 def registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
-    """Realiza la transacción de inserción en la BD."""
+    """Realiza la inserción en la BD."""
     id_prod = f"PR-{datetime.now().strftime('%H%M%S')}"
     try:
         # Inserciones siguiendo vuestro esquema
@@ -108,7 +95,7 @@ def leer_fotocelulas_robodk():
         s2_bloqueado = False
 
 
-# ---  MQTT  ---2
+# ---  MQTT  ---
 
 def my_handle_message(mqttc, topic, payload):
     """Función que se ejecuta al recibir un mensaje MQTT."""
