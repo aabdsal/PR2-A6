@@ -10,6 +10,7 @@ void suscribirseATopics() {
   mqtt_subscribe(HELLO_TOPIC);
   //mqtt_subscribe(BUTTON_TOPIC);
   mqtt_subscribe(EMERGENCY_STOP_TOPIC);
+  mqtt_subscribe(ESTADO_PROCESO_TOPIC);
 
 }
 
