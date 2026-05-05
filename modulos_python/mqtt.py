@@ -1,5 +1,5 @@
 """Este módulo realiza las conexiones al broker MQTT para
-suscribirse a los topics necesarios y recibir/enviar mensajes.
+suscribirse a los topics necesarios y recibir/enviar mensajes. .
 
 Aún no se ha integrado con la estación de RoboDK."""
 
@@ -72,7 +72,11 @@ def handle_message(mqttc, topic, payload):
         if _stop_callback is not None:
             print(f"Mensaje recibido: {payload}")
             _stop_callback()
-            return
+            return  
+    elif topic == emergency_stop_topic and payload == "GO":
+        print("Emergencia limpia. Reanudando simulación...")
+        RDK.setSimulationSpeed(1) # Vuelve a la velocidad normal
+        RDK.ShowMessage("Sistema Reanudado", False)
         
     # Lógica de producto terminado (LED ON)
     elif topic == hello_topic and payload == "on":
