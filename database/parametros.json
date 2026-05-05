@@ -20,6 +20,7 @@
     "count_plantilla_planchaSoldada",
     "count_plantilla_tapaCuadro",
     "count_plantilla_cuadroConTapa",
-    "count_plantilla_cuadroEtiquetada"
+    "count_plantilla_cuadroEtiquetada",
+    "SensorEtiqueta"
   ]
 }

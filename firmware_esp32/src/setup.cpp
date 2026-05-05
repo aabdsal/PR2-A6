@@ -14,17 +14,7 @@ void on_setup() {
 
     setInternalLed(0);
 
-    String hello_msg = String("Hola Mundo! Desde dispositivo ") + deviceID;
-
-    // Test JSON
-    JsonDocument doc;
-    doc["message"] = hello_msg;
-    doc["luminosidad"] = 450;
-    doc["temperatura"] = 21.5;
-    String hello_msg_json;
-    serializeJson(doc, hello_msg_json);
-    enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
-
+    
 
 }
 

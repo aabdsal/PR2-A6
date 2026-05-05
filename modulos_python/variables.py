@@ -21,6 +21,15 @@ tool_abb_p = "EPick Gripper"
 robot_abb_s = "ABB Soldador"
 tool_abb_s = "Welding Gun"
 
+mecanismos = [
+ "CintaLargoIni",
+ "CintaAnchoIni",
+ "CintaCuadroIni",
+ "CintaCuadroFini",
+ "CintaTapaInit",
+ "Yaskawa Giratoria"
+]
+
 cinta_larga = "CintaLargoIni"
 cinta_ancha = "CintaAnchoIni"
 cinta_main = "CintaCuadroIni"
@@ -37,19 +46,19 @@ frame_welding = "RobotSoldador"
 frame_mesa_giratoria = "Engranaje"
 frame_paletizado_cinta_mesa = "Cinta_Mesa"
 frame_paletizado = "RobotPaletizado"
-frame_cinta_etiqueta = "CuadroAcabada"
+frame_cinta_etiqueta = "FrameCuadroAcabada"
 
-plantilla = {
-    "plantilla_planchaAncha"
-    "plantilla_planchaLarga"
-    "plantilla_planchaAncha1"
-    "plantilla_planchaAncha2"
-    "plantilla_planchaLarga1"
-    "plantilla_planchaLarga2"
-    "plantilla_planchaSoldada"
-    "plantilla_tapaCuadro"
-    "plantilla_cuadroConTapa"
-    "plantilla_cuadroEtiquetada"
+plantilla: dict[str, str] = {
+    "ancha": "plantilla_planchaAncha",
+    "larga": "plantilla_planchaLarga",
+    "ancha1": "plantilla_planchaAncha1",
+    "ancha2": "plantilla_planchaAncha2",
+    "larga1": "plantilla_planchaLarga1",
+    "larga2": "plantilla_planchaLarga2",
+    "soldada": "plantilla_planchaSoldada",
+    "tapa": "plantilla_tapaCuadro",
+    "cuadroConTapa": "plantilla_cuadroConTapa",
+    "cuadroEtiqueta": "plantilla_cuadroEtiquetada",
 }
 
 objetos_tcp: dict[str, robolink.Item] = {}
@@ -63,6 +72,10 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorEtiqueta" : queue.Queue(),
 }
 
+cola_soldadas : queue.Queue[str] = queue.Queue()
+cola_cuadrosTapa : queue.Queue[str] = queue.Queue()
+
+soldadas : queue.Queue[str] = queue.Queue()
 alternancia : queue.Queue[str] = queue.Queue()
 
 JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "database" / "parametros.json"

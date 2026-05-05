@@ -15,8 +15,20 @@ from modulos_python import pick_place as pp
 from robodk import robolink
 import threading
 
-# TODO: Revisar si `robolink` es necesario y definir la lógica del flujo completo.
+stop_event = threading.Event()
 
+
+def request_stop():
+    """Solicita detener la ejecucion de la estacion."""
+    stop_event.set()
+    try:
+        RDK = robolink.Robolink()
+        RDK.RunMessage("[MQTT] STOP recibido: deteniendo estacion")
+    except Exception:
+        pass
+
+
+mqtt.set_stop_callback(request_stop)
 mqtt.conectar()
 
 def _thread_excepthook(args):
@@ -31,21 +43,21 @@ def _thread_excepthook(args):
 threading.excepthook = _thread_excepthook
 
 # Los siguientes hilos mueven las cintas por donde llegan los objetos.
-
+# TODO : falta sustituir esos while true de las cintas a que se vuelva a mover despues de que el robot mueva el objeto
 def hilo_cinta_larga():
     """Hilo que mueve la cinta de planchas largas."""
-    #while True:
-    mc.mover_cinta_larga()
+    while not stop_event.is_set():
+        mc.mover_cinta_larga()
 
 def hilo_cinta_ancha():
     """Hilo que mueve la cinta de planchas anchas."""
-    #while True:
-    mc.mover_cinta_ancha()
+    while not stop_event.is_set():
+        mc.mover_cinta_ancha()
 
 def hilo_cinta_tapa():
     """Hilo que mueve la cinta de tapas."""
-    #while True:        
-    mc.mover_cinta_tapa()
+    while not stop_event.is_set():
+        mc.mover_cinta_tapa()
 
 
 def hilo_yaskawa():
@@ -58,50 +70,49 @@ def hilo_yaskawa():
     cola_ancha = variables.objetos_pendientes["SensorCA"]
     cola_larga = variables.objetos_pendientes["SensorCL"]
     
-    while True:
+    while not stop_event.is_set():
 
-        nombre_larga = cola_larga.get() # Espera a que haya una plancha larga disponible
+        nombre_larga = cola_larga.get() 
         pp.pick_plancha_larga(nombre_larga)
         bending.bending_plancha_larga(nombre_larga)
         pp.place_cinta_main()
-        variables.alternancia.put("larga") # Informa de que la siguiente es una larga
+        variables.alternancia.put("larga") 
 
-        nombre_ancha = cola_ancha.get() # Espera a que haya una plancha ancha disponible
+        nombre_ancha = cola_ancha.get() 
         pp.pick_plancha_ancha(nombre_ancha)
         bending.bending_plancha_ancha(nombre_ancha)
         pp.place_cinta_main()
-        variables.alternancia.put("ancha") # Informa de que la siguiente es una ancha
+        variables.alternancia.put("ancha") 
 
 def hilo_cinta_main():
     """Hilo que mueve la cinta principal cuando hay pieza disponible."""
     RDK = robolink.Robolink()
-    while True:
+    while not stop_event.is_set():
         mc.mover_cinta_main(RDK)
 
 def hilo_place_mesa():
     """Hilo que coloca planchas en la mesa giratoria desde la cinta principal."""
-    cola_main = variables.objetos_pendientes["SensorCC"]
-    while True:
-        pp.place_plancha_mesa(cola_main.get())
+    while not stop_event.is_set():
+        pp.place_plancha_mesa()
 
 def hilo_place_tapa():
     """Hilo que coloca la tapa sobre el cuadro soldado."""
-    while True:
+    while not stop_event.is_set():
         pp.place_tapa_en_mesa()
 
 def hilo_place_cuadro_acabado():
     """Hilo que coloca el cuadro acabado en la cinta de etiquetado."""
-    while True:
+    while not stop_event.is_set():
         pp.place_cuadro_acabada()
 
 def hilo_soldador():
     """Hilo que ejecuta la secuencia de soldadura."""
-    while True:
+    while not stop_event.is_set():
         soldar.soldar_ini()
 
 def hilo_cinta_etiquetado():
     """Hilo que mueve la cinta final de etiquetado."""
-    while True:
+    while not stop_event.is_set():
         mc.mover_cinta_cuadro_acabada()
 
 # Hilos de sensores para detectar objetos en cada cinta.
