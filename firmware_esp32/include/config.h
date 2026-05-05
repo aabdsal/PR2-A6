@@ -22,14 +22,14 @@
 #define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
 
 // WIFI
-#define NET_SSID                  "DIGIFIBRA-RC6D"
-#define NET_PASSWD                "S5ZDsNzsR7Re"
+#define NET_SSID                  "iPhone"
+#define NET_PASSWD                "andreugrc"
 
 // MQTT
-#define MQTT_SERVER_IP            "192.168.1.153"
+#define MQTT_SERVER_IP            "broker.emqx.io"   // IP del broker MQTT al que se conectará el dispositivo
 #define MQTT_SERVER_PORT          1883
-#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
-#define MQTT_PASSWORD             "UPV2024"
+//#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
+//#define MQTT_PASSWORD             "UPV2024"
 
 #define HELLO_TOPIC               "giirob/pr2/devices/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
 #define BUTTON_TOPIC              "giirob/pr2/devices/button"

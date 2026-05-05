@@ -10,7 +10,7 @@ void suscribirseATopics() {
   mqtt_subscribe(HELLO_TOPIC);
   //mqtt_subscribe(BUTTON_TOPIC);
   mqtt_subscribe(EMERGENCY_STOP_TOPIC);
-  mqtt_subscribe(ESTADO_PROCESO_TOPIC);
+  //mqtt_subscribe(ESTADO_PROCESO_TOPIC);
 
 }
 
@@ -22,33 +22,10 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
       if(incomingMessage == "on") {
         infoln("Encender el led interno (remote)");
         setInternalLedFromRemote(1);
-      }
-      else if (incomingMessage == "off") {
-        infoln("Apagar el led interno (remote)");
+        delay(1000);
         setInternalLedFromRemote(0);
       }
-      
     }
-
-    if (strcmp(topic, ESTADO_PROCESO_TOPIC) == 0 ) {
-      infoln("Mensaje recibido en topic ESTADO_PROCESO_TOPIC:");
-      infoln(incomingMessage);
-
-      if (incomingMessage == "proc1") {
-        infoln("Ejecutando proceso 1...");
-        setLedProceso(1);
-      }
-      else if (incomingMessage == "proc2") {
-        infoln("Ejecutando proceso 2...");
-        setLedProceso(2);
-      }
-      else if (incomingMessage == "proc3") {
-        infoln("Ejecutando proceso 3...");
-        setLedProceso(3);
-      }
-     
-    }
-
       
 
 
