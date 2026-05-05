@@ -52,9 +52,9 @@ void setLedProceso(uint8_t proceso) {
   //  enciende el led interno con un patrón diferente para cada proceso, pero
   //  podría ser cualquier otra acción (controlar un motor, enviar datos por 
   //  otro topic, etc.)
-
   switch (proceso) {
     case 1:
+      Serial.println("Ejecutando proceso 1...");
       digitalWrite(LED_BUILTIN, HIGH);
       delay(200);
       digitalWrite(LED_BUILTIN, LOW);
@@ -72,8 +72,8 @@ void setLedProceso(uint8_t proceso) {
       digitalWrite(LED_BUILTIN, LOW);
       delay(1000);
       break;
+  }
 
-}
 }
 
 

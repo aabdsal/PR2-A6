@@ -19,8 +19,8 @@ void on_loop() {
   long distancia = leerUltrasonidos();
 
   if (distancia > 0 && distancia != 797) {
-  //Serial.print("Distancia: ");
-  //Serial.println(distancia);
+  Serial.print("Distancia: ");
+  Serial.println(distancia);
   if (distancia < DISTANCIA_EMERGENCIA) {
     if (!emergencyLatched) {
       enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, "STOP");

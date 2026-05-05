@@ -3,22 +3,26 @@ suscribirse a los topics necesarios y recibir/enviar mensajes.
 
 Aún no se ha integrado con la estación de RoboDK."""
 
-from robodk import robolink    
-from robodk import robomath    
-RDK = robolink.Robolink()
+from robodk import robolink
 
 import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
 
-broker = "mqtt.dsic.upv.es"
+broker = "192.168.1.153"
 port = 1883
 user = "giirob"
 passwd = "UPV2024"
 
 # topics que hay en el config.h del firmware_esp32
-hello_topic = "giirob/pr2_a6/devices/hello"
-button_topic = "giirob/pr2_a6/devices/button"
-emergency_stop_topic = "giirob/pr2_a6/devices/emergency_stop"
+hello_topic = "giirob/pr2/devices/hello"
+button_topic = "giirob/pr2/devices/button"
+emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
 
+_stop_callback = None
+
+def set_stop_callback(callback):
+    """Permite registrar una funcion que detenga la ejecucion."""
+    global _stop_callback
+    _stop_callback = callback
 
 def recibir_menssage(mqttc, obj, msg):
     """Decodifica el mensaje y delega la acción al controlador."""
@@ -43,7 +47,7 @@ def conectar():
 
     var_mqtt.publish(hello_topic, "Hola desde la simulacion de RoboDK en python")
 
-    var_mqtt.loop_start()
+    var_mqtt.loop_forever()    
 
 def enviar_message(topic, mensaje : str):
     global var_mqtt
@@ -55,12 +59,25 @@ def enviar_message(topic, mensaje : str):
 
 
 def handle_message(mqttc, topic, payload):
-    """Este método gestiona las acciones que hara la estacion con los 
-    robots al recibir ciertos mensajes por cada topic correspondiente"""
+    global var_mqtt
     
-    if topic == emergency_stop_topic and payload == "para":
-        # hacer que pare la simulacion
-        robomath.pause(100000)
+    if topic == emergency_stop_topic and payload == "STOP":
+        
+        if _stop_callback is not None:
+            _stop_callback()
+            return
+
+RDK = robolink.Robolink()
+
+def mi_funcion_de_paro():
+    
+    RDK.setSimulationSpeed(0)
+    RDK.ShowMessage("PARADA DE EMERGENCIA: Sistema detenido", False)
+
+set_stop_callback(mi_funcion_de_paro)
+
+if __name__ == "__main__":
+    conectar()
 
 
 
