@@ -70,7 +70,6 @@ def handle_message(mqttc, topic, payload):
         RDK.setSimulationSpeed(5) 
         RDK.ShowMessage("Simulación Reanudado", False)
         
-    # Lógica de producto terminado (LED ON)
     elif topic == hello_topic and payload == "on":
         obj_terminado = None
         
@@ -84,10 +83,13 @@ def handle_message(mqttc, topic, payload):
             t_ini = variables.tiempos_proceso[obj_terminado]["ini"]
             t_fin = variables.tiempos_proceso[obj_terminado]["fin"]
             
-            bbdd.registrar_producto_terminado(t_ini, t_fin)
+            pedido = bbdd.buscar_pedido_pendiente(bbdd.curr)
+
+            if pedido is not None:
+                bbdd.registrar_producto(bbdd.conn, bbdd.curr, pedido[0], t_ini, t_fin)
     
             del variables.tiempos_proceso[obj_terminado]
         else:
-            print("Aviso MQTT: Se recibió 'on' pero no hay piezas con tiempos de proceso completos.")
+            RDK.ShowMessage("Aviso MQTT: Se recibió 'on' pero no hay piezas con tiempos de proceso completos.", False)
 
 

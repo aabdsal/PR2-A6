@@ -84,4 +84,5 @@ def mover_cinta_cuadro_acabada():
     mqtt.enviar_message(mqtt.emergency_stop_topic, "ON")
 
 
+
     
