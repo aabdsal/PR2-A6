@@ -3,6 +3,7 @@ suscribirse a los topics necesarios y recibir/enviar mensajes. .
 
 Aún no se ha integrado con la estación de RoboDK."""
 
+import json
 from robodk import robolink
 from robodk import robomath
 
@@ -41,7 +42,11 @@ def conectar():
     var_mqtt.subscribe(button_topic, 0)
     var_mqtt.subscribe(emergency_stop_topic, 0)
 
-    var_mqtt.publish(hello_topic, "Hola desde la simulacion de RoboDK en python")
+    hello_payload = json.dumps({
+        "estado_led": "off",
+        "msg": "Hola desde la simulacion de RoboDK en python",
+    })
+    var_mqtt.publish(hello_topic, hello_payload)
     RDK.ShowMessage("MQTT Conectado AELL", False)
 
     var_mqtt.loop_start()

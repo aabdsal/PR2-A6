@@ -1,3 +1,4 @@
+import json
 import psycopg
 import mqtt
 from modulos_python import mqtt
@@ -94,6 +95,41 @@ def leer_fotocelulas_robodk():
     else:
         s2_bloqueado = False
 
+<<<<<<< HEAD
+=======
+
+# ---  MQTT  ---
+
+def my_handle_message(mqttc, topic, payload):
+    """Función que se ejecuta al recibir un mensaje MQTT."""
+    global h_ini_sensor, h_fin_sensor, conn, cur
+
+    if topic != mqtt.hello_topic:
+        return
+
+    try:
+        data = json.loads(payload)
+    except json.JSONDecodeError as error:
+        print(f"Error al parsear JSON en MQTT: {error}")
+        return
+
+    estado_led = data.get("estado_led")
+    # Si llega "on", significa producto terminado
+    if estado_led == "on":
+        if h_ini_sensor and h_fin_sensor:
+            pedido = buscar_pedido_pendiente(cur)
+            if pedido:
+                registrar_producto(conn, cur, pedido[0], h_ini_sensor, h_fin_sensor)
+            else:
+                print("No hay pedidos pendientes.")
+            
+            # Reset de marcas de tiempo para la siguiente pieza
+            h_ini_sensor, h_fin_sensor = None, None
+        else:
+            print("Error: Faltan tiempos de fotocélulas (S1 o S2 no detectados).")
+
+
+>>>>>>> origin/roberto
 # --- Ejecución Principal ---
 
 if __name__ == "__main__":
