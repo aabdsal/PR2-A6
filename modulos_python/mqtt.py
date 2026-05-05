@@ -70,6 +70,10 @@ def handle_message(mqttc, topic, payload):
             RDK.ShowMessage(f"Mensaje recibido: {payload}", True)
             _stop_callback()
             return
+    elif topic == emergency_stop_topic and payload == "GO":
+        print("Emergencia limpia. Reanudando simulación...")
+        RDK.setSimulationSpeed(1) # Vuelve a la velocidad normal
+        RDK.ShowMessage("Sistema Reanudado", False)
 
 
 # 1. Creamos la conexión con la aplicación RoboDK abierta
