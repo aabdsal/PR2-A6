@@ -1,5 +1,5 @@
 """Este módulo realiza las conexiones al broker MQTT para
-suscribirse a los topics necesarios y recibir/enviar mensajes.
+suscribirse a los topics necesarios y recibir/enviar mensajes. .
 
 Aún no se ha integrado con la estación de RoboDK."""
 
