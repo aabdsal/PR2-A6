@@ -1,5 +1,5 @@
 import psycopg
-import paho.mqtt.client as mqtt
+from modulos_python import mqtt
 from datetime import datetime
 
 
@@ -10,9 +10,9 @@ user = "giirob"
 passwd = "UPV2024"
 
 # Topics definidos
-hello_topic = "giirob/pr2_a6/devices/hello"
-button_topic = "giirob/pr2_a6/devices/button"
-emergency_stop_topic = "giirob/pr2_a6/devices/emergency_stop"
+hello_topic = "giirob/pr2/devices/hello"
+button_topic = "giirob/pr2/devices/button"
+emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
 
 # --- Variables Globales de Estado ---
 conn = None
@@ -100,46 +100,6 @@ def procesar_producto_terminado(h_ini, h_fin):
         if conn is not None: 
             conn.rollback()
 
-# ---  MQTT  ---
-
-def recibir_menssage(mqttc, obj, msg):
-    """Decodifica el mensaje y delega a handle_message"""
-    payload = msg.payload.decode('utf-8').strip().lower()
-    topic = msg.topic
-    handle_message(mqttc, topic, payload)
-
-def handle_message(mqttc, topic, payload):
-    """Gestiona la lógica de 'on' para actualizar la BD"""
-    global marca_tiempo_anterior
-    
-    # Si el LED se enciende, procesamos el ciclo transcurrido
-    if topic == hello_topic and payload == "on":
-        hora_fin_actual = datetime.now()
-        
-        # Guardar en BD usando la marca anterior como inicio
-        procesar_producto_terminado(marca_tiempo_anterior, hora_fin_actual)
-        
-        # Actualizar la marca para el siguiente producto
-        marca_tiempo_anterior = hora_fin_actual
-
-def conectar():
-    """Configura e inicia la conexión MQTT"""
-    global var_mqtt
-
-    var_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-    var_mqtt.on_message = recibir_menssage
-
-    var_mqtt.username_pw_set(username=user, password=passwd)
-    var_mqtt.connect(broker, port, 60)
-
-    # Suscripciones topics
-    var_mqtt.subscribe(hello_topic, 0)
-    var_mqtt.subscribe(button_topic, 0)
-    var_mqtt.subscribe(emergency_stop_topic, 0)
-
-    print(f"Suscrito a topics en {broker}. Esperando mensajes...")
-    var_mqtt.loop_start()
-
 # --- Ejecución Principal ---
 
 if __name__ == "__main__":
@@ -148,7 +108,7 @@ if __name__ == "__main__":
         marca_tiempo_anterior = datetime.now()
         print(f"Estación iniciada a las: {marca_tiempo_anterior.strftime('%H:%M:%S')}")
 
-        conectar()
+        mqtt.conectar()
 
         # Mantener el script vivo para recibir mensajes
         while True:

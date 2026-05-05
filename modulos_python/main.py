@@ -17,7 +17,6 @@ import threading
 
 stop_event = threading.Event()
 
-
 def request_stop():
     """Solicita detener la ejecucion de la estacion."""
     stop_event.set()
@@ -26,7 +25,6 @@ def request_stop():
         RDK.RunMessage("[MQTT] STOP recibido: deteniendo estacion")
     except Exception:
         pass
-
 
 mqtt.set_stop_callback(request_stop)
 mqtt.conectar()
@@ -44,6 +42,7 @@ threading.excepthook = _thread_excepthook
 
 # Los siguientes hilos mueven las cintas por donde llegan los objetos.
 # TODO : falta sustituir esos while true de las cintas a que se vuelva a mover despues de que el robot mueva el objeto
+
 def hilo_cinta_larga():
     """Hilo que mueve la cinta de planchas largas."""
     while not stop_event.is_set():
