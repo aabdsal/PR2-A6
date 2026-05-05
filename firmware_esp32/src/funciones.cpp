@@ -27,8 +27,6 @@ void setInternalLedFromRemote(uint8_t status)
   }
 }
 
-
-
 long leerUltrasonidos() 
 {
   digitalWrite(TRIG_PIN, LOW);

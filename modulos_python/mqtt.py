@@ -5,11 +5,9 @@ Aún no se ha integrado con la estación de RoboDK."""
 
 import json
 from robodk import robolink
-from robodk import robomath
-
-import paho.mqtt.client as mqtt 
+import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
 from modulos_python import variables
-from modulos_python import actualizarBD
+from modulos_python import bbdd
 
 broker = "broker.emqx.io"
 port = 1883
@@ -20,6 +18,8 @@ port = 1883
 hello_topic = "giirob/pr2/devices/hello"
 button_topic = "giirob/pr2/devices/button"
 emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
+
+RDK = robolink.Robolink()
 
 def recibir_menssage(mqttc, obj, msg):
     """Decodifica el mensaje y delega la acción al controlador."""
@@ -62,19 +62,13 @@ def enviar_message(topic, mensaje : str):
 def handle_message(mqttc, topic, payload):
     global var_mqtt, _stop_callback
     
-    if topic == emergency_stop_topic and payload == "PAUSE":
+    if topic == emergency_stop_topic and payload == "STOP":
         RDK.setSimulationSpeed(0)
         RDK.ShowMessage(f"Mensaje recibido: {payload}", False)
     
     elif topic == emergency_stop_topic and payload == "GO":
         RDK.setSimulationSpeed(5) 
         RDK.ShowMessage("Simulación Reanudado", False)
-    # Lógica de parada de emergencia
-    if topic == emergency_stop_topic and payload == "STOP":
-        if _stop_callback is not None:
-            print(f"Mensaje recibido: {payload}")
-            _stop_callback()
-            return
         
     # Lógica de producto terminado (LED ON)
     elif topic == hello_topic and payload == "on":
@@ -90,19 +84,10 @@ def handle_message(mqttc, topic, payload):
             t_ini = variables.tiempos_proceso[obj_terminado]["ini"]
             t_fin = variables.tiempos_proceso[obj_terminado]["fin"]
             
-            # 1. Enviamos los tiempos a la Base de Datos
-            actualizarBD.registrar_producto_terminado(t_ini, t_fin)
-            
-            # 2. Eliminamos el objeto del diccionario para no volver a procesarlo
+            bbdd.registrar_producto_terminado(t_ini, t_fin)
+    
             del variables.tiempos_proceso[obj_terminado]
         else:
             print("Aviso MQTT: Se recibió 'on' pero no hay piezas con tiempos de proceso completos.")
-
-
-RDK = robolink.Robolink()
-
-if __name__ == "__main__":
-    conectar()
-
 
 

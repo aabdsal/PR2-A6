@@ -15,14 +15,12 @@ def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : r
             nombre_obj = idx.Name()
             variables.objetos_pendientes[nombre_sensor].put(nombre_obj)
             
-            # LÓGICA DE TIEMPOS
             if nombre_obj not in variables.tiempos_proceso:
                 variables.tiempos_proceso[nombre_obj] = {"ini": None, "fin": None}
             
-            # Si es el sensor de entrada (SensorCA), guarda inicio
             if nombre_sensor == "SensorCA":
                 variables.tiempos_proceso[nombre_obj]["ini"] = datetime.now()
-            # Si es el sensor de salida (SensorEtiqueta), guarda fin
+                
             elif nombre_sensor == "SensorEtiqueta":
                 variables.tiempos_proceso[nombre_obj]["fin"] = datetime.now()
 

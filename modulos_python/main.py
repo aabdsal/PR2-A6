@@ -9,13 +9,14 @@ cintas o coordinar robots simultáneamente."""
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import bending, sensor, soldar, variables, mqtt, simulation
+from modulos_python import bending, sensor, soldar, variables, mqtt, bbdd
 from modulos_python import mover_cintas as mc
 from modulos_python import pick_place as pp
 from robodk import robolink
 import threading
 
 mqtt.conectar()
+bbdd.conectar()
 
 def _thread_excepthook(args):
     """Se hace uso de este método interno para imprimir por pantalla los errores que 
@@ -122,6 +123,8 @@ def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
     sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
 
+def hilo_bbdd():
+    bbdd.leer_fotocelulas_robodk()
 
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 
@@ -141,7 +144,8 @@ threads = [
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCC, name="sensor_cc"),
     threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
-    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
+    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta"),
+    threading.Thread(target=hilo_bbdd, name="base_datos")
 ]
 
 for t in threads:

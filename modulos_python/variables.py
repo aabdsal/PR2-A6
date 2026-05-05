@@ -63,6 +63,7 @@ plantilla: dict[str, str] = {
 }
 
 objetos_tcp: dict[str, robolink.Item] = {}
+
 tiempos_proceso = {}
 
 objetos_pendientes: dict[str, queue.Queue[str]] = {
