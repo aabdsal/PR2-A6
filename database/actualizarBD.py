@@ -133,7 +133,7 @@ try:
 
 except KeyboardInterrupt:
     print("\nPrograma terminado por el usuario.")
-except Exception as e:
+except Exception as e: 
     print(f"Error con MQTT: {e}")
 finally:
     print("Cerrando conexiones a la Base de Datos...")
