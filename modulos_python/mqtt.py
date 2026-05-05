@@ -6,7 +6,9 @@ Aún no se ha integrado con la estación de RoboDK."""
 from robodk import robolink
 from robodk import robomath
 
-import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
+import paho.mqtt.client as mqtt 
+from modulos_python import variables
+from modulos_python import actualizarBD
 
 broker = "broker.emqx.io"
 port = 1883
@@ -63,13 +65,37 @@ def enviar_message(topic, mensaje : str):
 
 
 def handle_message(mqttc, topic, payload):
-    global var_mqtt
+    global var_mqtt, _stop_callback
     
+    # Lógica de parada de emergencia
     if topic == emergency_stop_topic and payload == "STOP":
         if _stop_callback is not None:
-            RDK.ShowMessage(f"Mensaje recibido: {payload}", True)
+            print(f"Mensaje recibido: {payload}")
             _stop_callback()
             return
+        
+    # Lógica de producto terminado (LED ON)
+    elif topic == hello_topic and payload == "on":
+        obj_terminado = None
+        
+        # Buscamos el primer objeto que tenga registrados ambos tiempos
+        for nombre_obj, tiempos in variables.tiempos_proceso.items():
+            if tiempos.get("ini") is not None and tiempos.get("fin") is not None:
+                obj_terminado = nombre_obj
+                break # Encontramos la pieza terminada
+                
+        if obj_terminado:
+            t_ini = variables.tiempos_proceso[obj_terminado]["ini"]
+            t_fin = variables.tiempos_proceso[obj_terminado]["fin"]
+            
+            # 1. Enviamos los tiempos a la Base de Datos
+            actualizarBD.registrar_producto_terminado(t_ini, t_fin)
+            
+            # 2. Eliminamos el objeto del diccionario para no volver a procesarlo
+            del variables.tiempos_proceso[obj_terminado]
+        else:
+            print("Aviso MQTT: Se recibió 'on' pero no hay piezas con tiempos de proceso completos.")
+
 
 
 # 1. Creamos la conexión con la aplicación RoboDK abierta
