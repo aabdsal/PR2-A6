@@ -4,18 +4,27 @@ from robodk import robolink
 from robodk import robomath    
 from modulos_python import variables
 from typing import List
+from datetime import datetime
 
 from modulos_python import simulation
 
 def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
-    """Añade objetos detectados a la cola del sensor y ajusta salidas digitales."""
     if detectados:
-
         simulation.setDO(nombre_sensor, 1)
-
         for idx in detectados:
-            variables.objetos_pendientes[nombre_sensor].put(idx.Name())
-            RDK.ShowMessage(f"objeto {idx.Name() } detectado en {nombre_sensor}", False)
+            nombre_obj = idx.Name()
+            variables.objetos_pendientes[nombre_sensor].put(nombre_obj)
+            
+            # LÓGICA DE TIEMPOS
+            if nombre_obj not in variables.tiempos_proceso:
+                variables.tiempos_proceso[nombre_obj] = {"ini": None, "fin": None}
+            
+            # Si es el sensor de entrada (SensorCA), guarda inicio
+            if nombre_sensor == "SensorCA":
+                variables.tiempos_proceso[nombre_obj]["ini"] = datetime.now()
+            # Si es el sensor de salida (SensorEtiqueta), guarda fin
+            elif nombre_sensor == "SensorEtiqueta":
+                variables.tiempos_proceso[nombre_obj]["fin"] = datetime.now()
 
         simulation.setDO(nombre_sensor, 0)
 

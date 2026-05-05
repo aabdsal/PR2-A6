@@ -53,6 +53,7 @@ plantilla = {
 }
 
 objetos_tcp: dict[str, robolink.Item] = {}
+tiempos_proceso = {}
 
 objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorCA" : queue.Queue(),
