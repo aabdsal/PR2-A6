@@ -9,26 +9,12 @@ cintas o coordinar robots simultáneamente."""
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
-from modulos_python import bending, sensor, soldar, variables, mqtt
+from modulos_python import bending, sensor, soldar, variables, mqtt, simulation
 from modulos_python import mover_cintas as mc
 from modulos_python import pick_place as pp
 from robodk import robolink
 import threading
 
-stop_event = threading.Event()
-
-
-def request_stop():
-    """Solicita detener la ejecucion de la estacion."""
-    stop_event.set()
-    try:
-        RDK = robolink.Robolink()
-        RDK.RunMessage("[MQTT] STOP recibido: deteniendo estacion")
-    except Exception:
-        pass
-
-
-mqtt.set_stop_callback(request_stop)
 mqtt.conectar()
 
 def _thread_excepthook(args):
@@ -44,21 +30,21 @@ threading.excepthook = _thread_excepthook
 
 # Los siguientes hilos mueven las cintas por donde llegan los objetos.
 # TODO : falta sustituir esos while true de las cintas a que se vuelva a mover despues de que el robot mueva el objeto
+
 def hilo_cinta_larga():
     """Hilo que mueve la cinta de planchas largas."""
-    while not stop_event.is_set():
-        mc.mover_cinta_larga()
+    #while True:
+    mc.mover_cinta_larga()
 
 def hilo_cinta_ancha():
     """Hilo que mueve la cinta de planchas anchas."""
-    while not stop_event.is_set():
-        mc.mover_cinta_ancha()
+    #while True:
+    mc.mover_cinta_ancha()
 
 def hilo_cinta_tapa():
     """Hilo que mueve la cinta de tapas."""
-    while not stop_event.is_set():
-        mc.mover_cinta_tapa()
-
+    #while True:
+    mc.mover_cinta_tapa()
 
 def hilo_yaskawa():
     """Este hilo llama a la secuencia de movimientos pick->bending->place de un 
@@ -70,7 +56,7 @@ def hilo_yaskawa():
     cola_ancha = variables.objetos_pendientes["SensorCA"]
     cola_larga = variables.objetos_pendientes["SensorCL"]
     
-    while not stop_event.is_set():
+    while True:
 
         nombre_larga = cola_larga.get() 
         pp.pick_plancha_larga(nombre_larga)
@@ -87,32 +73,32 @@ def hilo_yaskawa():
 def hilo_cinta_main():
     """Hilo que mueve la cinta principal cuando hay pieza disponible."""
     RDK = robolink.Robolink()
-    while not stop_event.is_set():
+    while True:
         mc.mover_cinta_main(RDK)
 
 def hilo_place_mesa():
     """Hilo que coloca planchas en la mesa giratoria desde la cinta principal."""
-    while not stop_event.is_set():
+    while True:
         pp.place_plancha_mesa()
 
 def hilo_place_tapa():
     """Hilo que coloca la tapa sobre el cuadro soldado."""
-    while not stop_event.is_set():
+    while True:
         pp.place_tapa_en_mesa()
 
 def hilo_place_cuadro_acabado():
     """Hilo que coloca el cuadro acabado en la cinta de etiquetado."""
-    while not stop_event.is_set():
+    while True:
         pp.place_cuadro_acabada()
 
 def hilo_soldador():
     """Hilo que ejecuta la secuencia de soldadura."""
-    while not stop_event.is_set():
+    while True:
         soldar.soldar_ini()
 
 def hilo_cinta_etiquetado():
     """Hilo que mueve la cinta final de etiquetado."""
-    while not stop_event.is_set():
+    while True:
         mc.mover_cinta_cuadro_acabada()
 
 # Hilos de sensores para detectar objetos en cada cinta.

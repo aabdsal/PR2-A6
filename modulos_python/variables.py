@@ -9,6 +9,7 @@ from robodk import robomath
 from pathlib import Path
 from typing import Any
 
+import threading
 import json
 import queue
 
@@ -73,6 +74,7 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
 
 cola_soldadas : queue.Queue[str] = queue.Queue()
 cola_cuadrosTapa : queue.Queue[str] = queue.Queue()
+cola_cuadrosAcabados : queue.Queue[str] = queue.Queue()
 
 soldadas : queue.Queue[str] = queue.Queue()
 alternancia : queue.Queue[str] = queue.Queue()

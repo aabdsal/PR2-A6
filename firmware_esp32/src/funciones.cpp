@@ -9,12 +9,16 @@ uint8_t ledStatus = 0;
 static bool ledRemoteLocked = false;
 
 
-void setInternalLedFromRemote(uint8_t status) {
+void setInternalLedFromRemote(uint8_t status) 
+{
   // lock control to remote commands
   ledRemoteLocked = true;
-  if ( ledStatus == status ) return;
+  if (ledStatus == status) return;
+
   ledStatus = status;
-  if ( status ) {
+  
+  if (status) 
+  {
     infoln("Led: on");
     digitalWrite(LED_BUILTIN, HIGH);
   } else {
@@ -25,7 +29,8 @@ void setInternalLedFromRemote(uint8_t status) {
 
 
 
-long leerUltrasonidos() {
+long leerUltrasonidos() 
+{
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);
   digitalWrite(TRIG_PIN, HIGH);

@@ -4,7 +4,8 @@
 #include "funciones.h"
 #include "comunicaciones.h"
 
-void on_setup() {
+void on_setup() 
+{
 
     // initialize digital pin LED_BUILTIN as an output.
     pinMode(LED_BUILTIN, OUTPUT);

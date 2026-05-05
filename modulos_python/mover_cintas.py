@@ -7,6 +7,7 @@ from robodk import robolink
 from robodk import robomath
 from modulos_python import variables as var
 from modulos_python import simulation as sim
+from modulos_python import mqtt
 
 def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None, RDK : robolink.Robolink | None = None):
     """Mueve una cinta mientras el sensor no detecte ningún objeto.
@@ -36,20 +37,24 @@ def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : s
         
         robomath.pause(0.01)
 
-def mover_cinta_ancha():
-    """Método que mueve la cinta por donde pasan las planchas anchas, 
-    y el sensor encargado de notificar si hay objeto es el SensorCA"""
-    _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaAncha", var.plantilla["ancha"])
-
 def mover_cinta_larga():
     """Método que mueve la cinta por donde pasan las planchas largas, 
     y el sensor encargado de notificar si hay objeto es el SensorCL"""
-
+    
+    
     _mover_cinta(var.cinta_larga, "SensorCL", "FramePlanchaLarga", var.plantilla["larga"])
+
+def mover_cinta_ancha():
+    """Método que mueve la cinta por donde pasan las planchas anchas, 
+    y el sensor encargado de notificar si hay objeto es el SensorCA"""
+    
+    
+    _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaAncha", var.plantilla["ancha"])
 
 def mover_cinta_tapa():
     """Método que mueve la cinta por donde pasan las tapas, 
     y el sensor encargado de notificar si hay objeto es el SensorTapa"""
+    
 
     _mover_cinta(var.cinta_tapa, "SensorTapa","FrameTapa", var.plantilla["tapa"])
 
@@ -75,6 +80,8 @@ def mover_cinta_cuadro_acabada():
     sim.setDO("EnCintaEtiquetar", 0)
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
+    
+    mqtt.enviar_message(mqtt.emergency_stop_topic, "ON")
 
-    # TODO: Sustituir aqui con delete i duplicar mediante cola
-    sim.ocultar_objeto("cuadroConTapa") 
+
+    
