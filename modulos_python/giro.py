@@ -52,9 +52,4 @@ def giro_final_plancha_soldada():
     
     mesa.MoveJ(target_final)
 
-    # TODO: Sustituir aqui con delete i duplicar
-    sim.mostrar_objeto("planchaSoldada")
-    sim.ocultar_objeto("planchaLarga2")
-    sim.ocultar_objeto("planchaAncha2")
-
     sim.setDO("planchaSoldada", 1)

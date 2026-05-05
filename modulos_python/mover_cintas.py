@@ -7,7 +7,6 @@ from robodk import robolink
 from robodk import robomath
 from modulos_python import variables as var
 from modulos_python import simulation as sim
-import time
 
 def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None, RDK : robolink.Robolink | None = None):
     """Mueve una cinta mientras el sensor no detecte ningún objeto.
@@ -23,24 +22,24 @@ def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : s
         raise RuntimeError("El nombre de la cinta no existe")
 
     incremento = 15.0
-    last_spawn = 0.0
-    spawn_every_s = 1.5  
+    distancia = 0.0
+    espacio_objetos = 1000
 
     while param_sensor is not None and int(RDK.getParam(param_sensor) or 0) != 1:
         
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
-        
-        if objeto_plantilla is not None:
-            if objeto_plantilla and time.monotonic() - last_spawn >= spawn_every_s:
-                sim.duplicar_objeto(objeto_plantilla, frame_name)
-                last_spawn = time.monotonic()
+        distancia += incremento
 
+        if objeto_plantilla and distancia >= espacio_objetos:
+            sim.duplicar_objeto(objeto_plantilla, frame_name)
+            distancia = 0.0
+        
         robomath.pause(0.01)
 
 def mover_cinta_ancha():
     """Método que mueve la cinta por donde pasan las planchas anchas, 
     y el sensor encargado de notificar si hay objeto es el SensorCA"""
-    _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaLarga", var.plantilla["ancha"])
+    _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaAncha", var.plantilla["ancha"])
 
 def mover_cinta_larga():
     """Método que mueve la cinta por donde pasan las planchas largas, 
@@ -75,7 +74,7 @@ def mover_cinta_cuadro_acabada():
     sim.waitDI("EnCintaEtiquetar", 1)
     sim.setDO("EnCintaEtiquetar", 0)
         
-    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "" , "")
+    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
 
     # TODO: Sustituir aqui con delete i duplicar mediante cola
     sim.ocultar_objeto("cuadroConTapa") 

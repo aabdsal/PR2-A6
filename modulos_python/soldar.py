@@ -3,9 +3,9 @@
 from robodk import robolink
 RDK = robolink.Robolink()
 
-from modulos_python import simulation
+from modulos_python import simulation as sim
 from modulos_python import giro
-from modulos_python import variables
+from modulos_python import variables as var
 from typing import Optional
 
 ACTION_RESET = -1
@@ -13,13 +13,11 @@ ACTION_OFF = 0
 ACTION_ON = 1
 
 DEFAULT_COLOR = "black"
-# TODO: Ajustar este nombre al objeto de referencia en el frame de la mesa giratoria.
 
 def _ensure_simulation_mode():
     """Valida que la estación esté en modo simulación."""
     if RDK.RunMode() != robolink.RUNMODE_SIMULATE:
         raise RuntimeError("La soldadura simulada solo se puede ejecutar en RUNMODE_SIMULATE")
-
 
 def _resolve_spray_id(tool_name: str, action: int) -> int:
     """Resuelve un spray_id válido a partir de la herramienta y la acción."""
@@ -49,7 +47,7 @@ def _resolve_spray_id(tool_name: str, action: int) -> int:
     return spray_id
 
 
-def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
+def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR) -> int:
     """Aplica una acción de soldadura y devuelve el spray_id asociado."""
     _ensure_simulation_mode()
     spray_id = _resolve_spray_id(tool_name, action)
@@ -89,19 +87,20 @@ def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_nam
     raise ValueError("Accion de soldadura no valida: " + str(action))
 
 
-def soldar_ini(tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR):
+def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     """Ejecuta la secuencia de soldadura con giros y trazas simuladas."""
     
-    r = RDK.Item(variables.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
-    toolR = RDK.Item(variables.tool_abb_s, robolink.ITEM_TYPE_TOOL)
-    frame_weld = RDK.Item(variables.frame_welding, robolink.ITEM_TYPE_FRAME)
+    r = RDK.Item(var.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
+    toolR = RDK.Item(var.tool_abb_s, robolink.ITEM_TYPE_TOOL)
+    frame_weld = RDK.Item(var.frame_welding, robolink.ITEM_TYPE_FRAME)
 
-    frame_mesa = RDK.Item(variables.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
+    frame_mesa = RDK.Item(var.frame_mesa_giratoria, robolink.ITEM_TYPE_FRAME)
+
+    sim.waitDI("LasDos", 1)
+    sim.setDO("LasDos", 0)
+
     piezas_en_mesa = [item for item in frame_mesa.Childs() if item.Type() == robolink.ITEM_TYPE_OBJECT]
     
-    simulation.waitDI("LasDos", 1)
-    simulation.setDO("LasDos", 0)
-
     r.setFrame(frame_weld)
     r.setTool(toolR)
 
@@ -118,67 +117,33 @@ def soldar_ini(tool_name: str = variables.tool_abb_s, color: str = DEFAULT_COLOR
         r.MoveL(targetPIS)
         r.Pause(500)
         r.setFrame(frame_mesa)
-
         
         _apply_spray_action(
             action=ACTION_ON,
-            object_name="planchaLarga2",
+            object_name=piezas_en_mesa[0].Name(),
             tool_name=tool_name,
             color=color,
         )
         
         r.setFrame(frame_weld)
         r.MoveL(targetPFS)
-        soldar_stop(tool_name=tool_name)
+        soldar_stop(tool_name)
         r.MoveL(postPFS)
 
     giro.giro_final_plancha_soldada()
     
-    simulation.setDO("planchaSoldada", 1)
+    sim.setDO("planchaSoldada", 1)
 
-    # 4. Transformación final: Elimina las piezas viejas y crea la nueva
-    #for pieza in piezas_en_mesa:
-       # pieza.Delete()
+    for pieza in piezas_en_mesa:
+       pieza.Delete()
 
-    # Crea el nuevo cuadro soldado a partir de una plantilla
-    #simulation.duplicar_objeto("plantilla_cuadro_soldado", frame_mesa.Name())
+    nuevo_objeto = sim.duplicar_objeto(var.plantilla["soldada"], frame_mesa.Name())
+    var.cola_soldadas.put(nuevo_objeto.Name())
 
-
-def soldar_stop(tool_name: str = variables.tool_abb_s, clear_trace: bool = True):
+def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):
     """Detiene la soldadura y opcionalmente limpia la traza."""
     spray_id = _apply_spray_action(action=ACTION_OFF, tool_name=tool_name)
     if clear_trace:
         _apply_spray_action(action=ACTION_RESET, tool_name=tool_name)
     return spray_id
 
-
-# Herramienta de testing/depuración para ejecutar el script de forma aislada.
-if __name__ == "__main__":
-    import sys
-
-    action = ACTION_ON
-    color = DEFAULT_COLOR
-    tool_name = variables.tool_abb_s
-
-    if len(sys.argv) > 1:
-        action_str = sys.argv[1].strip().upper()
-        if "ON" in action_str:
-            action = ACTION_ON
-        elif "OFF" in action_str:
-            action = ACTION_OFF
-        elif "RESET" in action_str:
-            action = ACTION_RESET
-        else:
-            action = int(action_str)
-
-    if len(sys.argv) > 2:
-        tool_name = sys.argv[2].strip() or None
-
-    if len(sys.argv) > 3:
-        color = sys.argv[3].lower().strip()
-
-    _apply_spray_action(
-        action = action,
-        tool_name = variables.tool_abb_s,
-        color = color,
-    )

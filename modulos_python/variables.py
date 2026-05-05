@@ -46,7 +46,7 @@ frame_welding = "RobotSoldador"
 frame_mesa_giratoria = "Engranaje"
 frame_paletizado_cinta_mesa = "Cinta_Mesa"
 frame_paletizado = "RobotPaletizado"
-frame_cinta_etiqueta = "CuadroAcabada"
+frame_cinta_etiqueta = "FrameCuadroAcabada"
 
 plantilla: dict[str, str] = {
     "ancha": "plantilla_planchaAncha",
@@ -71,6 +71,10 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorEtiqueta" : queue.Queue(),
 }
 
+cola_soldadas : queue.Queue[str] = queue.Queue()
+cola_cuadrosTapa : queue.Queue[str] = queue.Queue()
+
+soldadas : queue.Queue[str] = queue.Queue()
 alternancia : queue.Queue[str] = queue.Queue()
 
 JSON_PARAM_PATH = Path(__file__).resolve().parents[1] / "database" / "parametros.json"

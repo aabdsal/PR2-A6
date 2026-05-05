@@ -34,7 +34,7 @@ def _pick_plancha(prepick_str, pick_str, obj_name : str):
     r.Pause(1000)
     r.MoveL(pick)
 
-    var.objetos_tcp[var.tool_yaskawa] = sim.adjuntar_objeto(toolR, obj_name)
+    sim.adjuntar_objeto(toolR, obj_name)
     
     r.Pause(1000)
     r.MoveL(prepick)
@@ -102,13 +102,13 @@ def place_cinta_main():
     
     sim.setDO("enCintaMain", 1)
 
-def place_plancha_mesa(nombre_objeto_coger : str):
+def place_plancha_mesa():
     """Hace un pick and place desde la cinta principal a la mesa giratoria.
 
     También comunica si ya hay una plancha en la mesa o si ya están las dos
     para pasar a la siguiente fase."""
 
-    sim.waitDI("SensorCC", 1)   
+    #sim.waitDI("SensorCC", 1)   
     RDK = robolink.Robolink()
     
     r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
@@ -136,6 +136,8 @@ def place_plancha_mesa(nombre_objeto_coger : str):
     preplace_main = RDK.Item("PrePlaceMain", robolink.ITEM_TYPE_TARGET)
     place_main = RDK.Item("PlaceMain", robolink.ITEM_TYPE_TARGET)
 
+    objeto_cola_main = var.objetos_pendientes["SensorCC"].get()
+
     r.setFrame(frame_paletizado)
     r.setTool(toolR)
     RDK.ShowMessage("antes de moverse a ini", False)
@@ -152,8 +154,9 @@ def place_plancha_mesa(nombre_objeto_coger : str):
     elif elem == "ancha":
         r.MoveL(pick_ancha)
     
+    count = 0
     robomath.pause(0.5)
-    var.objetos_tcp[var.tool_abb_p] = sim.adjuntar_objeto(toolR, nombre_objeto_coger)
+    sim.adjuntar_objeto(toolR, objeto_cola_main)
     
     r.MoveL(prepick_cinta)
     robomath.pause(0.5)
@@ -167,8 +170,9 @@ def place_plancha_mesa(nombre_objeto_coger : str):
 
     sim.setDO("EnMesa", 1)
 
-    if elem == "ancha":
+    if count == 1:
         sim.setDO("LasDos", 1)
+        count = 0
     
     robomath.pause(0.5)
     
@@ -176,8 +180,9 @@ def place_plancha_mesa(nombre_objeto_coger : str):
     
     r.MoveL(preplace_main)
 
-    if elem == "larga":
+    if count == 0:
         giro.giro_mesa()
+        count = 1
 
     r.MoveJ(ini)
     robomath.pause(0.5)
@@ -194,13 +199,13 @@ def place_tapa_en_mesa():
     sistRefMesa = RDK.Item(var.frame_paletizado, robolink.ITEM_TYPE_FRAME)
     toolR = RDK.Item(var.tool_abb_p, robolink.ITEM_TYPE_TOOL)
     
-    if not r.Valid() :
+    if not r.Valid():
         raise RuntimeError("El nombre del robot no existe, revisa nombres")
     
     if not sistRefMesa.Valid() :
         raise RuntimeError("El nombre del frame no existe, revisa nombres")
     
-    if not toolR.Valid() :
+    if not toolR.Valid():
         raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
     
     r.setFrame(sistRefMesa)
@@ -212,24 +217,37 @@ def place_tapa_en_mesa():
     place_tapa = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
+    objeto_tapa = var.objetos_pendientes["SensorTapa"].get()
+
     r.MoveJ(prepick_tapa)
     robomath.pause(0.5)
     r.MoveL(pick_tapa)
-    var.objetos_tcp[var.tool_abb_p] = sim.adjuntar_objeto(toolR)
+
+    sim.adjuntar_objeto(toolR, objeto_tapa)
+    
     robomath.pause(0.5)
     r.MoveJ(prepick_tapa)
     robomath.pause(0.5)
     r.MoveJ(preplace_tapa)
     robomath.pause(0.5)
     r.MoveL(place_tapa)
+
     sim.soltar_objeto(var.tool_abb_p, sistRefMesa)
+    
     robomath.pause(0.5)
     r.MoveJ(preplace_tapa)
 
-    # TODO: Sustituir aqui con delete i duplicar
-    sim.ocultar_objeto("tapaCuadro")
-    sim.ocultar_objeto("planchaSoldada")
-    sim.mostrar_objeto("cuadroConTapa")
+    item_objeto_tapa = RDK.Item(objeto_tapa, robolink.ITEM_TYPE_OBJECT)
+
+    objecto_soldada = var.cola_soldadas.get()
+    item_soldada = RDK.Item(objecto_soldada, robolink.ITEM_TYPE_OBJECT)
+
+    item_objeto_tapa.Delete()
+    item_soldada.Delete()
+
+    nuevo_objeto = sim.duplicar_objeto(var.plantilla["cuadroConTapa"], var.frame_mesa_giratoria)
+
+    var.cola_cuadrosTapa.put(nuevo_objeto.Name())
 
     sim.setDO("tapaPuesta", 1)
     r.MoveJ(ini)
@@ -257,7 +275,7 @@ def place_cuadro_acabada():
     if not frame_mesa.Valid() :
         raise RuntimeError("El nombre del frame mesa no existe, revisa nombres")
     
-    if not frame_mesa.Valid() :
+    if not frame_cinta.Valid() :
         raise RuntimeError("El nombre del frame cinta etiquta no existe, revisa nombres")
     
     if not toolR.Valid() :
@@ -275,16 +293,22 @@ def place_cuadro_acabada():
     r.MoveJ(prepick_cuadro)
     robomath.pause(0.5)
     r.MoveL(pick_cuadro)
-    var.objetos_tcp[var.tool_abb_p] = sim.adjuntar_objeto(toolR, "cuadroConTapa")
+    
+    sim.adjuntar_objeto(toolR, var.cola_cuadrosTapa.get())
+    
     robomath.pause(0.5)
     r.MoveJ(prepick_cuadro)
     robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
     robomath.pause(0.5)
     r.MoveL(place_cuadro)
+
     sim.soltar_objeto(var.tool_abb_p, frame_cinta)
+
     robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
+
     sim.setDO("EnCintaEtiquetar", 1)
+    
     r.MoveJ(ini)
     

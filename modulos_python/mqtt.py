@@ -15,9 +15,9 @@ user = "giirob"
 passwd = "UPV2024"
 
 # topics que hay en el config.h del firmware_esp32
-hello_topic = "giirob/pr2/devices/hello"
-button_topic = "giirob/pr2/devices/button"
-emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
+hello_topic = "giirob/pr2_a6/devices/hello"
+button_topic = "giirob/pr2_a6/devices/button"
+emergency_stop_topic = "giirob/pr2_a6/devices/emergency_stop"
 
 
 def recibir_menssage(mqttc, obj, msg):

@@ -33,7 +33,7 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
 
     nuevo_objeto = sim.duplicar_objeto(obj_to_plantilla, frame.Name())
 
-    variables.objetos_tcp[variables.tool_yaskawa] = sim.adjuntar_objeto(tool, nuevo_objeto.Name())
+    sim.adjuntar_objeto(tool, nuevo_objeto.Name())
     
     return nuevo_objeto.Name()
 
