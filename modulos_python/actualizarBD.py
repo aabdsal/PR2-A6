@@ -94,28 +94,6 @@ def leer_fotocelulas_robodk():
     else:
         s2_bloqueado = False
 
-
-# ---  MQTT  ---
-
-def my_handle_message(mqttc, topic, payload):
-    """Función que se ejecuta al recibir un mensaje MQTT."""
-    global h_ini_sensor, h_fin_sensor, conn, cur
-    
-    # Si llega "on", significa producto terminado
-    if topic == mqtt.hello_topic and payload == "on":
-        if h_ini_sensor and h_fin_sensor:
-            pedido = buscar_pedido_pendiente(cur)
-            if pedido:
-                registrar_producto(conn, cur, pedido[0], h_ini_sensor, h_fin_sensor)
-            else:
-                print("No hay pedidos pendientes.")
-            
-            # Reset de marcas de tiempo para la siguiente pieza
-            h_ini_sensor, h_fin_sensor = None, None
-        else:
-            print("Error: Faltan tiempos de fotocélulas (S1 o S2 no detectados).")
-
-
 # --- Ejecución Principal ---
 
 if __name__ == "__main__":
