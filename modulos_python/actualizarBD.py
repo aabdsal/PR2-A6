@@ -1,15 +1,11 @@
 import psycopg
-<<<<<<< HEAD:database/actualizarBD.py
 import mqtt
-=======
 from modulos_python import mqtt
->>>>>>> bd0fd1ef666dba7004ffca66e8838b663b40e4c6:modulos_python/actualizarBD.py
 from datetime import datetime
 import time
 
 
-<<<<<<< HEAD:database/actualizarBD.py
-=======
+
 # --- Variables y Configuración MQTT (de mqtt.py) ---
 broker = "mqtt.dsic.upv.es"
 port = 1883
@@ -21,7 +17,6 @@ hello_topic = "giirob/pr2/devices/hello"
 button_topic = "giirob/pr2/devices/button"
 emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
 
->>>>>>> bd0fd1ef666dba7004ffca66e8838b663b40e4c6:modulos_python/actualizarBD.py
 # --- Variables Globales de Estado ---
 conn = None
 cur = None
@@ -83,7 +78,6 @@ def registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
         print(f"Error al registrar: {error}")
         conexion.rollback()
 
-<<<<<<< HEAD:database/actualizarBD.py
 
 # --- Lógica de Sensores RoboDK ---
 
@@ -134,8 +128,7 @@ def my_handle_message(mqttc, topic, payload):
         else:
             print("Error: Faltan tiempos de fotocélulas (S1 o S2 no detectados).")
 
-=======
->>>>>>> bd0fd1ef666dba7004ffca66e8838b663b40e4c6:modulos_python/actualizarBD.py
+
 # --- Ejecución Principal ---
 
 if __name__ == "__main__":
@@ -149,8 +142,7 @@ if __name__ == "__main__":
     print("Sistema iniciado. Monitoreando fotocélulas en RoboDK...")
 
     try:
-<<<<<<< HEAD:database/actualizarBD.py
-=======
+
         # Marca de tiempo inicial al arrancar la estación
         marca_tiempo_anterior = datetime.now()
         print(f"Estación iniciada a las: {marca_tiempo_anterior.strftime('%H:%M:%S')}")
@@ -158,7 +150,6 @@ if __name__ == "__main__":
         mqtt.conectar()
 
         # Mantener el script vivo para recibir mensajes
->>>>>>> bd0fd1ef666dba7004ffca66e8838b663b40e4c6:modulos_python/actualizarBD.py
         while True:
             leer_fotocelulas_robodk() 
             time.sleep(0.1) 
