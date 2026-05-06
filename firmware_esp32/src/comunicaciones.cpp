@@ -3,6 +3,7 @@
 #include "c_logger.h"
 #include "mqtt.h"
 #include "funciones.h"
+#include <ArduinoJson.h>
 
 void suscribirseATopics() 
 {
@@ -16,7 +17,7 @@ void suscribirseATopics()
 
 void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
 
-  StaticJsonDocument<128> doc;
+  JsonDocument doc;
   DeserializationError err = deserializeJson(doc, incomingMessage);
   if (err) 
   {
@@ -38,16 +39,10 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
     {
       infoln("Encender el led interno (remote)");
       setInternalLedFromRemote(1);
-    }
-    else if (strcmp(estadoLed, "off") == 0) 
-    {
-      infoln("Apagar el led interno (remote)");
+      delay(1000);
       setInternalLedFromRemote(0);
     }
-    else 
-    {
-      warnln("estado_led desconocido");
-    }
+    
   }
 }
 

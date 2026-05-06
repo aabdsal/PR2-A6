@@ -13,7 +13,7 @@ void on_setup()
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
 
-    setInternalLed(0);
+    //setInternalLed(0);
 
     
 

@@ -22,8 +22,8 @@
 #define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
 
 // WIFI
-#define NET_SSID                  "iPhone"
-#define NET_PASSWD                "andreugrc"
+#define NET_SSID                  "DIGIFIBRA-RC6D"
+#define NET_PASSWD                "S5ZDsNzsR7Re"
 
 // MQTT
 #define MQTT_SERVER_IP            "broker.emqx.io"   // IP del broker MQTT al que se conectará el dispositivo
@@ -31,10 +31,10 @@
 //#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
 //#define MQTT_PASSWORD             "UPV2024"
 
-#define HELLO_TOPIC               "giirob/pr2/devices/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
-#define BUTTON_TOPIC              "giirob/pr2/devices/button"
-#define EMERGENCY_STOP_TOPIC      "giirob/pr2/devices/emergency_stop"
-#define ESTADO_PROCESO_TOPIC      "giirob/pr2/devices/estado_proceso"
+#define HELLO_TOPIC               "giirob/pr2/erro/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
+#define BUTTON_TOPIC              "giirob/pr2/erro/button"
+#define EMERGENCY_STOP_TOPIC      "giirob/pr2/erro/emergency_stop"
+#define ESTADO_PROCESO_TOPIC      "giirob/pr2/erro/estado_proceso"
 
 
 
