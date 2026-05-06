@@ -2,27 +2,21 @@
 
 from robodk import robolink    
 from robodk import robomath    
-from modulos_python import variables, mqtt
-from typing import List
+from modulos_python import variables, simulation
 from datetime import datetime
 
-from modulos_python import simulation
-
-def productorEvento(nombre_sensor: str, detectados: List[robolink.Item], RDK : robolink.Robolink):
+def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : robolink.Robolink):
     if detectados:
         simulation.setDO(nombre_sensor, 1)
         for idx in detectados:
             nombre_obj = idx.Name()
             variables.objetos_pendientes[nombre_sensor].put(nombre_obj)
             
-            if nombre_obj not in variables.tiempos_proceso:
-                variables.tiempos_proceso[nombre_obj] = {"ini": None, "fin": None}
-            
             if nombre_sensor == "SensorCA":
-                variables.tiempos_proceso[nombre_obj]["ini"] = datetime.now()
+                variables.tiempo_ini.put(datetime.now().time())
                 
             elif nombre_sensor == "SensorEtiqueta":
-                variables.tiempos_proceso[nombre_obj]["fin"] = datetime.now()
+                variables.tiempo_fini.put(datetime.now().time())
 
         simulation.setDO(nombre_sensor, 0)
 

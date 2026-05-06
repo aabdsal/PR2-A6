@@ -1,4 +1,10 @@
-/*
+/**
+ * @file    main.cpp
+ * @author  PR2-A6
+ * @version V0.0
+ * @date    2026-05-06
+ * @brief   Punto de entrada y orquestacion del firmware
+ *
  * Grado GIIROB
  * Asignatura PR2
  * Joan Fons (jjfons@dsic.upv.es)
@@ -15,6 +21,7 @@
  * Version: 0.2   (2023/12/28) Dividido en sub-ficheros
  * Version: 0.1   (2023/11/29) Prototipo Inicial Funcional
 */
+/* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 #include "config.h"
 #include "wifi_module.h"
@@ -22,6 +29,11 @@
 #include "comunicaciones.h"
 #include "setup.h"
 #include "loop.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
 
 // ID de Dispositivo : se proporcionan varias alternativas, a modo de ejemplo
  String deviceID = "esp32-" + WiFi.macAddress();
@@ -31,47 +43,53 @@
 //String deviceID = String("device-esp32s3-") + String(DEVICE_ESP_ID);        
   // Versión usando el ID de ESP del dispositivo
 
+/* Private function prototypes -----------------------------------------------*/
+
+/* Exported functions --------------------------------------------------------*/
 void setup() 
 {
-  // Este setup configura conceptos 'core', inicializa la wifi y la conexión con 
-  //  el bróker MQTT, y ejecuta algunos métodos que hay que completar. 
-  // En concreto los alumnos deberán implementar los métodos:
-  //  - suscribirseATopics()  -> topics MQTT a suscribir para recibir mensajes 
-  //                            (g_comunicaciones.ino)
-  //  - on_setup()            -> añadir la configuración de pines, inicialización
-  //                            de variables, etc. (s_setup.ino)
-  //  - on_loop()             -> tareas a realizar dentro del 'loop' (w_loop.ino)
+    // Este setup configura conceptos 'core', inicializa la wifi y la conexión con 
+    //  el bróker MQTT, y ejecuta algunos métodos que hay que completar. 
+    // En concreto los alumnos deberán implementar los métodos:
+    //  - suscribirseATopics()  -> topics MQTT a suscribir para recibir mensajes 
+    //                            (omunicaciones.cpp)
+    //  - on_setup()            -> añadir la configuración de pines, inicialización
+    //                            de variables, etc. (setup.cpp)
+    //  - on_loop()             -> tareas a realizar dentro del 'loop' (loop.cpp)
 
 #ifdef LOGGER_ENABLED
-  // Inicializamos comunicaciones serial
-  Serial.begin(BAUDS);
-  delay(1000);
-  Serial.println();
+    // Inicializamos comunicaciones serial
+    Serial.begin(BAUDS);
+    delay(1000);
+    Serial.println();
 #endif
 
-  // Nos conectamos a la wifi
-  wifi_connect();
+    // Nos conectamos a la wifi
+    wifi_connect();
 
-  // Nos conectamos al broker MQTT, indicando un 'client-id'
-  mqtt_connect(deviceID);
+    // Nos conectamos al broker MQTT, indicando un 'client-id'
+    mqtt_connect(deviceID);
 
-  // TODO: completar esta función (g_comunicaciones.ino)
-  suscribirseATopics();
+    // TODO: completar esta función (comunicaciones.cpp)
+    suscribirseATopics();
 
-  // TODO: completar esta función (s_setup.ino)
-  on_setup();
+    // TODO: completar esta función (setup.cpp)
+    on_setup();
 
 }
 
 void loop() 
 {
+    // NO QUITAR (jjfons)
+    wifi_loop();
+    mqtt_loop();
 
-  // NO QUITAR (jjfons)
-  wifi_loop();
-  mqtt_loop();
-
-  // TODO: completar esta función (w_loop.ino)
-  on_loop();
+    // TODO: completar esta función (loop.cpp)
+    on_loop();
 }
+
+/* Private functions ---------------------------------------------------------*/
+
+/* End of file ****************************************************************/
 
 

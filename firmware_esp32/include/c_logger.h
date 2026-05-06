@@ -1,3 +1,14 @@
+/**
+ * @file    c_logger.h
+ * @author  PR2-A6
+ * @version V0.0
+ * @date    2026-05-06
+ * @brief   Macros de logging por puerto serie y niveles
+ */
+
+/* Includes ------------------------------------------------------------------*/
+
+/* Exported macro ------------------------------------------------------------*/
 // LOGGING
 #define TRACE 6
 #define DEBUG 5
@@ -37,4 +48,6 @@ static bool _log_newline = true;
 #define fatalln(message)
 
 #endif
+
+/* End of file ****************************************************************/
 

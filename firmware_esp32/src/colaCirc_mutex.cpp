@@ -1,5 +1,22 @@
+/**
+ * @file    colaCirc_mutex.cpp
+ * @author  PR2-A6
+ * @version V0.0
+ * @date    2026-05-06
+ * @brief   Ejemplo de cola circular con mutex (comentado)
+ */
 
-/*
+/* Includes ------------------------------------------------------------------*/
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Exported functions --------------------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
+
+#if 0
 #include <Arduino.h>
 
 #define BUFSIZE 10          // Número máximo de elementos
@@ -52,6 +69,11 @@ void listar(Buffer_Circ *lista);          // Listar los elementos del buffer
 
 
 // Interrupción que hace el papel de un productor e intenta evitar rebotes (aunque no me acaba de funcionar)
+/******************************************************************************/
+/**
+ * @brief  Interrupcion que actua como productor del buffer circular
+ * @retval None
+ */
 void IRAM_ATTR productor_isr() 
 {
   static uint32_t lastTime = 0; // Variable que no se reinicia a 0 cada vez que hay un ISR, sino que mantiene el valor de lastTime = now;
@@ -76,6 +98,12 @@ void IRAM_ATTR productor_isr()
 }
 
 // Es la encargada de consumir el elemento que hay en el buffer
+/******************************************************************************/
+/**
+ * @brief  Tarea que consume elementos del buffer circular
+ * @param  pvParameters Parametros de la tarea (no usado)
+ * @retval None
+ */
 void consumidor (void *pvParameters) 
 {
   uint32_t dato = 0;
@@ -94,6 +122,11 @@ void consumidor (void *pvParameters)
   vTaskDelete(NULL);
 }
 
+/******************************************************************************/
+/**
+ * @brief  Configura pines y crea la tarea consumidora
+ * @retval None
+ */
 void setup() 
 {
   Serial.begin(115200);
@@ -102,6 +135,11 @@ void setup()
   xTaskCreatePinnedToCore(consumidor, "consumidor", 10000, NULL, 1, NULL, 1);
 }
 
+/******************************************************************************/
+/**
+ * @brief  Lee el estado del boton y procesa eventos
+ * @retval None
+ */
 void loop() 
 {
     bool pressed;
@@ -123,6 +161,13 @@ void loop()
 }
 
 //  Insertar dato
+/******************************************************************************/
+/**
+ * @brief  Inserta un dato en el buffer circular
+ * @param  lista Buffer circular
+ * @param  dato Dato a insertar
+ * @retval 0 si ok, -1 si lleno
+ */
 uint32_t push(Buffer_Circ *lista, uint32_t dato)
 {
   if(isFull(lista))
@@ -139,6 +184,13 @@ uint32_t push(Buffer_Circ *lista, uint32_t dato)
 }
 
 // Sacar dato
+/******************************************************************************/
+/**
+ * @brief  Extrae un dato del buffer circular
+ * @param  lista Buffer circular
+ * @param  dato Puntero al dato extraido
+ * @retval 0 si ok, -1 si vacio
+ */
 uint32_t pop(Buffer_Circ *lista, uint32_t *dato)
 {
   if(isEmpty(lista))
@@ -156,6 +208,12 @@ uint32_t pop(Buffer_Circ *lista, uint32_t *dato)
 }
 
 // Ver si esta lleno
+/******************************************************************************/
+/**
+ * @brief  Comprueba si el buffer esta lleno
+ * @param  lista Buffer circular
+ * @retval true si lleno
+ */
 bool isFull(Buffer_Circ *lista)
 {
   if(lista->contador == BUFSIZE)
@@ -165,6 +223,12 @@ bool isFull(Buffer_Circ *lista)
   return false;
 }
 // Ver si esta vacío
+/******************************************************************************/
+/**
+ * @brief  Comprueba si el buffer esta vacio
+ * @param  lista Buffer circular
+ * @retval true si vacio
+ */
 bool isEmpty(Buffer_Circ *lista)
 {
   if(lista->contador == 0)
@@ -175,6 +239,12 @@ bool isEmpty(Buffer_Circ *lista)
 }
 
 // Listar el contenido
+/******************************************************************************/
+/**
+ * @brief  Lista el contenido del buffer por serie
+ * @param  lista Buffer circular
+ * @retval None
+ */
 void listar(Buffer_Circ *lista)
 {
   for(uint32_t i = 0; i < lista->contador; i++)
@@ -184,10 +254,18 @@ void listar(Buffer_Circ *lista)
 }
 
 //Conocer la cantidad de datos que alberga
+/******************************************************************************/
+/**
+ * @brief  Devuelve el numero de elementos en el buffer
+ * @param  lista Buffer circular
+ * @retval Numero de elementos
+ */
 uint32_t getTam(Buffer_Circ *lista)
 {
   return lista->contador;
 }
 
 
-*/
+#endif
+
+/* End of file ****************************************************************/

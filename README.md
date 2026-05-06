@@ -38,6 +38,7 @@ Adicionalmente, la propuesta contempla:
 - Python 3.9+ (compatible con el interprete integrado de RoboDK.)
 - Paquete Python `robodk` instalado en el entorno activo.
 - Si se ejecuta con PySide2/shiboken2, usar `numpy<2` para evitar incompatibilidades binarias.
+- Paquetes paho-mqtt y psycopg para poder conectarse a MQTT y a la Base de Datos SQL
 
 ## Preparacion del entorno
 Desde la raiz del proyecto:
