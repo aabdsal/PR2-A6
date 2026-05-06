@@ -15,9 +15,9 @@ port = 1883
 #passwd = "UPV2024"
 
 # topics que hay en el config.h del firmware_esp32
-hello_topic = "giirob/pr2/devices/hello"
-button_topic = "giirob/pr2/devices/button"
-emergency_stop_topic = "giirob/pr2/devices/emergency_stop"
+hello_topic = "giirob/pr2/erro/hello"
+button_topic = "giirob/pr2/erro/button"
+emergency_stop_topic = "giirob/pr2/erro/emergency_stop"
 
 RDK = robolink.Robolink()
 
@@ -62,13 +62,26 @@ def enviar_message(topic, mensaje : str):
 def handle_message(mqttc, topic, payload):
     global var_mqtt, _stop_callback
     
-    if topic == emergency_stop_topic and payload == "STOP":
-        RDK.setSimulationSpeed(0)
-        RDK.ShowMessage(f"Mensaje recibido: {payload}", False)
-    
-    elif topic == emergency_stop_topic and payload == "GO":
-        RDK.setSimulationSpeed(5) 
-        RDK.ShowMessage("Simulación Reanudado", False)
+    if topic == emergency_stop_topic:
+        try:
+            # Intentar parsear como JSON (lo que envía el ESP32)
+            data = json.loads(payload)
+            estado = data.get("estado_simulacion")
+            
+            if estado == "STOP":
+                RDK.setSimulationSpeed(0)
+                RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
+            elif estado == "GO":
+                RDK.setSimulationSpeed(5)
+                RDK.ShowMessage("Simulación Reanudada", False)
+        except json.JSONDecodeError:
+            # Fallback: si es texto plano (compatibilidad)
+            if payload == "STOP":
+                RDK.setSimulationSpeed(0)
+                RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
+            elif payload == "GO":
+                RDK.setSimulationSpeed(5)
+                RDK.ShowMessage("Simulación Reanudada", False)
         
 
 
