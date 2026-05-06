@@ -124,7 +124,8 @@ def hilo_sensorEtiqueta():
     sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
 
 def hilo_bbdd():
-    bbdd.leer_fotocelulas_robodk()
+    bbdd.buscar_pedido_pendiente()
+    bbdd.registrar_producto()
 
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 

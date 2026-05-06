@@ -82,11 +82,11 @@ def mover_cinta_cuadro_acabada():
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
     
-    mqtt.enviar_message(mqtt.emergency_stop_topic, "ON")
+    mqtt.enviar_message(mqtt.hello_topic, "ON")
 
-    if mqtt.topic == mqtt.emergency_stop_topic and mqtt.payload == "ON":
+    if mqtt.topic == mqtt.hello_topic and mqtt.payload == "ON":
         obj_terminado = None
-        #RDK = robolink.Robolink()
+        RDK = robolink.Robolink()
         
         # Buscamos el primer objeto que tenga registrados ambos tiempos
         for nombre_obj, tiempos in var.tiempos_proceso.items():
