@@ -12,16 +12,19 @@ const char* mqttServerIP = MQTT_SERVER_IP;
 unsigned int mqttServerPort = MQTT_SERVER_PORT;
 String mqttClientID;
 
-void mqtt_loop() {
+void mqtt_loop() 
+{
 
-  if (!mqttClient.connected()) {
+  if (!mqttClient.connected()) 
+  {
     mqtt_reconnect(MQTT_CONNECTION_RETRIES);
     suscribirseATopics();
   }
   mqttClient.loop();
 
 }
-void mqtt_connect(String clientID) {
+void mqtt_connect(String clientID) 
+{
 
     // Configuramos cliente MQTT
     mqttClientID = String(clientID);
@@ -36,7 +39,8 @@ void mqtt_connect(String clientID) {
 
 }
 
-void mqtt_reconnect(int retries) {
+void mqtt_reconnect(int retries) 
+{
 
   if (!WiFi.isConnected()) return;
 
@@ -44,7 +48,8 @@ void mqtt_reconnect(int retries) {
 
   // Loop until we're reconnected, or a number of retries ...
   int r=0;
-  while (!mqttClient.connected() && r<retries) {
+  while (!mqttClient.connected() && r<retries) 
+  {
     r++;
 
     trace("Attempting an MQTT connection to: 'mqtt://");
@@ -66,7 +71,8 @@ void mqtt_reconnect(int retries) {
     connected = mqttClient.connect(mqttClientID.c_str());
 #endif
 
-    if (connected) {
+    if (connected) 
+    {
       debugln("-=- Connected to MQTT Broker");
       // Damos tiempo a que la conexión se establezca por completo
       delay(1000);
@@ -81,13 +87,15 @@ void mqtt_reconnect(int retries) {
 }
 
 
-void mqttCallback(char* topic, byte* message, unsigned int length) {
+void mqttCallback(char* topic, byte* message, unsigned int length) 
+{
   // Función que se invocará automáticamente al recibir datos por algún topic
   //  sobre el que nos hayamos suscrito
 
   // Cargamos los datos recibidos en una variable
   String incomingMessage;
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++) 
+  {
     incomingMessage += (char)message[i];
   }
 
@@ -98,30 +106,35 @@ void mqttCallback(char* topic, byte* message, unsigned int length) {
   alRecibirMensajePorTopic(topic, incomingMessage);
 }
 
-void mqtt_publish(const char* topic, String outgoingMessage) {
+void mqtt_publish(const char* topic, String outgoingMessage) 
+{
   traceln("~~>> PUBLISHING an MQTT message:");
   traceln(topic);
   traceln(outgoingMessage);
 
-  if (!mqttClient.connected()) {
+  if (!mqttClient.connected()) 
+  {
     warnln("-X- Cannot publish, MQTT client not connected");
     // Try a quick reconnect attempt
     mqtt_reconnect(1);
-    if (!mqttClient.connected()) {
+    if (!mqttClient.connected()) 
+    {
       warnln("-X- Publish aborted, still disconnected");
       return;
     }
   }
 
   boolean ok = mqttClient.publish(topic, outgoingMessage.c_str());
-  if (ok) {
+  if (ok) 
+  {
     debugln("-> Publish OK");
   } else {
     warnln("-> Publish FAILED");
   }
 }
 
-void mqtt_subscribe(const char* topic) {
+void mqtt_subscribe(const char* topic) 
+{
   trace("Subscribed to topic: ");
   traceln(topic);
   mqttClient.subscribe(topic);

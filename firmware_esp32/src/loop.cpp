@@ -9,35 +9,49 @@ long now, lastMsg = 0;
 long sensorsUpdateInterval = 5000; // tiempo de actualización de los sensores
 bool emergencyLatched = false;
 
-void on_loop() {
-
-  //handleButtonState(bottonPressed());
-
-  //bro descomentar cuando la mierda del mqtt vaya bien
-
-  
+void on_loop()
+{
+  JsonDocument doc;
   long distancia = leerUltrasonidos();
 
-  if (distancia > 0 && distancia != 797) {
-  Serial.print("Distancia: ");
-  Serial.println(distancia);
-  if (distancia < DISTANCIA_EMERGENCIA) {
-    if (!emergencyLatched) {
-      enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, "STOP");
-      Serial.println("EMERGENCY STOP!");
-      emergencyLatched = true;
+  if (distancia > 0 && distancia != 797) 
+  {
+    Serial.print("Distancia: ");
+    Serial.println(distancia);
+
+    if (distancia < DISTANCIA_EMERGENCIA) 
+    {
+      if (!emergencyLatched) 
+      {
+        doc["estado_simulacion"] = "STOP";
+
+        String payload;
+        serializeJson(doc, payload);
+
+        enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
+        Serial.println("EMERGENCY STOP!");
+        emergencyLatched = true;
+      }
+    } 
+    else if (emergencyLatched) 
+    {
+      doc["estado_simulacion"] = "GO";
+
+      String payload;
+      serializeJson(doc, payload);
+
+      enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
+      Serial.println("EMERGENCY CLEARED!");
+      emergencyLatched = false;
     }
-  } else if (emergencyLatched) {
-    enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, "GO");
-    Serial.println("EMERGENCY CLEARED!");
-    emergencyLatched = false;
   }
-  }
+}
   
   
   /*
   now = millis();
-  if (now - lastMsg > sensorsUpdateInterval) {
+  if (now - lastMsg > sensorsUpdateInterval) 
+  {
     lastMsg = now;
      // Heartbeat: publish a small JSON message indicating device is alive
      String hb = String("Esp32 is alive");
@@ -47,6 +61,6 @@ void on_loop() {
 
   }
   */
-}
+
 
 

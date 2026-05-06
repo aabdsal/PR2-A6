@@ -27,10 +27,10 @@ Adicionalmente, la propuesta contempla:
 - Flujo funcional de simulación implementado por fases.
 - Correcciones base de estabilidad y reutilizacion aplicadas.
 - Integracion de E/S para sincronizacion (`waitDI` / `setDO`).
-
-### En progreso / pendiente
 - Integracion de comunicaciones con ESP32 y MQTT.
 - Integracion con base de datos para trazabilidad.
+
+### En progreso / pendiente
 - Definicion de pruebas de regresion y validacion automatica.
 
 ## Requisitos

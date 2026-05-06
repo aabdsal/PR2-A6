@@ -13,8 +13,7 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
 
     Se apoya en objetos plantilla definidos en variables.py, ubicados en la
     posición absoluta donde el robot debe recogerlos. La lógica de duplicado
-    y limpieza de objetos está pendiente y se mantiene comentada.
-    """
+    y limpieza de objetos está pendiente y se mantiene comentada."""
     
     RDK = robolink.Robolink()
 
@@ -97,18 +96,11 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     sim.setDO("BendingHecho", 1)
 
 def bending_plancha_larga(obj_name : str):
-    """Ejecuta el prensado de la plancha larga con los targets adecuados.
-
-    Nota: los objetos planchaLarga1 y planchaLarga2 no son consistentes en la
-    estación, por lo que se deberán sustituir por objetos plantilla.
-    """
+    """Ejecuta el prensado de la plancha larga con los targets adecuados."""
 
     _bending_generico("Bend1", "Bend2", obj_name, variables.plantilla["larga1"], variables.plantilla["larga2"])
 
 def bending_plancha_ancha(obj_name : str):
-    """Ejecuta el prensado de la plancha ancha con los targets adecuados.
-
-    Nota: también falta sustituir los dos últimos parámetros por plantillas.
-    """
+    """Ejecuta el prensado de la plancha ancha con los targets adecuados."""
 
     _bending_generico("BendA1", "BendA2", obj_name, variables.plantilla["ancha1"], variables.plantilla["ancha2"])

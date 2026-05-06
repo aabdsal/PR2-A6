@@ -54,18 +54,21 @@ void wifi_reconnect(uint retries)
   WiFi.begin(wifiSSID, wifiPasswd);
 
   uint8_t r = 0;
-  while (WiFi.status() != WL_CONNECTED && r<retries ) {
+  while (WiFi.status() != WL_CONNECTED && r<retries ) 
+  {
     r++;
     delay(1000);
     trace(".");
   }
   traceln("");
 
-  if ( WiFi.isConnected() ) {
+  if ( WiFi.isConnected() ) 
+  {
     debugln("-=- Connected to the WiFi network");
     debug("Local ESP32 IP: ");
     debugln(WiFi.localIP().toString());
-  } else {
+  } else 
+  {
     errorln("-X- Cannot connect to the WiFi newtwork");
   }
 }

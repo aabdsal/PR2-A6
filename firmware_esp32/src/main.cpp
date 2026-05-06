@@ -31,7 +31,8 @@
 //String deviceID = String("device-esp32s3-") + String(DEVICE_ESP_ID);        
   // Versión usando el ID de ESP del dispositivo
 
-void setup() {
+void setup() 
+{
   // Este setup configura conceptos 'core', inicializa la wifi y la conexión con 
   //  el bróker MQTT, y ejecuta algunos métodos que hay que completar. 
   // En concreto los alumnos deberán implementar los métodos:
@@ -62,7 +63,8 @@ void setup() {
 
 }
 
-void loop() {
+void loop() 
+{
 
   // NO QUITAR (jjfons)
   wifi_loop();

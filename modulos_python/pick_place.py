@@ -294,7 +294,9 @@ def place_cuadro_acabada():
     robomath.pause(0.5)
     r.MoveL(pick_cuadro)
     
-    sim.adjuntar_objeto(toolR, var.cola_cuadrosTapa.get())
+    objeto = var.cola_cuadrosTapa.get()
+
+    sim.adjuntar_objeto(toolR, objeto)
     
     robomath.pause(0.5)
     r.MoveJ(prepick_cuadro)
@@ -302,6 +304,8 @@ def place_cuadro_acabada():
     r.MoveJ(preplace_cuadro)
     robomath.pause(0.5)
     r.MoveL(place_cuadro)
+    
+    var.cola_cuadrosAcabados.put(objeto)
 
     sim.soltar_objeto(var.tool_abb_p, frame_cinta)
 
