@@ -1,16 +1,9 @@
 import psycopg
-from modulos_python import simulation as sim
+from modulos_python import variables as var
 from datetime import datetime
-from robodk import robolink
-from robodk import robomath
 
 curr = None
 conn = None
-h_ini_sensor = None
-h_fin_sensor = None
-# Para evitar que una misma detección dispare el tiempo varias veces
-s1_bloqueado = False
-s2_bloqueado = False
 
 def conectar():
     global curr, conn
@@ -38,7 +31,6 @@ def buscar_pedido_pendiente(cursor):
     cursor.execute(sql)
     return cursor.fetchone()
 
-
 def registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
     """Realiza la inserción en la BD."""
     id_prod = f"PR-{datetime.now().strftime('%H%M%S')}"
@@ -54,3 +46,16 @@ def registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
         conexion.commit()
     except Exception as error:
         conexion.rollback()
+
+def actualizar_unidad():    
+    if var.tiempo_ini.empty() or var.tiempo_fini.empty():
+        return
+
+    t_ini = var.tiempo_ini.get_nowait()
+    t_fini = var.tiempo_fini.get_nowait()
+    
+    pedido = buscar_pedido_pendiente(curr)
+    if pedido is not None:
+        registrar_producto(conn, curr, pedido[0], t_ini, t_fini)
+
+   

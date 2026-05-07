@@ -6,11 +6,11 @@ necesarias para la automatización de cuadros eléctricos.
 El uso de hilos permite ejecutar instancias en paralelo, por ejemplo mover
 cintas o coordinar robots simultáneamente."""
 
-import os
-import sys
-
-# Allow running this module as a script by adding the package root to sys.path.
+# En caso de ejecutar el archivo main desde la terminal para ver logs con prints, usar esto
 if __name__ == "__main__" and __package__ is None:
+    import os
+    import sys
+    
     package_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if package_root not in sys.path:
         sys.path.insert(0, package_root)
@@ -132,10 +132,6 @@ def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
     sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
 
-def hilo_bbdd():
-    bbdd.buscar_pedido_pendiente()
-    bbdd.registrar_producto()
-
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 
 ocurra un error,que se imprima por mensaje el nombre del hilo."""
@@ -154,8 +150,7 @@ threads = [
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCC, name="sensor_cc"),
     threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
-    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta"),
-    threading.Thread(target=hilo_bbdd, name="base_datos")
+    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
 ]
 
 for t in threads:

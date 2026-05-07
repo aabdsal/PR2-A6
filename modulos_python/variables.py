@@ -64,7 +64,6 @@ plantilla: dict[str, str] = {
 
 objetos_tcp: dict[str, robolink.Item] = {}
 
-tiempos_proceso = {}
 
 objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorCA" : queue.Queue(),
@@ -77,6 +76,9 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
 cola_soldadas : queue.Queue[str] = queue.Queue()
 cola_cuadrosTapa : queue.Queue[str] = queue.Queue()
 cola_cuadrosAcabados : queue.Queue[str] = queue.Queue()
+
+tiempo_ini = queue.Queue()
+tiempo_fini = queue.Queue()
 
 soldadas : queue.Queue[str] = queue.Queue()
 alternancia : queue.Queue[str] = queue.Queue()

@@ -1,18 +1,9 @@
 """Este módulo realiza las conexiones al broker MQTT para
-suscribirse a los topics necesarios y recibir/enviar mensajes. .
-
-Aún no se ha integrado con la estación de RoboDK."""
+suscribirse a los topics necesarios y recibir/enviar mensajes."""
 
 import json
-import os
-import sys
 from robodk import robolink
 import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
-
-
-
-from modulos_python import variables
-from modulos_python import bbdd
 
 broker = "broker.emqx.io"
 port = 1883
@@ -21,6 +12,7 @@ port = 1883
 
 # topics que hay en el config.h del firmware_esp32
 hello_topic = "giirob/pr2/erro/hello"
+led_topic = "giirob/pr2/erro/led"
 button_topic = "giirob/pr2/erro/button"
 emergency_stop_topic = "giirob/pr2/erro/emergency_stop"
 
@@ -47,6 +39,7 @@ var_mqtt = None
 def conectar():
     print("Conectando a MQTT...", flush=True)
     global var_mqtt
+
     var_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     var_mqtt.on_connect = _on_connect
     var_mqtt.on_disconnect = _on_disconnect
@@ -66,11 +59,13 @@ def conectar():
     hello_payload = json.dumps({
         "msg": "Hola desde la simulacion de RoboDK en python",
     })
+
     info = var_mqtt.publish(hello_topic, hello_payload)
     if info.rc != mqtt.MQTT_ERR_SUCCESS:
         print(f"Error publish MQTT. rc={info.rc}", flush=True)
+    
     print("Mensaje de saludo enviado a MQTT")
-    RDK.ShowMessage("MQTT Conectado AELL", False)
+    RDK.ShowMessage("MQTT Conectado", False)
 
     var_mqtt.loop_start()
     
@@ -85,6 +80,7 @@ def enviar_message(topic, mensaje : str):
 def handle_message(mqttc, topic, payload):
     global var_mqtt, _stop_callback
     print(f"Mensaje recibido. topic={topic} payload={payload}", flush=True)
+
     if topic == emergency_stop_topic:
         try:
             # Intentar parsear como JSON (lo que envía el ESP32)

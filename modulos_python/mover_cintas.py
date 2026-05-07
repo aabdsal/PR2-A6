@@ -3,12 +3,12 @@ simular el movimiento de los objetos sobre las cintas.
 
 Queda por decidir si el duplicado de objetos se implementa aquí o en otro sitio."""
 
+import threading
 from robodk import robolink
 from robodk import robomath
 from modulos_python import variables as var
 from modulos_python import simulation as sim
-from modulos_python import mqtt
-from modulos_python import bbdd
+from modulos_python import mqtt, bbdd
 
 def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None, RDK : robolink.Robolink | None = None):
     """Mueve una cinta mientras el sensor no detecte ningún objeto.
@@ -82,31 +82,6 @@ def mover_cinta_cuadro_acabada():
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
     
-    mqtt.enviar_message(mqtt.hello_topic, "ON")
+    mqtt.enviar_message(mqtt.led_topic, "ON")
 
-    if mqtt.topic == mqtt.hello_topic and mqtt.payload == "ON":
-        obj_terminado = None
-        RDK = robolink.Robolink()
-        
-        # Buscamos el primer objeto que tenga registrados ambos tiempos
-        for nombre_obj, tiempos in var.tiempos_proceso.items():
-            if tiempos.get("ini") is not None and tiempos.get("fin") is not None:
-                obj_terminado = nombre_obj
-                break # Encontramos la pieza terminada
-                
-        if obj_terminado:
-            t_ini = var.tiempos_proceso[obj_terminado]["ini"]
-            t_fin = var.tiempos_proceso[obj_terminado]["fin"]
-            
-            pedido = bbdd.buscar_pedido_pendiente(bbdd.curr)
-
-            if pedido is not None:
-                bbdd.registrar_producto(bbdd.conn, bbdd.curr, pedido[0], t_ini, t_fin)
-    
-            del var.tiempos_proceso[obj_terminado]
-        else:
-            RDK.ShowMessage("Aviso MQTT: Se recibió 'on' pero no hay piezas con tiempos de proceso completos.", False)
-
-
-
-    
+    threading.Thread(target=bbdd.actualizar_unidad).start()

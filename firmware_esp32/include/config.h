@@ -1,4 +1,21 @@
+/**
+ * @file    config.h
+ * @author  PR2-A6
+ * @version V0.0
+ * @date    2026-05-06
+ * @brief   Configuracion del dispositivo, pines y parametros de red
+ */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#pragma once
+
+/* Includes ------------------------------------------------------------------*/
+
+/* Exported types ------------------------------------------------------------*/
+
+/* Exported constants --------------------------------------------------------*/
+
+/* Exported macro ------------------------------------------------------------*/
 #define LED_BUILTIN 2
 
 
@@ -32,9 +49,12 @@
 //#define MQTT_PASSWORD             "UPV2024"
 
 #define HELLO_TOPIC               "giirob/pr2/erro/hello"    // TODO: topic ejemplo para ejercicio inicial de saludo de los dispositivos
+#define LED_TOPIC                 "giirob/pr2/erro/led"
 #define BUTTON_TOPIC              "giirob/pr2/erro/button"
 #define EMERGENCY_STOP_TOPIC      "giirob/pr2/erro/emergency_stop"
 #define ESTADO_PROCESO_TOPIC      "giirob/pr2/erro/estado_proceso"
+
+/* End of file ****************************************************************/
 
 
 
