@@ -7,10 +7,10 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef SETUP_H
+#define SETUP_H
 
 /* Includes ------------------------------------------------------------------*/
-
 #include <Arduino.h>
 
 /* Exported types ------------------------------------------------------------*/
@@ -29,5 +29,7 @@ extern String deviceID;
  * @retval None
  */
 void on_setup();
+
+#endif // SETUP_H
 
 /* End of file ****************************************************************/

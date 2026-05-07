@@ -7,7 +7,8 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef WIFI_MODULE_H
+#define WIFI_MODULE_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -53,5 +54,7 @@ void wifi_connect();
  * @retval None
  */
 void wifi_reconnect(uint retries);
+
+#endif // WIFI_MODULE_H
 
 /* End of file ****************************************************************/

@@ -7,7 +7,8 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef COMUNICACIONES_H
+#define COMUNICACIONES_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -47,5 +48,7 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage);
  * @retval None
  */
 void enviarMensajePorTopic(const char* topic, String outgoingMessage);
+
+#endif // COMUNICACIONES_H
 
 /* End of file ****************************************************************/

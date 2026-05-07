@@ -7,7 +7,8 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef LOOP_H
+#define LOOP_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -25,5 +26,7 @@
  * @retval None
  */
 void on_loop();
+
+#endif // LOOP_H
 
 /* End of file ****************************************************************/

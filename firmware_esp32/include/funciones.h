@@ -7,10 +7,10 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef FUNCIONES_H
+#define FUNCIONES_H
 
 /* Includes ------------------------------------------------------------------*/
-
 #include <Arduino.h>
 
 /* Exported types ------------------------------------------------------------*/
@@ -21,7 +21,6 @@
 
 /* Exported functions --------------------------------------------------------*/
 
-//void setInternalLed(uint8_t status);
 /******************************************************************************/
 /**
  * @brief  Lee el estado del boton
@@ -66,5 +65,7 @@ bool isInternalLedRemoteLocked();
  * @retval None
  */
 void setLedProceso(uint8_t proceso);
+
+#endif // FUNCIONES_H
 
 /* End of file ****************************************************************/

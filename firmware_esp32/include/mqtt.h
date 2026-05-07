@@ -7,7 +7,8 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef MQTT_H
+#define MQTT_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -73,4 +74,5 @@ void mqtt_publish(const char* topic, String outgoingMessage);
  */
 void mqtt_subscribe(const char* topic);
 
+#endif // MQTT_H
 /* End of file ****************************************************************/

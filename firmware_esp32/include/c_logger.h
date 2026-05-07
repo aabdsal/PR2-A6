@@ -6,6 +6,10 @@
  * @brief   Macros de logging por puerto serie y niveles
  */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef C_LOGGER_H
+#define C_LOGGER_H
+
 /* Includes ------------------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
@@ -48,6 +52,8 @@ static bool _log_newline = true;
 #define fatalln(message)
 
 #endif
+
+#endif // C_LOGGER_H
 
 /* End of file ****************************************************************/
 

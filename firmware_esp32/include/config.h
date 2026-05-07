@@ -7,7 +7,8 @@
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#pragma once
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -53,6 +54,8 @@
 #define BUTTON_TOPIC              "giirob/pr2/erro/button"
 #define EMERGENCY_STOP_TOPIC      "giirob/pr2/erro/emergency_stop"
 #define ESTADO_PROCESO_TOPIC      "giirob/pr2/erro/estado_proceso"
+
+#endif // CONFIG_H
 
 /* End of file ****************************************************************/
 
