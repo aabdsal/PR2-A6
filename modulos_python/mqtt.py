@@ -37,7 +37,6 @@ def recibir_menssage(mqttc, obj, msg):
 
 var_mqtt = None
 def conectar():
-    print("Conectando a MQTT...", flush=True)
     global var_mqtt
 
     var_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -64,7 +63,6 @@ def conectar():
     if info.rc != mqtt.MQTT_ERR_SUCCESS:
         print(f"Error publish MQTT. rc={info.rc}", flush=True)
     
-    print("Mensaje de saludo enviado a MQTT")
     RDK.ShowMessage("MQTT Conectado", False)
 
     var_mqtt.loop_start()
@@ -83,7 +81,6 @@ def handle_message(mqttc, topic, payload):
 
     if topic == emergency_stop_topic:
         try:
-            # Intentar parsear como JSON (lo que envía el ESP32)
             data = json.loads(payload)
             estado = data.get("estado_simulacion")
             
@@ -94,8 +91,6 @@ def handle_message(mqttc, topic, payload):
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
         except json.JSONDecodeError:
-            print("mielda loco, no es un json")
-            # Fallback: si es texto plano (compatibilidad)
             if payload == "STOP":
                 RDK.setSimulationSpeed(0)
                 RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)

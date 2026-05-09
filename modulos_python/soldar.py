@@ -87,7 +87,7 @@ def _apply_spray_action(action: int, object_name: Optional[str] = None, tool_nam
     raise ValueError("Accion de soldadura no valida: " + str(action))
 
 
-def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
+def iniciar(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     """Ejecuta la secuencia de soldadura con giros y trazas simuladas."""
     
     r = RDK.Item(var.robot_abb_s, robolink.ITEM_TYPE_ROBOT)
@@ -98,6 +98,7 @@ def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
 
     sim.waitDI("LasDos", 1)
     sim.setDO("LasDos", 0)
+    sim.setDO("mesaOcupada", 1)
 
     piezas_en_mesa = [item for item in frame_mesa.Childs() if item.Type() == robolink.ITEM_TYPE_OBJECT]
     
@@ -110,7 +111,7 @@ def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     targetPFS = RDK.Item("PFS", robolink.ITEM_TYPE_TARGET)
     postPFS = RDK.Item("postPFS", robolink.ITEM_TYPE_TARGET)
 
-    r.MoveJ(ini)
+    #r.MoveJ(ini)
     for i in range(4):
         giro.giro_plancha(i)    
         r.MoveJ(prePIS)
@@ -133,11 +134,18 @@ def soldar_ini(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
     giro.giro_final_plancha_soldada()
     
     sim.setDO("planchaSoldada", 1)
+    sim.setDO("mesaOcupada", 0)
 
+    piezas_en_mesa = [item for item in frame_mesa.Childs() if item.Type() == robolink.ITEM_TYPE_OBJECT]
+    
+    RDK.Render(False)
     for pieza in piezas_en_mesa:
+       pieza.setVisible(False)
        pieza.Delete()
 
     nuevo_objeto = sim.duplicar_objeto(var.plantilla["soldada"], frame_mesa.Name())
+    RDK.Render(True)
+    
     var.cola_soldadas.put(nuevo_objeto.Name())
 
 def soldar_stop(tool_name: str = var.tool_abb_s, clear_trace: bool = True):

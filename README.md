@@ -31,14 +31,14 @@ Adicionalmente, la propuesta contempla:
 - Integracion con base de datos para trazabilidad.
 
 ### En progreso / pendiente
-- Definicion de pruebas de regresion y validacion automatica.
+- Realización de cuadros de forma infinita
+- Proceso de etiquetado
 
 ## Requisitos
 - RoboDK instalado y estacion de simulación disponible.
 - Python 3.9+ (compatible con el interprete integrado de RoboDK.)
 - Paquete Python `robodk` instalado en el entorno activo.
-- Si se ejecuta con PySide2/shiboken2, usar `numpy<2` para evitar incompatibilidades binarias.
-- Paquetes paho-mqtt y psycopg para poder conectarse a MQTT y a la Base de Datos SQL
+- Paquetes `paho-mqtt` y `psycopg` para poder conectarse a MQTT y a la Base de Datos SQL
 
 ## Preparacion del entorno
 Desde la raiz del proyecto:
@@ -47,7 +47,6 @@ Desde la raiz del proyecto:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install robodk "numpy<2"
 ```
 
 Comprobacion:
@@ -57,4 +56,6 @@ python -c "import robodk, sys; print(sys.executable; print(robodk.__file__"
 ```
 
 ## Ejecución
+- Abrir RoboDK con licencia activa.
+- Cargar los scripts `modulos_python/main.py` y `modulos_python/reset.py`en la estación.
 - Ejecutar script main desde RoboDK con la estación abierta.

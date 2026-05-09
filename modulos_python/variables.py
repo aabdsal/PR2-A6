@@ -5,11 +5,9 @@ que se usan en la simulación. También mantiene estructuras en memoria
 para colas de sensores, alternancia y parámetros persistentes en JSON."""
 
 from robodk import robolink
-from robodk import robomath
 from pathlib import Path
 from typing import Any
 
-import threading
 import json
 import queue
 
@@ -30,6 +28,14 @@ mecanismos = [
  "CintaTapaInit",
  "Yaskawa Giratoria"
 ]
+
+cinta_restante = {
+    "CintaLargoIni": 1000.0,
+    "CintaAnchoIni": 1000.0,
+    "CintaTapaInit": 1000.0,
+    "CintaCuadroIni": 1000.0,
+    "CintaCuadroFini": 1000.0,
+}
 
 cinta_larga = "CintaLargoIni"
 cinta_ancha = "CintaAnchoIni"

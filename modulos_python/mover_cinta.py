@@ -1,7 +1,5 @@
 """Este módulo contiene las funciones necesarias para
-simular el movimiento de los objetos sobre las cintas.
-
-Queda por decidir si el duplicado de objetos se implementa aquí o en otro sitio."""
+simular el movimiento de los objetos sobre las cintas."""
 
 import threading
 from robodk import robolink
@@ -10,56 +8,51 @@ from modulos_python import variables as var
 from modulos_python import simulation as sim
 from modulos_python import mqtt, bbdd
 
-def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None, RDK : robolink.Robolink | None = None):
-    """Mueve una cinta mientras el sensor no detecte ningún objeto.
+def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None):
+    """Mueve una cinta mientras el sensor no detecte ningún objeto."""
 
-    Si no se recibe un Robolink, crea una conexión local para permitir
-    mover varias cintas en paralelo."""
-
-    if RDK is None:
-        RDK = robolink.Robolink()
+    RDK = robolink.Robolink()
     
     cinta = RDK.Item(cinta_name, robolink.ITEM_TYPE_ROBOT)
     if not cinta.Valid():
         raise RuntimeError("El nombre de la cinta no existe")
 
     incremento = 15.0
-    distancia = 0.0
     espacio_objetos = 1000
-
+    restante = var.cinta_restante[cinta_name]
+    
     while param_sensor is not None and int(RDK.getParam(param_sensor) or 0) != 1:
-        
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
-        distancia += incremento
-
-        if objeto_plantilla and distancia >= espacio_objetos:
+        restante -= incremento
+        if objeto_plantilla and restante <= 0:
             sim.duplicar_objeto(objeto_plantilla, frame_name)
-            distancia = 0.0
-        
+            restante += espacio_objetos
         robomath.pause(0.01)
+
+    var.cinta_restante[cinta_name] = restante
 
 def mover_cinta_larga():
     """Método que mueve la cinta por donde pasan las planchas largas, 
     y el sensor encargado de notificar si hay objeto es el SensorCL"""
     
-    
     _mover_cinta(var.cinta_larga, "SensorCL", "FramePlanchaLarga", var.plantilla["larga"])
+    sim.setDO("yaskawa_larga", 0)
 
 def mover_cinta_ancha():
     """Método que mueve la cinta por donde pasan las planchas anchas, 
     y el sensor encargado de notificar si hay objeto es el SensorCA"""
     
-    
     _mover_cinta(var.cinta_ancha, "SensorCA", "FramePlanchaAncha", var.plantilla["ancha"])
+    sim.setDO("yaskawa_ancha", 0)
 
 def mover_cinta_tapa():
     """Método que mueve la cinta por donde pasan las tapas, 
     y el sensor encargado de notificar si hay objeto es el SensorTapa"""
-    
 
     _mover_cinta(var.cinta_tapa, "SensorTapa","FrameTapa", var.plantilla["tapa"])
+    sim.setDO("abb_tapa", 0)
 
-def mover_cinta_main(RDK : robolink.Robolink):
+def mover_cinta_main():
     """Método que mueve la cinta principal, donde van las planchasLargas2 
     y planchasAnchas2. El sensor encargado de notificar si hay objeto es el SensorCC.
 
@@ -68,7 +61,7 @@ def mover_cinta_main(RDK : robolink.Robolink):
     sim.waitDI("enCintaMain", 1)
     sim.setDO("enCintaMain", 0)
     
-    _mover_cinta(var.cinta_main, "SensorCC", "FramePlanchaMain", RDK=RDK)
+    _mover_cinta(var.cinta_main, "SensorCC", "FramePlanchaMain")
 
 def mover_cinta_cuadro_acabada():
     """Mueve la cinta final donde salen los cuadros eléctricos hacia el túnel.
@@ -82,6 +75,12 @@ def mover_cinta_cuadro_acabada():
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
     
+    RDK = robolink.Robolink()
+    
+    cuadro_etiquetado = var.cola_cuadrosAcabados.get()
+    cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
+    cuadro_obj.Delete()
+
     mqtt.enviar_message(mqtt.led_topic, "ON")
 
     threading.Thread(target=bbdd.actualizar_unidad).start()

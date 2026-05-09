@@ -35,9 +35,7 @@ def giro_mesa():
 
 # TODO: Parametrizar los nombres de objetos a ocultar/mostrar en la mesa giratoria.
 def giro_final_plancha_soldada():
-    """Realiza el giro final del cuadro soldado para preparar la tapa.
-
-    Al finalizar, se activa la salida digital planchaSoldada."""
+    """Realiza el giro final del cuadro soldado para preparar la tapa."""
 
     RDK = robolink.Robolink()
     mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
@@ -51,5 +49,3 @@ def giro_final_plancha_soldada():
         raise RuntimeError("Target final inválido. Revisa nombres")
     
     mesa.MoveJ(target_final)
-
-    sim.setDO("planchaSoldada", 1)

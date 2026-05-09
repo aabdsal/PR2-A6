@@ -5,7 +5,7 @@
     "BendingHecho",
     "enCintaMain",
     "SensorCC",
-    "EnMesa",
+    "mesaOcupada",
     "LasDos",
     "SensorTapa",
     "planchaSoldada",
@@ -21,6 +21,9 @@
     "count_plantilla_tapaCuadro",
     "count_plantilla_cuadroConTapa",
     "count_plantilla_cuadroEtiquetada",
-    "SensorEtiqueta"
+    "SensorEtiqueta",
+    "yaskawa_larga",
+    "yaskawa_ancha",
+    "abb_tapa"
   ]
 }

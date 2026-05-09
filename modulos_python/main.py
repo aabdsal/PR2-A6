@@ -19,13 +19,18 @@ from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
 from modulos_python import bending, sensor, soldar, variables, mqtt, bbdd
-from modulos_python import mover_cintas as mc
-from modulos_python import pick_place as pp
+from modulos_python import mover_cinta as mc, pick_place as pp, simulation as sim
+
 from robodk import robolink
 import threading
+import time
 
 mqtt.conectar()
 bbdd.conectar()
+
+sim.setDO("yaskawa_larga", 1)
+sim.setDO("yaskawa_ancha", 1)
+sim.setDO("abb_tapa", 1)
 
 def _thread_excepthook(args):
     """Se hace uso de este método interno para imprimir por pantalla los errores que 
@@ -43,18 +48,37 @@ threading.excepthook = _thread_excepthook
 
 def hilo_cinta_larga():
     """Hilo que mueve la cinta de planchas largas."""
-    #while True:
-    mc.mover_cinta_larga()
+    while True:
+        sim.waitDI("yaskawa_larga" , 1)
+        mc.mover_cinta_larga()
+        time.sleep(0.01)  
 
 def hilo_cinta_ancha():
     """Hilo que mueve la cinta de planchas anchas."""
-    #while True:
-    mc.mover_cinta_ancha()
+    while True:
+        sim.waitDI("yaskawa_ancha" , 1)
+        mc.mover_cinta_ancha()
+        time.sleep(0.01)  
 
 def hilo_cinta_tapa():
     """Hilo que mueve la cinta de tapas."""
-    #while True:
-    mc.mover_cinta_tapa()
+    while True:
+        sim.waitDI("abb_tapa" , 1)
+        mc.mover_cinta_tapa()
+        time.sleep(0.01)  
+    
+def hilo_cinta_main(): 
+    """Hilo que mueve la cinta principal cuando hay pieza disponible."""
+    RDK = robolink.Robolink()
+    while True:
+        mc.mover_cinta_main()
+        time.sleep(0.01)
+
+def hilo_cinta_etiquetado():
+    """Hilo que mueve la cinta final de etiquetado."""
+    while True:
+        mc.mover_cinta_cuadro_acabada()
+        time.sleep(0.01)
 
 def hilo_yaskawa():
     """Este hilo llama a la secuencia de movimientos pick->bending->place de un 
@@ -80,36 +104,25 @@ def hilo_yaskawa():
         pp.place_cinta_main()
         variables.alternancia.put("ancha") 
 
-def hilo_cinta_main():
-    """Hilo que mueve la cinta principal cuando hay pieza disponible."""
+def hilo_abb_paletizado():
+    """Hilo del abb paletizado que decide que tarea hace primero segun la logica de la automatización."""
+    
     RDK = robolink.Robolink()
-    while True:
-        mc.mover_cinta_main(RDK)
 
-def hilo_place_mesa():
-    """Hilo que coloca planchas en la mesa giratoria desde la cinta principal."""
     while True:
-        pp.place_plancha_mesa()
+        if RDK.getParam("tapaPuesta") == 1 and not variables.cola_cuadrosTapa.empty():
+            pp.place_cuadro_acabada()
+        elif RDK.getParam("planchaSoldada") == 1 and not variables.objetos_pendientes["SensorTapa"].empty():
+            pp.place_tapa_en_mesa()
+        elif RDK.getParam("mesaOcupada") == 0 and not variables.objetos_pendientes["SensorCC"].empty():
+            pp.place_plancha_mesa()
+        else:
+            time.sleep(0.01)
 
-def hilo_place_tapa():
-    """Hilo que coloca la tapa sobre el cuadro soldado."""
-    while True:
-        pp.place_tapa_en_mesa()
-
-def hilo_place_cuadro_acabado():
-    """Hilo que coloca el cuadro acabado en la cinta de etiquetado."""
-    while True:
-        pp.place_cuadro_acabada()
-
-def hilo_soldador():
+def hilo_abb_soldador():
     """Hilo que ejecuta la secuencia de soldadura."""
     while True:
-        soldar.soldar_ini()
-
-def hilo_cinta_etiquetado():
-    """Hilo que mueve la cinta final de etiquetado."""
-    while True:
-        mc.mover_cinta_cuadro_acabada()
+        soldar.iniciar()
 
 # Hilos de sensores para detectar objetos en cada cinta.
 def hilo_sensorCA():
@@ -139,13 +152,13 @@ threads = [
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
     threading.Thread(target=hilo_cinta_tapa, name="cinta_tapa"),
-    threading.Thread(target=hilo_yaskawa, name="yaskawa"),
     threading.Thread(target=hilo_cinta_main, name="cinta_main"),
-    threading.Thread(target=hilo_place_mesa, name="place_mesa"),
-    threading.Thread(target=hilo_place_cuadro_acabado, name="place_cuadro"),
-    threading.Thread(target=hilo_place_tapa, name="place_tapa"),
     threading.Thread(target=hilo_cinta_etiquetado, name="cinta_etiquetado"),
-    threading.Thread(target=hilo_soldador, name="soldador"),
+
+    threading.Thread(target=hilo_yaskawa, name="yaskawa"),
+    threading.Thread(target=hilo_abb_paletizado, name="paletizado"),
+    threading.Thread(target=hilo_abb_soldador, name="soldador"),
+
     threading.Thread(target=hilo_sensorCA, name="sensor_ca"),
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCC, name="sensor_cc"),

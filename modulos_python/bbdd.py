@@ -7,9 +7,9 @@ conn = None
 
 def conectar():
     global curr, conn
-    try:
+    try:  
         conn = psycopg.connect(
-            dbname="gdi",
+            dbname="gdi2026",
             user="postgres",
             password="postgres",
             host="localhost",
@@ -18,20 +18,19 @@ def conectar():
         curr = conn.cursor()
 
         curr.execute("SET search_path TO proyecto;")
-        print("Conexión a PostgreSQL realizada correctamente")
 
     except Exception as error:
         print("Error al conectar a la base de datos:")
         print(error)
         exit()
 
-def buscar_pedido_pendiente(cursor):
+def _buscar_pedido_pendiente(cursor):
     """Busca el pedido más urgente con unidades por fabricar."""
     sql = "SELECT id_pedido, cantidad_sol, cantidad_fab FROM pedido WHERE cantidad_fab < cantidad_sol ORDER BY fecha_lim ASC"
     cursor.execute(sql)
     return cursor.fetchone()
 
-def registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
+def _registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
     """Realiza la inserción en la BD."""
     id_prod = f"PR-{datetime.now().strftime('%H%M%S')}"
     try:
@@ -54,8 +53,8 @@ def actualizar_unidad():
     t_ini = var.tiempo_ini.get_nowait()
     t_fini = var.tiempo_fini.get_nowait()
     
-    pedido = buscar_pedido_pendiente(curr)
+    pedido = _buscar_pedido_pendiente(curr)
     if pedido is not None:
-        registrar_producto(conn, curr, pedido[0], t_ini, t_fini)
+        _registrar_producto(conn, curr, pedido[0], t_ini, t_fini)
 
    

@@ -7,7 +7,6 @@ from datetime import datetime
 
 def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : robolink.Robolink):
     if detectados:
-        simulation.setDO(nombre_sensor, 1)
         for idx in detectados:
             nombre_obj = idx.Name()
             variables.objetos_pendientes[nombre_sensor].put(nombre_obj)
@@ -18,7 +17,6 @@ def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : r
             elif nombre_sensor == "SensorEtiqueta":
                 variables.tiempo_fini.put(datetime.now().time())
 
-        simulation.setDO(nombre_sensor, 0)
 
 def detectar_objeto(nombre_sensor, frame_name : str):
     """Detecta objetos que colisionan con un sensor en un frame concreto.
@@ -40,25 +38,22 @@ def detectar_objeto(nombre_sensor, frame_name : str):
 
     while True:
         
-        # La lista se podría cargar una vez fuera del while o refrescarla
-        # bajo una condición, pero es optimización, no lógica.
-        lista_objetos = RDK.ItemList(robolink.ITEM_TYPE_OBJECT, True)  
+        lista_objetos = frame.Childs()
 
         detectados_actuales = set()
 
-        for idx in lista_objetos:
+        if lista_objetos:
+            for idx in lista_objetos:
+                if idx.Valid() and idx.Parent() == frame:
+                    if sensor.Collision(idx):
+                        detectados_actuales.add(idx)
 
-            if isinstance(idx, str):
-                idx = RDK.Item(idx)     
-
-            if idx.Valid() and idx.Parent() == frame:
-                if sensor.Collision(idx):
-                    detectados_actuales.add(idx)
-        
         entradas_nuevas = list(detectados_actuales - detectados_anterior)
-
         if entradas_nuevas:
+            simulation.setDO(nombre_sensor, 1)
             productorEvento(nombre_sensor, entradas_nuevas, RDK)
+        else:
+            simulation.setDO(nombre_sensor, 0)
         
         detectados_anterior = detectados_actuales.copy()
 

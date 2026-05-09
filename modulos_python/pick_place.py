@@ -38,19 +38,21 @@ def _pick_plancha(prepick_str, pick_str, obj_name : str):
     
     r.Pause(1000)
     r.MoveL(prepick)
-
+    
     r.Pause(1000)
 
 def pick_plancha_larga(obj_name : str):
     """Ejecuta el pick de una plancha larga usando los targets correctos."""
 
     _pick_plancha("PrePickLargo", "PickLargo", obj_name)
+    sim.setDO("yaskawa_larga", 1)
 
 def pick_plancha_ancha(obj_name : str):
     """Ejecuta el pick de una plancha ancha usando los targets correctos."""
 
     _pick_plancha("PrePickAncho", "PickAncho", obj_name)
-    
+    sim.setDO("yaskawa_ancha", 1)
+
 def place_cinta_main():
     """Lleva la plancha prensada a la cinta principal y notifica el estado.
 
@@ -102,6 +104,8 @@ def place_cinta_main():
     
     sim.setDO("enCintaMain", 1)
 
+count = 0
+
 def place_plancha_mesa():
     """Hace un pick and place desde la cinta principal a la mesa giratoria.
 
@@ -140,11 +144,9 @@ def place_plancha_mesa():
 
     r.setFrame(frame_paletizado)
     r.setTool(toolR)
-    RDK.ShowMessage("antes de moverse a ini", False)
     r.MoveJ(ini)
 
     r.setFrame(frame_cinta)
-    RDK.ShowMessage("antes de moverse a prepick cinta", False)
     r.MoveL(prepick_cinta)
     robomath.pause(0.5)
     elem = var.alternancia.get()
@@ -154,7 +156,6 @@ def place_plancha_mesa():
     elif elem == "ancha":
         r.MoveL(pick_ancha)
     
-    count = 0
     robomath.pause(0.5)
     sim.adjuntar_objeto(toolR, objeto_cola_main)
     
@@ -167,23 +168,21 @@ def place_plancha_mesa():
     r.MoveJ(preplace_main)
     robomath.pause(0.5)
     r.MoveL(place_main)
-
-    sim.setDO("EnMesa", 1)
-
-    if count == 1:
-        sim.setDO("LasDos", 1)
-        count = 0
-    
     robomath.pause(0.5)
     
     sim.soltar_objeto(var.tool_abb_p, frame_mesa)
     
     r.MoveL(preplace_main)
 
+    global count
+    
     if count == 0:
         giro.giro_mesa()
         count = 1
-
+    elif count == 1:
+        sim.setDO("LasDos", 1)
+        count = 0
+    
     r.MoveJ(ini)
     robomath.pause(0.5)
     
@@ -215,7 +214,6 @@ def place_tapa_en_mesa():
     pick_tapa = RDK.Item("PickTapa", robolink.ITEM_TYPE_TARGET)
     preplace_tapa = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
     place_tapa = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
-    ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
     objeto_tapa = var.objetos_pendientes["SensorTapa"].get()
 
@@ -229,6 +227,9 @@ def place_tapa_en_mesa():
     r.MoveJ(prepick_tapa)
     robomath.pause(0.5)
     r.MoveJ(preplace_tapa)
+
+    sim.setDO("abb_tapa", 1)
+
     robomath.pause(0.5)
     r.MoveL(place_tapa)
 
@@ -242,15 +243,21 @@ def place_tapa_en_mesa():
     objecto_soldada = var.cola_soldadas.get()
     item_soldada = RDK.Item(objecto_soldada, robolink.ITEM_TYPE_OBJECT)
 
+    RDK.Render(False)
+    
+    item_objeto_tapa.setVisible(False)
+    item_soldada.setVisible(False)
+
     item_objeto_tapa.Delete()
     item_soldada.Delete()
 
     nuevo_objeto = sim.duplicar_objeto(var.plantilla["cuadroConTapa"], var.frame_mesa_giratoria)
+    RDK.Render(True)
 
     var.cola_cuadrosTapa.put(nuevo_objeto.Name())
 
     sim.setDO("tapaPuesta", 1)
-    r.MoveJ(ini)
+
 
 def place_cuadro_acabada():
     """Devuelve el cuadro con tapa a la cinta de etiquetado.

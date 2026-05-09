@@ -27,11 +27,13 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
     if not obj_to.Valid():
         raise RuntimeError("objeto no existe, revisa nombres")
     
+    RDK.Render(False)
     sim.ocultar_objeto(obj_from.Name())
     obj_from.Delete()
 
     nuevo_objeto = sim.duplicar_objeto(obj_to_plantilla, frame.Name())
-
+    RDK.Render(True)
+    
     sim.adjuntar_objeto(tool, nuevo_objeto.Name())
     
     return nuevo_objeto.Name()
