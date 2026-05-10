@@ -4,9 +4,8 @@ para el prensado de planchas largas y anchas.
 Se apoya en la API de RoboDK, variables globales 
 y simulaciones que representan acciones reales."""
 
-from robodk import robolink   
-from modulos_python import variables
-from modulos_python import simulation as sim
+from robodk import robolink, robomath   
+from modulos_python import variables as var, simulation as sim
 
 def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: robolink.Item):
     """Intercambia el objeto que tiene el Yaskawa MH24 por el siguiente.
@@ -17,7 +16,7 @@ def _transicion_objeto(obj_from_plantilla, obj_to_plantilla: str, frame, tool: r
     
     RDK = robolink.Robolink()
 
-    sim.soltar_objeto(variables.tool_yaskawa, frame)
+    sim.soltar_objeto(var.tool_yaskawa, frame)
 
     obj_from = RDK.Item(obj_from_plantilla)
     if not obj_from.Valid():
@@ -47,9 +46,9 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 
     RDK = robolink.Robolink()
 
-    r = RDK.Item(variables.robot_yaskawa, robolink.ITEM_TYPE_ROBOT)
+    r = RDK.Item(var.robot_yaskawa, robolink.ITEM_TYPE_ROBOT)
     sistRefBend = RDK.Item("Bending", robolink.ITEM_TYPE_FRAME)
-    toolR = RDK.Item(variables.tool_yaskawa, robolink.ITEM_TYPE_TOOL)
+    toolR = RDK.Item(var.tool_yaskawa, robolink.ITEM_TYPE_TOOL)
 
     # principio
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
@@ -70,9 +69,11 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     r.setTool(toolR)
 
     r.MoveL(home)
+    robomath.pause(0.5)
     r.MoveL(place1)
+    robomath.pause(0.5)
     r.MoveL(bajaprensa1)
-    r.Pause(2000)
+    robomath.pause(0.5)
 
     bend1 = RDK.Item(bend_1, robolink.ITEM_TYPE_TARGET)
     r.MoveL(bend1)
@@ -80,12 +81,15 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     nombre1 = _transicion_objeto(obj_0, obj_1, sistRefBend, toolR)
 
     r.MoveL(abreprensa1)
+    robomath.pause(0.5)
     r.MoveL(retract1)
-    r.Pause(2000)
+    robomath.pause(0.5)
     r.MoveJ(gir180)
+    robomath.pause(0.5)
     r.MoveJ(place2)
+    robomath.pause(0.5)
     r.MoveL(bajaprensa2)
-    r.Pause(2000)
+    robomath.pause(0.5)
 
     bend2 = RDK.Item(bend_2, robolink.ITEM_TYPE_TARGET)
     r.MoveL(bend2)
@@ -93,16 +97,18 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
     _transicion_objeto(nombre1, obj_2, sistRefBend, toolR)
 
     r.MoveL(abreprensa2)
+    robomath.pause(0.5)
     r.MoveL(retract2)
+    robomath.pause(0.5)
 
     sim.setDO("BendingHecho", 1)
 
 def bending_plancha_larga(obj_name : str):
     """Ejecuta el prensado de la plancha larga con los targets adecuados."""
 
-    _bending_generico("Bend1", "Bend2", obj_name, variables.plantilla["larga1"], variables.plantilla["larga2"])
+    _bending_generico("Bend1", "Bend2", obj_name, var.plantilla["larga1"], var.plantilla["larga2"])
 
 def bending_plancha_ancha(obj_name : str):
     """Ejecuta el prensado de la plancha ancha con los targets adecuados."""
 
-    _bending_generico("BendA1", "BendA2", obj_name, variables.plantilla["ancha1"], variables.plantilla["ancha2"])
+    _bending_generico("BendA1", "BendA2", obj_name, var.plantilla["ancha1"], var.plantilla["ancha2"])

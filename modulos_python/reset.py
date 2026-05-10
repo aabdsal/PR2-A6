@@ -3,10 +3,8 @@
 Establece parámetros a 0, devuelve las cintas a su 
 posición original y elimina objetos."""
 
-from robodk import robolink
-from robodk import robomath
-from modulos_python import simulation
-from modulos_python import variables as var
+from robodk import robolink, robomath
+from modulos_python import simulation as sim, variables as var
 import json
 
 def reset_cinta(mecanismos : list[str]):
@@ -30,7 +28,7 @@ def reset_param():
 
     parametros = data.get("parametros", []) if isinstance(data, dict) else data
     for nombre in parametros:
-        simulation.setDO(str(nombre), 0)
+        sim.setDO(str(nombre), 0)
 
 def eliminar_duplicados(frame_name : str):
     RDK = robolink.Robolink()

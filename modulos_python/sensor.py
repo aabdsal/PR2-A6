@@ -17,6 +17,9 @@ def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : r
             elif nombre_sensor == "SensorEtiqueta":
                 variables.tiempo_fini.put(datetime.now().time())
 
+            if nombre_sensor == "SensorCC":
+                pass
+
 
 def detectar_objeto(nombre_sensor, frame_name : str):
     """Detecta objetos que colisionan con un sensor en un frame concreto.
@@ -44,9 +47,8 @@ def detectar_objeto(nombre_sensor, frame_name : str):
 
         if lista_objetos:
             for idx in lista_objetos:
-                if idx.Valid() and idx.Parent() == frame:
-                    if sensor.Collision(idx):
-                        detectados_actuales.add(idx)
+                if idx.Valid() and sensor.Collision(idx):
+                    detectados_actuales.add(idx)
 
         entradas_nuevas = list(detectados_actuales - detectados_anterior)
         if entradas_nuevas:

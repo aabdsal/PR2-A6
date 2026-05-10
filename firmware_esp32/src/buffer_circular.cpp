@@ -1,9 +1,9 @@
 /**
- * @file    colaCirc_mutex.cpp
+ * @file    buffer_circular.cpp
  * @author  PR2-A6
  * @version V0.0
  * @date    2026-05-06
- * @brief   Ejemplo de cola circular con mutex (comentado)
+ * @brief   Ejemplo de cola circular con mutex  
  */
 #if 0
 /* Includes ------------------------------------------------------------------*/
@@ -26,8 +26,8 @@ Buffer_Circ lista;
  */
 void IRAM_ATTR productor_isr() 
 {
-    /* WARNING:
-    portENTER_CRITICAL deshabilita las interrupciones
+    /* 
+    WARNING: portENTER_CRITICAL deshabilita las interrupciones
     (está en la última diapositiva del tema de semáforos y mutex de PR2)
     y el planificador de tareas, por lo que la función Serial, que usa 
     internamente semáforos, se queda bloqueada esperando indefinidamente, 

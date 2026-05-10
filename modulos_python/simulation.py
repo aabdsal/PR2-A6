@@ -134,7 +134,7 @@ def duplicar_objeto(plantilla_name: str, frame_name: str):
         #duplicado.setParentStatic(frame_item)
         duplicado.setVisible(True)
 
-        param_name = "count_" + plantilla_name
+        param_name = "numero_" + plantilla_name.replace("plantilla_", "")
         
         if RDK.getParam(param_name) is None:
             RDK.setParam(param_name, '0')
@@ -142,7 +142,7 @@ def duplicar_objeto(plantilla_name: str, frame_name: str):
         count = int(RDK.getParam(param_name)) + 1
         RDK.setParam(param_name, str(count))
         
-        nombre_base = plantilla_name.replace("plantilla_", "")
+        nombre_base = param_name.replace("numero_", "")
         duplicado.setName(f"{nombre_base}_{count}")
         
         return duplicado

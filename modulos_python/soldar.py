@@ -3,9 +3,7 @@
 from robodk import robolink
 RDK = robolink.Robolink()
 
-from modulos_python import simulation as sim
-from modulos_python import giro
-from modulos_python import variables as var
+from modulos_python import simulation as sim, variables as var, giro
 from typing import Optional
 
 ACTION_RESET = -1

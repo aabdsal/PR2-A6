@@ -6,6 +6,7 @@ curr = None
 conn = None
 
 def conectar():
+    """Realiza la conexion con la base de datos que hay en postgresSQL"""
     global curr, conn
     try:  
         conn = psycopg.connect(
@@ -46,7 +47,8 @@ def _registrar_producto(conexion, cursor, id_pedido, t_ini, t_fin):
     except Exception as error:
         conexion.rollback()
 
-def actualizar_unidad():    
+def actualizar_unidad():
+    """Actualiza la tabla de bbds"""    
     if var.tiempo_ini.empty() or var.tiempo_fini.empty():
         return
 

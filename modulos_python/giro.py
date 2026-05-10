@@ -1,8 +1,7 @@
 """Este módulo realiza los giros necesarios de la mesa giratoria."""
 
 from robodk import robolink
-from modulos_python import simulation as sim
-from modulos_python import variables as var
+from modulos_python import simulation as sim, variables as var
 
 
 def giro_plancha(i : int):

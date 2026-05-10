@@ -6,15 +6,6 @@ necesarias para la automatización de cuadros eléctricos.
 El uso de hilos permite ejecutar instancias en paralelo, por ejemplo mover
 cintas o coordinar robots simultáneamente."""
 
-# En caso de ejecutar el archivo main desde la terminal para ver logs con prints, usar esto
-if __name__ == "__main__" and __package__ is None:
-    import os
-    import sys
-    
-    package_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if package_root not in sys.path:
-        sys.path.insert(0, package_root)
-
 from modulos_python.entorno import preparar_entorno
 preparar_entorno()
 
@@ -69,7 +60,6 @@ def hilo_cinta_tapa():
     
 def hilo_cinta_main(): 
     """Hilo que mueve la cinta principal cuando hay pieza disponible."""
-    RDK = robolink.Robolink()
     while True:
         mc.mover_cinta_main()
         time.sleep(0.01)

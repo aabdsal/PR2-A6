@@ -25,7 +25,9 @@ def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : s
         cinta.setJoints(cinta.Joints() + robomath.Mat([[incremento]]))
         restante -= incremento
         if objeto_plantilla and restante <= 0:
+            RDK.Render(False)
             sim.duplicar_objeto(objeto_plantilla, frame_name)
+            RDK.Render(True)
             restante += espacio_objetos
         robomath.pause(0.01)
 
@@ -79,8 +81,12 @@ def mover_cinta_cuadro_acabada():
     
     cuadro_etiquetado = var.cola_cuadrosAcabados.get()
     cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
+    
+    RDK.Render(False)
+    cuadro_obj.setVisible(False)
     cuadro_obj.Delete()
+    RDK.Render(True)
 
     mqtt.enviar_message(mqtt.led_topic, "ON")
 
-    threading.Thread(target=bbdd.actualizar_unidad).start()
+    #threading.Thread(target=bbdd.actualizar_unidad).start()

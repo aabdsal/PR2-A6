@@ -1,10 +1,7 @@
 """Este módulo es el que implementa todos los movimientos de los robots que se usan en la estación."""
 
-from robodk import robolink
-from robodk import robomath
-from modulos_python import variables as var
-from modulos_python import simulation as sim
-from modulos_python import giro
+from robodk import robolink, robomath
+from modulos_python import variables as var, simulation as sim, giro
 
 #  = pose local, posicion y orientacion respecto al frame de referencia
 # .PoseAbs() = pose global, posicion y orientacion respecto al mundo, es decir, la estacion
@@ -25,21 +22,22 @@ def _pick_plancha(prepick_str, pick_str, obj_name : str):
     
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
     r.MoveJ(home)
+    robomath.pause(0.5)
     r.setFrame(sistRefPick)
 
     prepick = RDK.Item(prepick_str, robolink.ITEM_TYPE_TARGET)
     pick = RDK.Item(pick_str, robolink.ITEM_TYPE_TARGET)
 
     r.MoveL(prepick)
-    r.Pause(1000)
+    robomath.pause(0.5)
     r.MoveL(pick)
 
     sim.adjuntar_objeto(toolR, obj_name)
     
-    r.Pause(1000)
+    robomath.pause(0.5)    
     r.MoveL(prepick)
     
-    r.Pause(1000)
+    robomath.pause(0.5)
 
 def pick_plancha_larga(obj_name : str):
     """Ejecuta el pick de una plancha larga usando los targets correctos."""
@@ -90,7 +88,7 @@ def place_cinta_main():
     r.MoveJ(preplace)
     robomath.pause(0.5)
     r.MoveL(place)
-
+    robomath.pause(0.5)
     sim.soltar_objeto(var.tool_yaskawa, sistRefCinta)
     
     r.MoveL(preplace)   
@@ -101,7 +99,7 @@ def place_cinta_main():
 
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
     r.MoveJ(home)
-    
+    robomath.pause(0.5)
     sim.setDO("enCintaMain", 1)
 
 count = 0
@@ -131,35 +129,43 @@ def place_plancha_mesa():
         raise RuntimeError("El nombre de la herramienta no existe, revisa nombres")
     
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
-    prepick_cinta = RDK.Item("PrePickMain", robolink.ITEM_TYPE_TARGET)
+    prepick_main_larga = RDK.Item("PrePickMainLarga", robolink.ITEM_TYPE_TARGET)
+    prepick_main_ancha = RDK.Item("PrePickMainAncha", robolink.ITEM_TYPE_TARGET)
 
     giro180 = RDK.Item("Giro180_P", robolink.ITEM_TYPE_TARGET)
     pick_larga = RDK.Item("PickMainLarga", robolink.ITEM_TYPE_TARGET)
     pick_ancha = RDK.Item("PickMainAncha", robolink.ITEM_TYPE_TARGET)
     post_pick = RDK.Item("PostPick", robolink.ITEM_TYPE_TARGET)
     preplace_main = RDK.Item("PrePlaceMain", robolink.ITEM_TYPE_TARGET)
-    place_main = RDK.Item("PlaceMain", robolink.ITEM_TYPE_TARGET)
+    place_main_larga = RDK.Item("PlaceMainLarga", robolink.ITEM_TYPE_TARGET)
+    place_main_ancha = RDK.Item("PlaceMainAncha", robolink.ITEM_TYPE_TARGET)
 
     objeto_cola_main = var.objetos_pendientes["SensorCC"].get()
 
     r.setFrame(frame_paletizado)
     r.setTool(toolR)
-    r.MoveJ(ini)
-
+    #r.MoveJ(ini)
     r.setFrame(frame_cinta)
-    r.MoveL(prepick_cinta)
-    robomath.pause(0.5)
     elem = var.alternancia.get()
     
     if elem == "larga":
+        r.MoveJ(prepick_main_larga)
+        robomath.pause(0.5)
         r.MoveL(pick_larga)
+        robomath.pause(0.5)
+        sim.adjuntar_objeto(toolR, objeto_cola_main)
+        
+        r.MoveL(prepick_main_larga)
+
     elif elem == "ancha":
+        r.MoveJ(prepick_main_ancha)
+        robomath.pause(0.5)
         r.MoveL(pick_ancha)
+        robomath.pause(0.5)
+        sim.adjuntar_objeto(toolR, objeto_cola_main)
+        
+        r.MoveL(prepick_main_ancha)
     
-    robomath.pause(0.5)
-    sim.adjuntar_objeto(toolR, objeto_cola_main)
-    
-    r.MoveL(prepick_cinta)
     robomath.pause(0.5)
     r.MoveL(post_pick)
     robomath.pause(0.5)
@@ -167,7 +173,12 @@ def place_plancha_mesa():
     robomath.pause(0.5)
     r.MoveJ(preplace_main)
     robomath.pause(0.5)
-    r.MoveL(place_main)
+
+    if elem == "larga":
+        r.MoveL(place_main_larga)
+    elif elem == "ancha":
+        r.MoveL(place_main_ancha)
+
     robomath.pause(0.5)
     
     sim.soltar_objeto(var.tool_abb_p, frame_mesa)
@@ -212,8 +223,8 @@ def place_tapa_en_mesa():
     
     prepick_tapa = RDK.Item("PrePickTapa", robolink.ITEM_TYPE_TARGET)
     pick_tapa = RDK.Item("PickTapa", robolink.ITEM_TYPE_TARGET)
-    preplace_tapa = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
-    place_tapa = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
+    preplace_tapa = RDK.Item("PrePlaceTapa", robolink.ITEM_TYPE_TARGET)
+    place_tapa = RDK.Item("PlaceTapa", robolink.ITEM_TYPE_TARGET)
 
     objeto_tapa = var.objetos_pendientes["SensorTapa"].get()
 
