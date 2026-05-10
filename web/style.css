@@ -1,0 +1,126 @@
+:root {
+    --crema-fondo: #f5f1d8;
+    --azul-oscuro: #3c4d4d;
+    --amarillo-penta: #f39c12; 
+    --blanco: #ffffff;
+}
+
+body {
+    font-family: 'Arial Black', Gadget, sans-serif;
+    background-color: var(--crema-fondo);
+    margin: 0;
+    color: var(--azul-oscuro);
+}
+
+.top-logos {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.logo-upv { height: 40px; }
+
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.pentapanel-logo {
+    font-size: 4rem;
+    color: #2b5797; 
+    letter-spacing: 5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.intro-box {
+    background-color: var(--azul-oscuro);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    margin: 0 auto 30px; /* Centra el bloque en la página */
+    max-width: 80%;
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    text-align: center; /* CENTRA EL TEXTO DENTRO DEL CUADRO OSCURO */
+}
+
+.personalizacion-bubble {
+    background-color: var(--blanco);
+    display: block;           /* CAMBIADO A BLOCK PARA PODER CENTRARLO */
+    margin: 0 auto 20px;      /* CENTRA EL GLOBO EN LA PÁGINA */
+    width: fit-content;       /* AJUSTA EL TAMAÑO AL CONTENIDO */
+    padding: 10px 40px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: center;       /* CENTRA EL TEXTO INTERNO */
+}
+
+.personalizacion-bubble h2 {
+    color: var(--amarillo-penta);
+    font-size: 1.5rem;
+    text-align: center; 
+    margin: 0;         
+}
+
+.personalizacion-bubble p {
+    margin: 5px 0 0;
+    text-align: center;
+}
+
+.config-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 350px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.sticker-option {
+    border: 3px solid transparent;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sticker-option img { width: 100%; border-radius: 50%; }
+
+.sticker-option.selected {
+    border-color: var(--amarillo-penta);
+    background: #fff9e6;
+    border-radius: 10px;
+}
+
+.order-button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--azul-oscuro);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.order-button:hover { background-color: #2c3e3e; }
+
+.tech-stack {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
