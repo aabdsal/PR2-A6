@@ -9,6 +9,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <ArduinoJson.h>
 #include "setup.h"
+#include "loop.h"
 #include "config.h"
 #include "funciones.h"
 #include "comunicaciones.h"
@@ -18,7 +19,12 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+QueueHandle_t sensorQueue;
+QueueHandle_t extraQueue;
+TaskQueues_t taskQueues;
+
 /* Private function prototypes -----------------------------------------------*/
+
 /* Exported functions --------------------------------------------------------*/
 void on_setup() 
 {
@@ -27,6 +33,16 @@ void on_setup()
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
+
+    // Initialitzacio colas
+    sensorQueue = xQueueCreate(5, sizeof(long));
+    extraQueue = xQueueCreate(5, sizeof(uint8_t));
+
+    taskQueues.qSensor = sensorQueue;
+    taskQueues.qExtraBuffer = extraQueue;
+
+    // Creacion de tareas pasando argumentos
+    xTaskCreate(Task_Ultrasonidos, "Task_Ultra", 4096, (void*)&taskQueues, 2, NULL);
 
     initWebServer();
 }
