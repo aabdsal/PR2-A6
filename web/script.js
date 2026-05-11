@@ -1,5 +1,5 @@
 const BROKER = "broker.emqx.io";
-const PORT = 1883;
+const PORT = 8083;
 const TOPIC_WEB = "giirob/pr2/pentapanel/pedido";
 
 let client = new Paho.MQTT.Client(BROKER, PORT, "pentapanel_web_" + Math.random());
@@ -31,5 +31,5 @@ document.getElementById('btnOrder').addEventListener('click', () => {
     message.destinationName = TOPIC_WEB;
     client.send(message);
     
-    alert(`¡Orden enviada! Fabricando ${qty} cuadros PentaPanel.`);
+    alert(`¡Pedido enviado! Fabricando ${qty} cuadros PentaPanel.`);
 });
