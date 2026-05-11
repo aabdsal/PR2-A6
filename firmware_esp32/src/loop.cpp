@@ -13,6 +13,7 @@
 #include "config.h"
 #include "comunicaciones.h"
 #include "setup.h"
+#include "web.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -28,6 +29,8 @@ bool emergencyLatched = false;
 /* Exported functions --------------------------------------------------------*/
 void on_loop()
 {
+    handleWebServer();
+
     JsonDocument doc;
     long distancia = leerUltrasonidos();
 

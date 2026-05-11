@@ -12,6 +12,7 @@
 #include "config.h"
 #include "funciones.h"
 #include "comunicaciones.h"
+#include "web.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -26,6 +27,8 @@ void on_setup()
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
+
+    initWebServer();
 }
 
 /* Private functions ---------------------------------------------------------*/

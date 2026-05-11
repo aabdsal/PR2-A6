@@ -54,6 +54,9 @@ void mqtt_connect(String clientID)
     //  recibir datos por las suscripciones realizadas
     mqttClient.setCallback(mqttCallback);
 
+    // Ampliem el tamany del buffer per enviar imatges en base64
+    mqttClient.setBufferSize(15000);
+
     // Conectamos
     mqtt_reconnect(MQTT_CONNECTION_RETRIES);
 
