@@ -35,8 +35,6 @@ def _thread_excepthook(args):
 threading.excepthook = _thread_excepthook
 
 # Los siguientes hilos mueven las cintas por donde llegan los objetos.
-# TODO : falta sustituir esos while true de las cintas a que se vuelva a mover despues de que el robot mueva el objeto
-
 def hilo_cinta_larga():
     """Hilo que mueve la cinta de planchas largas."""
     while True:
@@ -70,11 +68,12 @@ def hilo_cinta_etiquetado():
         mc.mover_cinta_cuadro_acabada()
         time.sleep(0.01)
 
+# Los siguientes hilos llaman a funciones donde los robots realizan movimientos de pick & place, prensado y soldado
 def hilo_yaskawa():
-    """Este hilo llama a la secuencia de movimientos pick->bending->place de un 
-    tipo de planchas o otro. Para no depender de la salida digital que se genera
-    el objeto, se implemento una cola para sensor donde se guarda el objeto una
-    vez el sensor detecte que hay un objeto.
+    """Este hilo llama a la secuencia de movimientos pick->bending->place 
+    de un tipo de planchas o otro. Para no depender de la salida digital 
+    que se genera el objeto, se implemento una cola para cada sensor donde
+    se guarda el objeto una vez el sensor detecte que hay un objeto.
     Así la información es más persistente en tiempo de ejecución."""
 
     cola_ancha = variables.objetos_pendientes["SensorCA"]
@@ -123,9 +122,9 @@ def hilo_sensorCL():
     """Hilo del sensor de planchas largas."""
     sensor.detectar_objeto("SensorCL", "FramePlanchaLarga")
 
-def hilo_sensorCC():
+def hilo_sensorCM():
     """Hilo del sensor de la cinta principal."""
-    sensor.detectar_objeto("SensorCC", "FramePlanchaMain")
+    sensor.detectar_objeto("SensorCM", "FramePlanchaMain")
 
 def hilo_sensorTapa():
     """Hilo del sensor de tapas."""
@@ -133,16 +132,16 @@ def hilo_sensorTapa():
 
 def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
-    sensor.detectar_objeto("SensorEtiqueta", "FrameCuadroAcabada")
+    sensor.detectar_objeto("SensorEtiqueta", "FrameEtiqueta")
 
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 
-ocurra un error,que se imprima por mensaje el nombre del hilo."""
+ocurra un error, que se imprima por mensaje el nombre del hilo."""
 threads = [
     threading.Thread(target=hilo_cinta_larga, name="cinta_larga"),
     threading.Thread(target=hilo_cinta_ancha, name="cinta_ancha"),
-    threading.Thread(target=hilo_cinta_tapa, name="cinta_tapa"),
     threading.Thread(target=hilo_cinta_main, name="cinta_main"),
+    threading.Thread(target=hilo_cinta_tapa, name="cinta_tapa"),
     threading.Thread(target=hilo_cinta_etiquetado, name="cinta_etiquetado"),
 
     threading.Thread(target=hilo_yaskawa, name="yaskawa"),
@@ -151,10 +150,11 @@ threads = [
 
     threading.Thread(target=hilo_sensorCA, name="sensor_ca"),
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
-    threading.Thread(target=hilo_sensorCC, name="sensor_cc"),
+    threading.Thread(target=hilo_sensorCM, name="sensor_cm"),
     threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
     threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
 ]
 
+# Se inicializan todos los hilos a la vez
 for t in threads:
     t.start()

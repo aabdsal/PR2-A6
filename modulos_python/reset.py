@@ -16,6 +16,14 @@ def reset_cinta(mecanismos : list[str]):
         if not item_cinta.Valid():
             raise RuntimeError(RDK.ShowMessage(f"Cinta: {nombre_cinta} no existe, revisa nombres"))
         
+        if item_cinta.Name() == var.mesa_giratoria:
+            target_ini_mesa = RDK.Item("Inici", robolink.ITEM_TYPE_TARGET)
+    
+            if not target_ini_mesa.Valid():
+                raise RuntimeError("Target de esquina inválido. Revisa nombres")
+            
+            item_cinta.MoveJ(target_ini_mesa)
+            continue
         item_cinta.setJoints(robomath.Mat([[0]]))
 
 def reset_param():

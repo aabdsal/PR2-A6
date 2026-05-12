@@ -1,21 +1,20 @@
 """Este archivo implementa la lógica para que un sensor detecte objetos."""
 
-from robodk import robolink    
-from robodk import robomath    
-from modulos_python import variables, simulation
+from robodk import robolink, robomath    
+from modulos_python import variables as var, simulation as sim
 from datetime import datetime
 
 def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : robolink.Robolink):
     if detectados:
         for idx in detectados:
             nombre_obj = idx.Name()
-            variables.objetos_pendientes[nombre_sensor].put(nombre_obj)
+            var.objetos_pendientes[nombre_sensor].put(nombre_obj)
             
             if nombre_sensor == "SensorCA":
-                variables.tiempo_ini.put(datetime.now().time())
+                var.tiempo_ini.put(datetime.now().time())
                 
             elif nombre_sensor == "SensorEtiqueta":
-                variables.tiempo_fini.put(datetime.now().time())
+                var.tiempo_fini.put(datetime.now().time())
 
             if nombre_sensor == "SensorCC":
                 pass
@@ -52,10 +51,10 @@ def detectar_objeto(nombre_sensor, frame_name : str):
 
         entradas_nuevas = list(detectados_actuales - detectados_anterior)
         if entradas_nuevas:
-            simulation.setDO(nombre_sensor, 1)
+            sim.setDO(nombre_sensor, 1)
             productorEvento(nombre_sensor, entradas_nuevas, RDK)
         else:
-            simulation.setDO(nombre_sensor, 0)
+            sim.setDO(nombre_sensor, 0)
         
         detectados_anterior = detectados_actuales.copy()
 

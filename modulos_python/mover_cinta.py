@@ -2,11 +2,8 @@
 simular el movimiento de los objetos sobre las cintas."""
 
 import threading
-from robodk import robolink
-from robodk import robomath
-from modulos_python import variables as var
-from modulos_python import simulation as sim
-from modulos_python import mqtt, bbdd
+from robodk import robolink, robomath
+from modulos_python import mqtt, bbdd, variables as var, simulation as sim
 
 def _mover_cinta(cinta_name, param_sensor, frame_name: str, objeto_plantilla : str | None = None):
     """Mueve una cinta mientras el sensor no detecte ningún objeto."""
