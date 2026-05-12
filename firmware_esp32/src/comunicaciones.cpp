@@ -19,6 +19,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
+void tareaLedOn(void *pvParameters);
 /* Exported functions --------------------------------------------------------*/
 void suscribirseATopics() 
 {
@@ -51,10 +52,7 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
 
         if (strcmp(estadoLed, "on") == 0) 
         {
-          infoln("Encender el led interno (remote)");
-          setInternalLedFromRemote(1);
-          delay(1000);
-          setInternalLedFromRemote(0);
+          xTaskCreate(tareaLedOn, "TareaLed", 2048, NULL, 1, NULL);
         }
 
     }
@@ -66,6 +64,14 @@ void enviarMensajePorTopic(const char* topic, String outgoingMessage)
 }
 
 /* Private functions ---------------------------------------------------------*/
+void tareaLedOn(void *pvParameters)
+{
+    infoln("Encender el led interno (remote)");
+    setInternalLedFromRemote(1);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    setInternalLedFromRemote(0);
+    vTaskDelete(NULL);
+}
 
 /* End of file ****************************************************************/
 

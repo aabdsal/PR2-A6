@@ -54,7 +54,8 @@ long leerUltrasonidos()
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
     
-    long duration = pulseIn(ECHO_PIN, HIGH);
+    // Timeout de 30ms (30000us) para no bloquear la CPU en caso de fallo o eco muy lejano
+    long duration = pulseIn(ECHO_PIN, HIGH, 30000); 
     
     // Calculating the distance
     // Speed of sound wave divided by 2 (go and back)
