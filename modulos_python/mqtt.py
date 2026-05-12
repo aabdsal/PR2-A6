@@ -21,7 +21,7 @@ RDK = robolink.Robolink()
 def _on_connect(client, userdata, flags, reason_code, properties):
     print(f"MQTT conectado. reason_code={reason_code}", flush=True)
 
-def _on_disconnect(client, userdata, reason_code, properties):
+def _on_disconnect(client, userdata, disconnect_flags, reason_code, properties):
     print(f"MQTT desconectado. reason_code={reason_code}", flush=True)
 
 def _on_publish(client, userdata, mid, reason_code, properties):

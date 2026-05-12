@@ -330,6 +330,18 @@ def place_cuadro_acabada():
     robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
 
+    mesa = RDK.Item(var.mesa_giratoria, robolink.ITEM_TYPE_ROBOT)
+
+    if not mesa.Valid():
+        raise RuntimeError("Nombre de la mesa inválido. Revisa nombres")
+    
+    target_ini_mesa = RDK.Item("Inici", robolink.ITEM_TYPE_TARGET)
+    
+    if not target_ini_mesa.Valid():
+        raise RuntimeError("Target de esquina inválido. Revisa nombres")
+    
+    mesa.MoveJ(target_ini_mesa)
+
     sim.setDO("EnCintaEtiquetar", 1)
     
     r.MoveJ(ini)

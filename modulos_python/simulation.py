@@ -4,8 +4,7 @@ Incluye métodos para ocultar/mostrar objetos, reemplazar posiciones,
 adjuntar o soltar objetos, simular esperas digitales, establecer
 salidas digitales y duplicar objetos."""
 
-from robodk import robolink    
-from robodk import robomath    
+from robodk import robolink, robomath    
 from typing import Optional
 from modulos_python import variables as var
 from threading import Lock
