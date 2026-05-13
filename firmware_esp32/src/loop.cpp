@@ -133,6 +133,28 @@ void Task_Control(void *pvParameters)
     }
 }
 
+// TAREA 3: CONSUMIDOR DEL BUFFER EXTRA
+
+
+void Task_Logger(void *pvParameters)
+{
+    TaskQueues_t *queues = (TaskQueues_t *)pvParameters;
+    uint8_t evento;
+
+    for(;;)
+    {
+        // Recibimos del qExtraBuffer (el 0 o 1 que envía la Task_Control)
+        if (xQueueReceive(queues->qExtraBuffer, &evento, portMAX_DELAY) == pdPASS)
+        {
+            if (evento == 1) {
+                infoln("[SEGURIDAD] Evento registrado: Parada de Emergencia.");
+            } else {
+                infoln("[SEGURIDAD] Evento registrado: Sistema Despejado.");
+            }
+        }
+    }
+}
+
 void on_loop()
 {
     handleWebServer();
