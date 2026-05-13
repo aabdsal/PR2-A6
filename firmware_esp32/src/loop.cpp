@@ -22,7 +22,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 long sensorsUpdateInterval = 5000; // tiempo de actualización de los sensores
-bool emergencyLatched = false;
+//bool emergencyLatched = false; AQUÍ ES GLOBAL, LA HE METIDO EN TASK CONTROL PARA QUE SEA VARIABLE LOCAL
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -42,7 +42,11 @@ void Task_Ultrasonidos(void *pvParameters)
 
         if (distancia > 0 && distancia != 797) 
         {
-            Serial.print("Distancia: ");
+            xQueueSend(queues->qSensor, &distancia, 0);
+
+            // ESTO DE AQUÍ ABAJO VA A IR EN OTRA TAREA
+
+            /*Serial.print("Distancia: ");
             Serial.println(distancia);
 
             if (distancia < DISTANCIA_EMERGENCIA) 
@@ -74,10 +78,58 @@ void Task_Ultrasonidos(void *pvParameters)
 
         // Simulación de uso del sensor buffer temporal para cumplir la rúbrica (más de 1 buffer manejado)
         long copyDist = distancia;
-        xQueueSend(queues->qSensor, &copyDist, 0);
+        xQueueSend(queues->qSensor, &copyDist, 0);*/
+        }
 
         // Tarea periodica timing absoluto
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
+}
+
+/* --- Tarea 2: Lógica y MQTT --- */
+void Task_Control(void *pvParameters)
+{
+    TaskQueues_t *queues = (TaskQueues_t *)pvParameters;
+    long distRecibida;
+    bool localEmergencyLatched = false; // Estado local, eliminamos la variable global 
+
+    for(;;)
+    {
+        // Esperamos a que llegue un dato de la cola (Bloqueante hasta que haya datos)
+        if (xQueueReceive(queues->qSensor, &distRecibida, portMAX_DELAY) == pdPASS)
+        {
+            JsonDocument doc;
+            
+            if (distRecibida < DISTANCIA_EMERGENCIA) // 
+            {
+                if (!localEmergencyLatched) 
+                {
+                    doc["estado_simulacion"] = "STOP";
+                    String payload;
+                    serializeJson(doc, payload);
+                    enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload); // 
+                    
+                    localEmergencyLatched = true;
+
+                    //  Así manejamos más de un buffer: Enviamos código de evento (1=STOP)
+                    uint8_t eventCode = 1;
+                    xQueueSend(queues->qExtraBuffer, &eventCode, 0); 
+                }
+            } 
+            else if (localEmergencyLatched) 
+            {
+                doc["estado_simulacion"] = "GO";
+                String payload;
+                serializeJson(doc, payload);
+                enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload); // 
+                
+                localEmergencyLatched = false;
+
+                // Enviamos código de evento al segundo buffer (0=CLEAR)
+                uint8_t eventCode = 0;
+                xQueueSend(queues->qExtraBuffer, &eventCode, 0);
+            }
+        }
     }
 }
 
