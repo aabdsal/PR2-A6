@@ -83,9 +83,6 @@ void loop()
     // NO QUITAR (jjfons)
     wifi_loop();
     mqtt_loop();
-
-    // TODO: completar esta función (loop.cpp)
-    on_loop();
 }
 
 /* Private functions ---------------------------------------------------------*/
