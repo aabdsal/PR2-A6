@@ -16,6 +16,9 @@ led_topic = "giirob/pr2/erro/led"
 button_topic = "giirob/pr2/erro/button"
 emergency_stop_topic = "giirob/pr2/erro/emergency_stop"
 
+# topic para la recepcion de etiquetas desde la pagina web
+web_topic = "giirob/pr2/erro/pentapanel/pedido"
+
 RDK = robolink.Robolink()
 
 def _on_connect(client, userdata, flags, reason_code, properties):
@@ -97,6 +100,15 @@ def handle_message(mqttc, topic, payload):
             elif payload == "GO":
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
+    
+    if topic == web_topic:
+        try:
+            data = json.loads(payload)
+            estado = data.get("START")
+            
+        except json.JSONDecodeError:
+                pass
+    
         
 
 
