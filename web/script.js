@@ -1,6 +1,6 @@
 const BROKER = "broker.emqx.io";
 const PORT = 8083;
-const TOPIC_WEB = "giirob/pr2/pentapanel/pedido";
+const TOPIC_WEB = "giirob/pr2/erro/pentapanel/pedido";
 
 let client = new Paho.MQTT.Client(BROKER, PORT, "pentapanel_web_" + Math.random());
 let selectedId = null;
