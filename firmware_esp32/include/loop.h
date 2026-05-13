@@ -35,6 +35,8 @@ extern TaskQueues_t taskQueues;
 /* Exported functions --------------------------------------------------------*/
 
 void Task_Ultrasonidos(void *pvParameters);
+void Task_Control(void *pvParameters);
+void Task_Logger(void *pvParameters);
 
 /******************************************************************************/
 /**

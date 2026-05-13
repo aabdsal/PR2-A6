@@ -42,7 +42,9 @@ void on_setup()
     taskQueues.qExtraBuffer = extraQueue;
 
     // Creacion de tareas pasando argumentos
-    xTaskCreate(Task_Ultrasonidos, "Task_Ultra", 4096, (void*)&taskQueues, 2, NULL);
+    xTaskCreate(Task_Ultrasonidos, "Task_Ultra", 4096, (void*)&taskQueues, 3, NULL);
+    xTaskCreate(Task_Control, "controla", 4096, (void*)&taskQueues, 2, NULL);
+    xTaskCreate(Task_Logger, "Logger", 2048, (void*)&taskQueues, 1, NULL);
 
     initWebServer();
 }
