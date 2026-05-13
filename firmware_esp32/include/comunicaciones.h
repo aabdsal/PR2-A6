@@ -10,6 +10,11 @@
 #ifndef COMUNICACIONES_H
 #define COMUNICACIONES_H
 
+/* Evita el name mangling con c++ ------------------------------------------- */
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 
 #include <Arduino.h>
@@ -48,6 +53,10 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage);
  * @retval None
  */
 void enviarMensajePorTopic(const char* topic, String outgoingMessage);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // COMUNICACIONES_H
 

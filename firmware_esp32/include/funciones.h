@@ -10,6 +10,11 @@
 #ifndef FUNCIONES_H
 #define FUNCIONES_H
 
+/* Evita el name mangling con c++ ------------------------------------------- */
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 
@@ -65,6 +70,10 @@ bool isInternalLedRemoteLocked();
  * @retval None
  */
 void setLedProceso(uint8_t proceso);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // FUNCIONES_H
 

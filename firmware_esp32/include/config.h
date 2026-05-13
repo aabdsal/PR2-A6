@@ -10,6 +10,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* Evita el name mangling con c++ ------------------------------------------- */
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
@@ -54,6 +59,10 @@
 #define BUTTON_TOPIC              "giirob/pr2/erro/button"
 #define EMERGENCY_STOP_TOPIC      "giirob/pr2/erro/emergency_stop"
 #define ESTADO_PROCESO_TOPIC      "giirob/pr2/erro/estado_proceso"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // CONFIG_H
 
