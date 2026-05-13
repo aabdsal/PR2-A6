@@ -10,6 +10,11 @@
 #ifndef C_LOGGER_H
 #define C_LOGGER_H
 
+/* Evita el name mangling con c++ ------------------------------------------- */
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
@@ -51,6 +56,10 @@ static bool _log_newline = true;
 #define fatal(message)
 #define fatalln(message)
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif // C_LOGGER_H

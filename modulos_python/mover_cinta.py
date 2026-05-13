@@ -2,6 +2,7 @@
 simular el movimiento de los objetos sobre las cintas."""
 
 import threading
+import json
 from robodk import robolink, robomath
 from modulos_python import mqtt, bbdd, variables as var, simulation as sim
 
@@ -84,6 +85,9 @@ def mover_cinta_cuadro_acabada():
     cuadro_obj.Delete()
     RDK.Render(True)
 
-    mqtt.enviar_message(mqtt.led_topic, "ON")
+    mensaje = json.dumps({
+        "estado_led": "on",
+    })
+    mqtt.enviar_message(mqtt.led_topic, mensaje)
 
     #threading.Thread(target=bbdd.actualizar_unidad).start()

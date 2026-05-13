@@ -10,6 +10,11 @@
 #ifndef SETUP_H
 #define SETUP_H
 
+/* Evita el name mangling con c++ ------------------------------------------- */
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 
@@ -29,6 +34,10 @@ extern String deviceID;
  * @retval None
  */
 void on_setup();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // SETUP_H
 

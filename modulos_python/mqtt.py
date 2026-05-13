@@ -67,7 +67,7 @@ def conectar():
 
     var_mqtt.loop_start()
     
-def enviar_message(topic, mensaje : str):
+def enviar_message(topic : str, mensaje):
     global var_mqtt
 
     if var_mqtt is None:
