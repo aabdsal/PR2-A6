@@ -28,7 +28,7 @@ long sensorsUpdateInterval = 5000; // tiempo de actualización de los sensores
 
 /* Exported functions --------------------------------------------------------*/
 
-// Nueva tarea que envuelve LA MISMA lógica del ultrasonidos (Rubrica 2)
+// TAREA QUE SOLO ENVIA A LA COLA LO QUE LEE EL ULTRASONIDOS
 void Task_Ultrasonidos(void *pvParameters)
 {
     TaskQueues_t *queues = (TaskQueues_t *)pvParameters; // Pasamos parámetros según rúbrica
@@ -86,7 +86,7 @@ void Task_Ultrasonidos(void *pvParameters)
     }
 }
 
-/* --- Tarea 2: Lógica y MQTT --- */
+// TAREA 2 : LOGICA Y MQTT
 void Task_Control(void *pvParameters)
 {
     TaskQueues_t *queues = (TaskQueues_t *)pvParameters;
