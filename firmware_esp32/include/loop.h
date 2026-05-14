@@ -30,7 +30,7 @@
  * @brief  Ejecuta tareas ciclicas del dispositivo
  * @retval None
  */
-void on_loop();
+void tareaUltrasonidos(void *parameter);
 
 #ifdef __cplusplus
 }

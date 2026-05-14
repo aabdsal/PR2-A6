@@ -12,12 +12,13 @@
 #include "funciones.h"
 #include "config.h"
 #include "c_logger.h"
+#include "buffer_circular.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-
+/* Variables -----------------------------------------------------------------*/
+extern bool PARAR;
 uint8_t ledStatus = 0;
 // When true, button presses won't change the LED; remote commands control it
 static bool ledRemoteLocked = false;
@@ -44,6 +45,28 @@ void setInternalLedFromRemote(uint8_t status)
       infoln("Led: off");
       digitalWrite(LED_BUILTIN, LOW);
     }
+}
+
+void tareaLED(void *parameter)
+{
+  Buffer_Circ* buff_led = (Buffer_Circ*) parameter;
+  const TickType_t xFrequency = pdMS_TO_TICKS(100);
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+  int orden_recibida;
+  while(!PARAR)
+  {
+    if(pop(buff_led, &orden_recibida) == 0)
+    {
+      if(orden_recibida == LED_ENCENDIDO)
+      {
+        setInternalLedFromRemote(1);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        setInternalLedFromRemote(0);
+      }
+    }
+    vTaskDelayUntil(&xLastWakeTime, xFrequency);
+  }
+  vTaskDelete(NULL);
 }
 
 long leerUltrasonidos() 

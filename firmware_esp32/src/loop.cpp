@@ -13,6 +13,7 @@
 #include "config.h"
 #include "comunicaciones.h"
 #include "setup.h"
+#include "buffer_circular.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -26,8 +27,38 @@ bool emergencyLatched = false;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
-void on_loop()
-{
+  bool PARAR = false;
+  void tareaUltrasonidos(void *parameter)
+  {
+    Buffer_Circ* buff_prod = (Buffer_Circ*) parameter;
+    const TickType_t xFrequency = pdMS_TO_TICKS(250);
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    while(!PARAR)
+    {
+      long lectura_ultrasonidos = leerUltrasonidos();
+      if(lectura_ultrasonidos < DISTANCIA_EMERGENCIA)
+      {
+        if(!emergencyLatched)
+        {
+          push(buff_prod, PLANTA_STOP);
+          emergencyLatched = true;
+        }
+      }
+      else if(emergencyLatched)
+      {
+        push(buff_prod, PLANTA_GO);
+        emergencyLatched = false;
+      }
+      vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
+    vTaskDelete(NULL);
+  }
+
+
+/* Private functions ---------------------------------------------------------*/
+
+/* End of file ****************************************************************/
+/*
     JsonDocument doc;
     long distancia = leerUltrasonidos();
 
@@ -62,11 +93,5 @@ void on_loop()
         emergencyLatched = false;
     }
   }
-}
 
-/* Private functions ---------------------------------------------------------*/
-
-/* End of file ****************************************************************/
-
-
-
+*/

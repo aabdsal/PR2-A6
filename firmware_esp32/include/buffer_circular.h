@@ -6,8 +6,6 @@
  * @brief   Ejemplo de cola circular con mutex (comentado)
  */
 
-#if 0
-
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef BUFFER_CIRCULAR_H
 #define BUFFER_CIRCULAR_H
@@ -27,12 +25,24 @@
 #define PIN_BUTTON 13
 
 /* Private typedef -----------------------------------------------------------*/
+typedef enum
+{
+    LED_APAGADO,
+    LED_ENCENDIDO
+} Estado_Led;
+
+typedef enum 
+{
+    PLANTA_GO,
+    PLANTA_STOP
+}  Estado_Planta;
+
 typedef struct
 { 
     uint32_t bufIN = 0;            // Índice inferior
     uint32_t bufOUT = 0;           // Índice superior
     uint32_t contador = 0;         // Para contar el nº de elementos
-    uint32_t colaCirc[BUFSIZE];    // Array de nº enteros
+    int colaCirc[BUFSIZE];    // Array de nº enteros
 
 } Buffer_Circ;
 
@@ -46,8 +56,7 @@ typedef struct
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
-portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED; // Mutex para la sección crítica
-
+extern portMUX_TYPE taskMux;
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
@@ -58,7 +67,7 @@ portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED; // Mutex para la sección c
  * @param  dato Dato a insertar
  * @retval 0 si ok, -1 si lleno
  */
-uint32_t push(Buffer_Circ *lista, uint32_t dato);   
+uint32_t push(Buffer_Circ *lista, int dato);   
 
 /******************************************************************************/
 /**
@@ -67,7 +76,7 @@ uint32_t push(Buffer_Circ *lista, uint32_t dato);
  * @param  dato Puntero al dato extraido
  * @retval 0 si ok, -1 si vacio
  */
-uint32_t pop(Buffer_Circ *lista, uint32_t *dato);   
+uint32_t pop(Buffer_Circ *lista, int *dato);   
 
 /******************************************************************************/
 /**
@@ -101,7 +110,6 @@ uint32_t getTam(Buffer_Circ *lista);
  */
 void listar(Buffer_Circ *lista);          
 
-#endif
 
 #ifdef __cplusplus
 }

@@ -35,6 +35,12 @@ bool bottonPressed();
 
 /******************************************************************************/
 /**
+ * @brief  Tarea que encender y apagar el LED
+ */
+void tareaLED(void *parameter);
+
+/******************************************************************************/
+/**
  * @brief  Gestiona el estado del boton
  * @param  pressed Estado actual del boton
  * @retval None

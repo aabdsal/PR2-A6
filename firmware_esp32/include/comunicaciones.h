@@ -58,6 +58,7 @@ void enviarMensajePorTopic(const char* topic, String outgoingMessage);
 }
 #endif
 
+void tareaGestorMQTT(void *parameter);
 #endif // COMUNICACIONES_H
 
 /* End of file ****************************************************************/
