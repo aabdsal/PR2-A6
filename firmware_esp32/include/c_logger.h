@@ -10,10 +10,8 @@
 #ifndef C_LOGGER_H
 #define C_LOGGER_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
+
+
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -58,9 +56,7 @@ static bool _log_newline = true;
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // C_LOGGER_H
 

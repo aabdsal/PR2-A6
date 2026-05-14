@@ -10,10 +10,8 @@
 #ifndef COMUNICACIONES_H
 #define COMUNICACIONES_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
+
+
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -54,9 +52,7 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage);
  */
 void enviarMensajePorTopic(const char* topic, String outgoingMessage);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 void tareaGestorMQTT(void *parameter);
 #endif // COMUNICACIONES_H

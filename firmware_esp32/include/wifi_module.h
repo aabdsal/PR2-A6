@@ -10,11 +10,6 @@
 #ifndef WIFI_MODULE_H
 #define WIFI_MODULE_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
 
 #include <Arduino.h>
@@ -60,9 +55,7 @@ void wifi_connect();
  */
 void wifi_reconnect(uint retries);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // WIFI_MODULE_H
 

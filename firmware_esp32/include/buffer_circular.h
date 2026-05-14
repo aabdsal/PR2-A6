@@ -10,10 +10,8 @@
 #ifndef BUFFER_CIRCULAR_H
 #define BUFFER_CIRCULAR_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
+
+
 
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
@@ -111,9 +109,7 @@ uint32_t getTam(Buffer_Circ *lista);
 void listar(Buffer_Circ *lista);          
 
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // BUFFER_CIRCULAR_H
 

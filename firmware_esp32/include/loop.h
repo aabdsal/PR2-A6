@@ -10,10 +10,8 @@
 #ifndef LOOP_H
 #define LOOP_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
+
+
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -32,9 +30,7 @@
  */
 void tareaUltrasonidos(void *parameter);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // LOOP_H
 

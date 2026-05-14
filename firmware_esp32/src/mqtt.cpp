@@ -122,7 +122,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length)
         incomingMessage += (char)message[i];
     }
 
-    traceln("<<~~ RECEIVING an MQTT message:");
+    traceln("<<-- RECEIVING an MQTT message:");
     traceln(topic);
     traceln(incomingMessage);
 
@@ -131,7 +131,7 @@ void mqttCallback(char* topic, byte* message, unsigned int length)
 
 void mqtt_publish(const char* topic, String outgoingMessage) 
 {
-    traceln("~~>> PUBLISHING an MQTT message:");
+    traceln("-->> PUBLISHING an MQTT message:");
     traceln(topic);
     traceln(outgoingMessage);
 

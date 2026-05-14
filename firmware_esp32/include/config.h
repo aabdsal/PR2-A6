@@ -10,11 +10,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
@@ -22,8 +17,7 @@
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
-#define LED_BUILTIN 2
-
+#define LED_BUILTIN 3
 
 // COMM BAUDS
 #define BAUDS 115200
@@ -45,8 +39,8 @@
 #define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
 
 // WIFI
-#define NET_SSID                  "DIGIFIBRA-RC6D"
-#define NET_PASSWD                "S5ZDsNzsR7Re"
+#define NET_SSID                  "MIWIFI_XFE7"
+#define NET_PASSWD                "QHubtTFE"
 
 // MQTT
 #define MQTT_SERVER_IP            "broker.emqx.io"   // IP del broker MQTT al que se conectará el dispositivo
@@ -60,9 +54,7 @@
 #define EMERGENCY_STOP_TOPIC      "giirob/pr2/erro/emergency_stop"
 #define ESTADO_PROCESO_TOPIC      "giirob/pr2/erro/estado_proceso"
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // CONFIG_H
 

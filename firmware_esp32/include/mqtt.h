@@ -10,10 +10,8 @@
 #ifndef MQTT_H
 #define MQTT_H
 
-/* Evita el name mangling con c++ ------------------------------------------- */
-#ifdef __cplusplus
- extern "C" {
-#endif
+
+
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -79,9 +77,7 @@ void mqtt_publish(const char* topic, String outgoingMessage);
  */
 void mqtt_subscribe(const char* topic);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // MQTT_H
 /* End of file ****************************************************************/

@@ -27,32 +27,32 @@ bool emergencyLatched = false;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
-  bool PARAR = false;
-  void tareaUltrasonidos(void *parameter)
-  {
+bool PARAR = false;
+void tareaUltrasonidos(void *parameter)
+{
     Buffer_Circ* buff_prod = (Buffer_Circ*) parameter;
     const TickType_t xFrequency = pdMS_TO_TICKS(250);
     TickType_t xLastWakeTime = xTaskGetTickCount();
     while(!PARAR)
     {
-      long lectura_ultrasonidos = leerUltrasonidos();
-      if(lectura_ultrasonidos < DISTANCIA_EMERGENCIA)
-      {
-        if(!emergencyLatched)
+        long lectura_ultrasonidos = leerUltrasonidos();
+        if(lectura_ultrasonidos < DISTANCIA_EMERGENCIA)
         {
-          push(buff_prod, PLANTA_STOP);
-          emergencyLatched = true;
+            if(!emergencyLatched)
+            {
+                push(buff_prod, PLANTA_STOP);
+                emergencyLatched = true;
+            }
         }
-      }
-      else if(emergencyLatched)
-      {
-        push(buff_prod, PLANTA_GO);
-        emergencyLatched = false;
-      }
-      vTaskDelayUntil(&xLastWakeTime, xFrequency);
+        else if(emergencyLatched)
+        {
+            push(buff_prod, PLANTA_GO);
+            emergencyLatched = false;
+        }
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
     vTaskDelete(NULL);
-  }
+}
 
 
 /* Private functions ---------------------------------------------------------*/

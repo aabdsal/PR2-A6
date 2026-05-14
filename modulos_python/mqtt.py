@@ -90,14 +90,14 @@ def handle_message(mqttc, topic, payload):
             if estado == "STOP":
                 RDK.setSimulationSpeed(0)
                 RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
-            elif estado == "GO":
+            elif estado == "GO":                
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
         except json.JSONDecodeError:
-            if payload == "STOP":
+            if payload == "STOP":                
                 RDK.setSimulationSpeed(0)
                 RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
-            elif payload == "GO":
+            elif payload == "GO":                
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
     

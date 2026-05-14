@@ -77,11 +77,8 @@ long leerUltrasonidos()
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
     
-    long duration = pulseIn(ECHO_PIN, HIGH);
-    
-    // Calculating the distance
-    // Speed of sound wave divided by 2 (go and back)
-    return duration * 0.034 / 2;
+    unsigned long duration = pulseIn(ECHO_PIN, HIGH);
+    return (long)(duration * 0.034 / 2);
 }
 
 /* Private functions ---------------------------------------------------------*/
