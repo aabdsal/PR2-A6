@@ -105,7 +105,6 @@ uint32_t getTam(Buffer_Circ *lista);
  */
 void listar(Buffer_Circ *lista);          
 
-#endif
 #endif // BUFFER_CIRCULAR_H
 
 /* End of file ****************************************************************/

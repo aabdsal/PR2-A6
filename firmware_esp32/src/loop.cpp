@@ -13,6 +13,7 @@
 #include "config.h"
 #include "comunicaciones.h"
 #include "setup.h"
+#include "buffer_circular.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
