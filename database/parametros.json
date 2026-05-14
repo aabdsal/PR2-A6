@@ -24,6 +24,8 @@
     "SensorEtiqueta",
     "yaskawa_larga",
     "yaskawa_ancha",
-    "abb_tapa"
+    "abb_tapa",
+    "parada_cinta_emergencia",
+    "parada_emergencia"
   ]
 }

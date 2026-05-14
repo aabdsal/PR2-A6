@@ -3,6 +3,7 @@ suscribirse a los topics necesarios y recibir/enviar mensajes."""
 
 import json
 from robodk import robolink
+from modulos_python import simulation as sim
 import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
 
 broker = "broker.emqx.io"
@@ -88,16 +89,20 @@ def handle_message(mqttc, topic, payload):
             estado = data.get("estado_simulacion")
             
             if estado == "STOP":
+                sim.setDO("parada_emergencia", 1)
                 RDK.setSimulationSpeed(0)
                 RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
-            elif estado == "GO":                
+            elif estado == "GO":      
+                sim.setDO("parada_emergencia", 0)          
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
         except json.JSONDecodeError:
-            if payload == "STOP":                
+            if payload == "STOP":   
+                sim.setDO("parada_emergencia", 1)             
                 RDK.setSimulationSpeed(0)
                 RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
             elif payload == "GO":                
+                sim.setDO("parada_emergencia", 0)
                 RDK.setSimulationSpeed(5)
                 RDK.ShowMessage("Simulación Reanudada", False)
     
