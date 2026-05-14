@@ -3,7 +3,7 @@
  * @author  PR2-A6
  * @version V0.0
  * @date    2026-05-06
- * @brief   Ejemplo de cola circular con mutex  
+ * @brief   Implementación de buffer circular para comunicacion entre tareas
  */
 
 /* Includes ------------------------------------------------------------------*/

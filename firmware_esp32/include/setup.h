@@ -33,8 +33,6 @@ extern String deviceID;
  */
 void on_setup();
 
-
-
 #endif // SETUP_H
 
 /* End of file ****************************************************************/

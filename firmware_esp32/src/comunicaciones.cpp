@@ -19,8 +19,9 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern bool PARAR;
+
 extern Buffer_Circ buzon_led;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 void suscribirseATopics() 
@@ -48,14 +49,14 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
         const char* estadoLed = doc["estado_led"];
         if (!estadoLed) 
         {
-          warnln("Falta el campo estado_led en LED_TOPIC");
-          return;
+            warnln("Falta el campo estado_led en LED_TOPIC");
+            return;
         }
 
         if (strcmp(estadoLed, "on") == 0) 
         {
-          infoln("Orden recibida: Encender LED. Enviando al buzon...");
-          push(&buzon_led, LED_ENCENDIDO);
+            infoln("Orden recibida: Encender LED. Enviando al buzon...");
+            push(&buzon_led, LED_ENCENDIDO);
         }
 
     }
@@ -65,84 +66,6 @@ void enviarMensajePorTopic(const char* topic, String outgoingMessage)
 {
     mqtt_publish(topic, outgoingMessage.c_str());
 }
-
-void tareaGestorMQTT(void *parameter)
-{
-    Buffer_Circ* buff_cons = (Buffer_Circ*) parameter;
-    const TickType_t xFrequency = pdMS_TO_TICKS(100);
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    int estado_recibido;
-    while(!PARAR)
-    {
-        if(pop(buff_cons, &estado_recibido) == 0)
-        {
-            JsonDocument doc;
-            if(estado_recibido == PLANTA_GO)
-            {
-                doc["estado_simulacion"] = "GO";
-                String payload;
-                serializeJson(doc, payload);
-
-                enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
-                Serial.println("EMERGENCY CLEARED!");
-            }
-            else
-            {
-                doc["estado_simulacion"] = "STOP";
-
-                String payload;
-                serializeJson(doc, payload);
-
-                enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
-                Serial.println("EMERGENCY STOP!");
-            }
-        }
-        vTaskDelayUntil(&xLastWakeTime, xFrequency);
-    }
-    vTaskDelete(NULL);
-}
 /* Private functions ---------------------------------------------------------*/
 
 /* End of file ****************************************************************/
-
-/*
-    JsonDocument doc;
-    long distancia = leerUltrasonidos();
-
-    if (distancia > 0 && distancia != 797) 
-    {
-      Serial.print("Distancia: ");
-      Serial.println(distancia);
-
-        if (distancia < DISTANCIA_EMERGENCIA) 
-        {
-          if (!emergencyLatched) 
-          {
-            doc["estado_simulacion"] = "STOP";
-
-            String payload;
-            serializeJson(doc, payload);
-
-            enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
-            Serial.println("EMERGENCY STOP!");
-            emergencyLatched = true;
-          }
-        } 
-    else if (emergencyLatched) 
-    {
-        doc["estado_simulacion"] = "GO";
-
-        String payload;
-        serializeJson(doc, payload);
-
-        enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
-        Serial.println("EMERGENCY CLEARED!");
-        emergencyLatched = false;
-    }
-  }
-
-*/
-
-
-
-

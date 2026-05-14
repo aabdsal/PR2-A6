@@ -8,6 +8,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <ArduinoJson.h>
+
 #include "buffer_circular.h"
 #include "loop.h"
 #include "setup.h"
@@ -19,21 +20,24 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
 Buffer_Circ buzon_mqtt;
 Buffer_Circ buzon_led;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
+
+
 void on_setup() 
 {
-    // initialize digital pin LED_BUILTIN as an output.
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
-    xTaskCreatePinnedToCore(tareaUltrasonidos, "T_Ultrasonidos", 10000, &buzon_mqtt, 1, NULL, 0);
-    xTaskCreatePinnedToCore(tareaGestorMQTT, "T_GestorMQTT", 10000, &buzon_mqtt, 1, NULL, 0);
-    xTaskCreatePinnedToCore(tareaLED, "T_LED", 10000, &buzon_led, 1, NULL, 0);
-   
+
+    xTaskCreatePinnedToCore(led_task, "led_task", 10000, &buzon_led, 1, NULL, 0);
+    xTaskCreatePinnedToCore(ultrasonidos_task, "ultrasonidos_task", 10000, &buzon_mqtt, 1, NULL, 0);
+    xTaskCreatePinnedToCore(handle_mqtt_task, "handle_mqtt_task", 10000, &buzon_mqtt, 1, NULL, 0);
 }
 
 /* Private functions ---------------------------------------------------------*/

@@ -10,9 +10,6 @@
 #ifndef MQTT_H
 #define MQTT_H
 
-
-
-
 /* Includes ------------------------------------------------------------------*/
 
 #include <Arduino.h>

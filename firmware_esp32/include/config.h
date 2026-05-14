@@ -17,7 +17,6 @@
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
-#define LED_BUILTIN 3
 
 // COMM BAUDS
 #define BAUDS 115200
@@ -29,6 +28,9 @@
 // DEVICE
 //#define DEVICE_ESP_ID             "54CE0361421"   // ESP32 ID
 #define DEVICE_GIIROB_PR2_ID      "00" //"giirobpr2_00"
+
+// LED
+#define LED_PIN 3
 
 // BUTTON
 #define BUTTON_PIN                0

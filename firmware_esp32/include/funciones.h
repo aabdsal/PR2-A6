@@ -10,9 +10,6 @@
 #ifndef FUNCIONES_H
 #define FUNCIONES_H
 
-
-
-
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 
@@ -23,27 +20,6 @@
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
-
-/******************************************************************************/
-/**
- * @brief  Lee el estado del boton
- * @retval true si el boton esta pulsado
- */
-bool bottonPressed();
-
-/******************************************************************************/
-/**
- * @brief  Tarea que encender y apagar el LED
- */
-void tareaLED(void *parameter);
-
-/******************************************************************************/
-/**
- * @brief  Gestiona el estado del boton
- * @param  pressed Estado actual del boton
- * @retval None
- */
-void handleButtonState(bool pressed);
 
 /******************************************************************************/
 /**
@@ -62,20 +38,27 @@ void setInternalLedFromRemote(uint8_t status);
 
 /******************************************************************************/
 /**
- * @brief  Indica si el control remoto del LED esta activo
- * @retval true si el control remoto esta bloqueado
+ * @brief  Tarea que encender y apagar el LED
+ * @param pvParameters parametros opcionales de FreeRTOS
+ * @retval None
  */
-bool isInternalLedRemoteLocked();
+void led_task(void *pvParameters);
 
 /******************************************************************************/
 /**
- * @brief  Actualiza el LED de proceso
- * @param  proceso Estado o codigo de proceso
+ * @brief  Ejecuta tareas ciclicas del dispositivo
+ * @param pvParameters parametros opcionales de FreeRTOS
  * @retval None
  */
-void setLedProceso(uint8_t proceso);
+void ultrasonidos_task(void *pvParameters);
 
-
+/******************************************************************************/
+/**
+ * @brief  Tarea que gestiona el envío de mensajes de emergencia por MQTT
+ * @param pvParameters parametros opcionales de FreeRTOS
+ * @retval None
+ */
+void handle_mqtt_task(void *pvParameters);
 
 #endif // FUNCIONES_H
 

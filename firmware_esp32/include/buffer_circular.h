@@ -3,15 +3,12 @@
  * @author  PR2-A6
  * @version V0.0
  * @date    2026-05-07
- * @brief   Ejemplo de cola circular con mutex (comentado)
+ * @brief   Especificación de buffer circular para comunicacion entre tareas
  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef BUFFER_CIRCULAR_H
 #define BUFFER_CIRCULAR_H
-
-
-
 
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
@@ -54,7 +51,11 @@ typedef struct
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
-extern portMUX_TYPE taskMux;
+/* 
+NOTA: extern portMUX_TYPE taskMux; 
+Hay que mirar si hay que proteger, si no se elimina esta variable.
+*/ 
+
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
