@@ -12,6 +12,7 @@
 #include "c_logger.h"
 #include "mqtt.h"
 #include "funciones.h"
+#include "loop.h"
 #include <ArduinoJson.h>
 
 /* Private typedef -----------------------------------------------------------*/
@@ -19,7 +20,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-void tareaLedOn(void *pvParameters);
 /* Exported functions --------------------------------------------------------*/
 void suscribirseATopics() 
 {
@@ -64,14 +64,6 @@ void enviarMensajePorTopic(const char* topic, String outgoingMessage)
 }
 
 /* Private functions ---------------------------------------------------------*/
-void tareaLedOn(void *pvParameters)
-{
-    infoln("Encender el led interno (remote)");
-    setInternalLedFromRemote(1);
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    setInternalLedFromRemote(0);
-    vTaskDelete(NULL);
-}
 
 /* End of file ****************************************************************/
 

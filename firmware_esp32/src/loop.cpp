@@ -15,6 +15,7 @@
 #include "comunicaciones.h"
 #include "setup.h"
 #include "web.h"
+#include "c_logger.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -27,6 +28,15 @@ bool emergencyLatched = false;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
+
+void tareaLedOn(void *pvParameters)
+{
+    infoln("Encender el led interno (remote)");
+    setInternalLedFromRemote(1);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    setInternalLedFromRemote(0);
+    vTaskDelete(NULL);
+}
 
 // Nueva tarea que envuelve LA MISMA lógica del ultrasonidos (Rubrica 2)
 void Task_Ultrasonidos(void *pvParameters)

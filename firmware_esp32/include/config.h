@@ -40,8 +40,8 @@
 #define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
 
 // WIFI
-#define NET_SSID                  "DIGIFIBRA-RC6D"
-#define NET_PASSWD                "S5ZDsNzsR7Re"
+#define NET_SSID                  "iPhone"
+#define NET_PASSWD                "andreugrc"
 
 // MQTT
 #define MQTT_SERVER_IP            "broker.emqx.io"   // IP del broker MQTT al que se conectará el dispositivo
