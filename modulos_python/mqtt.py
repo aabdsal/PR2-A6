@@ -91,7 +91,7 @@ def handle_message(mqttc, topic, payload):
             if estado == "STOP":
                 sim.setDO("parada_emergencia", 1)
                 RDK.setSimulationSpeed(0)
-                RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
+                RDK.ShowMessage(f"Parada de emergencia", False)
             elif estado == "GO":      
                 sim.setDO("parada_emergencia", 0)          
                 RDK.setSimulationSpeed(5)
@@ -100,7 +100,7 @@ def handle_message(mqttc, topic, payload):
             if payload == "STOP":   
                 sim.setDO("parada_emergencia", 1)             
                 RDK.setSimulationSpeed(0)
-                RDK.ShowMessage(f"EMERGENCIA ACTIVADA: {payload}", False)
+                RDK.ShowMessage(f"Parada de emergencia", False)
             elif payload == "GO":                
                 sim.setDO("parada_emergencia", 0)
                 RDK.setSimulationSpeed(5)

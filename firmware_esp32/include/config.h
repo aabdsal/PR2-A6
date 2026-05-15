@@ -30,7 +30,7 @@
 #define DEVICE_GIIROB_PR2_ID      "00" //"giirobpr2_00"
 
 // LED
-#define LED_PIN 3
+#define LED_PIN                   3
 
 // BUTTON
 #define BUTTON_PIN                0

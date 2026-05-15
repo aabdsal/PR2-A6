@@ -44,6 +44,7 @@ void on_setup()
 
 /* Private functions ---------------------------------------------------------*/
 
-void IRAM_ATTR button_isr() {
+void IRAM_ATTR button_isr() 
+{
     button_pressed_flag = true;
 }
