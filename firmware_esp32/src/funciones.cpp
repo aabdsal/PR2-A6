@@ -22,10 +22,16 @@
 uint8_t ledStatus = 0;
 static bool ledRemoteLocked = false; /* When true, button presses won't change the LED; remote commands control it */
 bool emergencyLatched = false;
+volatile bool button_pressed_flag = false;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
+void IRAM_ATTR button_isr() 
+{
+    button_pressed_flag = true;
+}
+
 void setInternalLedFromRemote(uint8_t status) 
 {
     // lock control to remote commands

@@ -21,6 +21,9 @@
 
 /* Exported functions --------------------------------------------------------*/
 
+extern volatile bool button_pressed_flag;
+void button_isr();
+
 /******************************************************************************/
 /**
  * @brief  Mide la distancia con el sensor ultrasonico
