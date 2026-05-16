@@ -21,10 +21,7 @@ def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : r
 
 
 def detectar_objeto(nombre_sensor, frame_name : str):
-    """Detecta objetos que colisionan con un sensor en un frame concreto.
-
-    Usa ItemList y Parent para identificar objetos dentro del frame y
-    comprobar colisiones sin conocer sus nombres previamente."""
+    """Detecta objetos que colisionan con un sensor en un frame concreto."""
     RDK = robolink.Robolink()
     
     sensor = RDK.Item(nombre_sensor)

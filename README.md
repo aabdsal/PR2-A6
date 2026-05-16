@@ -36,14 +36,14 @@ Adicionalmente, la propuesta contempla:
 
 ## Requisitos
 - RoboDK instalado y estacion de simulación disponible.
-- Python 3.9+ (compatible con el interprete integrado de RoboDK.)
+- Python 3.9+ (compatible con el intérprete integrado de RoboDK.)
 - Paquete Python `robodk` instalado en el entorno activo.
-- Paquetes `paho-mqtt` y `psycopg` instalados en el interprete de RoboDK para conectarse a MQTT y a la Base de Datos SQL
+- Paquetes `paho-mqtt` y `psycopg` instalados en el intérprete de RoboDK para conectarse a MQTT y a la Base de Datos SQL
 - VS Code + PlatformIO para el firmware del ESP32.
 - PostgreSQL y pgAdmin para la base de datos.
 
-## Preparacion del entorno
-Desde la raiz del proyecto:
+## Preparación del entorno
+Desde la raíz del proyecto:
 
 ```bash
 python3 -m venv .venv
@@ -52,7 +52,7 @@ python -m pip install -U pip
 python -m pip install robodk
 ```
 
-Para `paho-mqtt` y `psycopg`, usa el interprete que RoboDK tiene configurado (Tools > Options > Python):
+Para `paho-mqtt` y `psycopg`, usa el intérprete que RoboDK tiene configurado (Tools > Options > Python):
 
 ```bash
 <RUTA_PYTHON_ROBODK> -m pip install paho-mqtt psycopg
@@ -65,9 +65,9 @@ Para `paho-mqtt` y `psycopg`, usa el interprete que RoboDK tiene configurado (To
 
 ## Base de datos (PostgreSQL + pgAdmin)
 - Crear la base de datos `gdi2026` en pgAdmin y ejecutar los scripts `database/DDL_proyecto.sql` y `database/poblar_proyecto.sql`.
-- Verificar los datos de conexion en `modulos_python/bbdd.py` (dbname, user, password, host, port).
+- Verificar los datos de conexión en `modulos_python/bbdd.py` (dbname, user, password, host, port).
 
 ## Ejecución
 - Abrir RoboDK con licencia activa.
-- Cargar los scripts `modulos_python/main.py` y `modulos_python/reset.py` en la estación.
+- Cargar los scripts `modulos_python/main.py` y `modulos_python/reset.py` en la estación para asegurarse de tener la versión más nuevo dentro de ella.
 - Ejecutar script main desde RoboDK con la estación abierta.
