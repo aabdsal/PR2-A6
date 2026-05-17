@@ -2,12 +2,13 @@
   "parametros": [
     "SensorCA",
     "SensorCL",
+    "SensorCM",
+    "SensorTapa",
+    "SensorEtiqueta",
     "BendingHecho",
     "enCintaMain",
-    "SensorCC",
     "mesaOcupada",
     "LasDos",
-    "SensorTapa",
     "planchaSoldada",
     "tapaPuesta",
     "EnCintaEtiquetar",
@@ -21,11 +22,10 @@
     "numero_tapaCuadro",
     "numero_cuadroConTapa",
     "numero_cuadroEtiquetada",
-    "SensorEtiqueta",
     "yaskawa_larga",
     "yaskawa_ancha",
     "abb_tapa",
-    "parada_cinta_emergencia",
-    "parada_emergencia"
+    "parada_emergencia",
+    "SensorCC"
   ]
 }
