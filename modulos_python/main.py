@@ -103,7 +103,7 @@ def hilo_abb_paletizado():
             pp.place_cuadro_acabada()
         elif RDK.getParam("planchaSoldada") == 1 and not variables.objetos_pendientes["SensorTapa"].empty():
             pp.place_tapa_en_mesa()
-        elif RDK.getParam("mesaOcupada") == 0 and not variables.objetos_pendientes["SensorCC"].empty():
+        elif RDK.getParam("mesaOcupada") == 0 and not variables.objetos_pendientes["SensorCM"].empty():
             pp.place_plancha_mesa()
         else:
             time.sleep(0.01)

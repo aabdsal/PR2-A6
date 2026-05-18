@@ -53,7 +53,7 @@ frame_welding = "RobotSoldador"
 frame_mesa_giratoria = "Engranaje"
 frame_paletizado_cinta_mesa = "Cinta_Mesa"
 frame_paletizado = "RobotPaletizado"
-frame_cinta_etiqueta = "FrameCuadroAcabada"
+frame_cinta_etiqueta = "FrameEtiqueta"
 
 plantilla: dict[str, str] = {
     "ancha": "plantilla_planchaAncha",
@@ -74,7 +74,7 @@ objetos_tcp: dict[str, robolink.Item] = {}
 objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorCA" : queue.Queue(),
     "SensorCL" : queue.Queue(),
-    "SensorCC" : queue.Queue(),
+    "SensorCM" : queue.Queue(),
     "SensorTapa" : queue.Queue(),
     "SensorEtiqueta" : queue.Queue(),
 }

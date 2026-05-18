@@ -110,7 +110,7 @@ def place_plancha_mesa():
     También comunica si ya hay una plancha en la mesa o si ya están las dos
     para pasar a la siguiente fase."""
 
-    #sim.waitDI("SensorCC", 1)   
+    #sim.waitDI("SensorCM", 1)   
     RDK = robolink.Robolink()
     
     r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
@@ -140,7 +140,7 @@ def place_plancha_mesa():
     place_main_larga = RDK.Item("PlaceMainLarga", robolink.ITEM_TYPE_TARGET)
     place_main_ancha = RDK.Item("PlaceMainAncha", robolink.ITEM_TYPE_TARGET)
 
-    objeto_cola_main = var.objetos_pendientes["SensorCC"].get()
+    objeto_cola_main = var.objetos_pendientes["SensorCM"].get()
 
     r.setFrame(frame_paletizado)
     r.setTool(toolR)

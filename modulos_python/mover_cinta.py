@@ -56,14 +56,14 @@ def mover_cinta_tapa():
 
 def mover_cinta_main():
     """Método que mueve la cinta principal, donde van las planchasLargas2 
-    y planchasAnchas2. El sensor encargado de notificar si hay objeto es el SensorCC.
+    y planchasAnchas2. El sensor encargado de notificar si hay objeto es el SensorCM.
 
     Implementa una espera digital que se activa cuando el yaskawa pone una plancha prensada en la cinta"""
 
     sim.waitDI("enCintaMain", 1)
     sim.setDO("enCintaMain", 0)
     
-    _mover_cinta(var.cinta_main, "SensorCC", "FramePlanchaMain")
+    _mover_cinta(var.cinta_main, "SensorCM", "FramePlanchaMain")
 
 def mover_cinta_cuadro_acabada():
     """Mueve la cinta final donde salen los cuadros eléctricos hacia el túnel.
@@ -75,7 +75,7 @@ def mover_cinta_cuadro_acabada():
     sim.waitDI("EnCintaEtiquetar", 1)
     sim.setDO("EnCintaEtiquetar", 0)
         
-    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
+    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameEtiqueta")
     
     RDK = robolink.Robolink()
     
