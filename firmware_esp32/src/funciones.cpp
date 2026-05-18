@@ -22,16 +22,10 @@
 uint8_t ledStatus = 0;
 static bool ledRemoteLocked = false; /* When true, button presses won't change the LED; remote commands control it */
 bool emergencyLatched = false;
-volatile bool button_pressed_flag = false;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
-
-void IRAM_ATTR button_isr() 
-{
-    button_pressed_flag = true;
-}
 
 void setInternalLedFromRemote(uint8_t status) 
 {
@@ -77,8 +71,7 @@ void led_task(void *pvParameters)
     
     int orden_recibida;
 
-    /* while(!PARAR) */
-    for(;;)
+    while(!PARAR) 
     {
         if(pop(buff_led, &orden_recibida) == 0)
         {
@@ -100,8 +93,7 @@ void ultrasonidos_task(void *pvParameters)
     const TickType_t xFrequency = pdMS_TO_TICKS(250);
     TickType_t xLastWakeTime = xTaskGetTickCount();
     
-    /* while(!PARAR)*/
-    for(;;)
+    while(!PARAR)
     {
         long lectura_ultrasonidos = leerUltrasonidos();
         
@@ -130,8 +122,7 @@ void handle_mqtt_task(void *pvParameters)
     TickType_t xLastWakeTime = xTaskGetTickCount();
     int estado_recibido;
 
-    /*while(!PARAR)*/
-    for(;;)
+    while(!PARAR)
     {
         if(pop(buff_cons, &estado_recibido) == 0)
         {

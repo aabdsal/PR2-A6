@@ -23,17 +23,21 @@
 
 Buffer_Circ buzon_mqtt;
 Buffer_Circ buzon_led;
+extern bool PARAR;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
-
+void IRAM_ATTR isrBotonEmergencia()
+{
+    PARAR = true;
+}
 
 void on_setup() 
 {
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), button_isr, FALLING);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), isrBotonEmergencia, FALLING);
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
 
@@ -44,7 +48,4 @@ void on_setup()
 
 /* Private functions ---------------------------------------------------------*/
 
-void IRAM_ATTR button_isr() 
-{
-    button_pressed_flag = true;
-}
+/* End of file ****************************************************************/
