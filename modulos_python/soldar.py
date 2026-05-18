@@ -130,7 +130,9 @@ def iniciar(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
         r.MoveL(postPFS)
 
     giro.giro_final_plancha_soldada()
-    
+
+    r.MoveJ(ini)
+
     sim.setDO("planchaSoldada", 1)
     sim.setDO("mesaOcupada", 0)
 

@@ -171,6 +171,7 @@ def place_plancha_mesa():
     robomath.pause(0.5)
     r.MoveJ(giro180)
     robomath.pause(0.5)
+    
     r.MoveJ(preplace_main)
     robomath.pause(0.5)
 
@@ -224,6 +225,9 @@ def place_tapa_en_mesa():
     prepick_tapa = RDK.Item("PrePickTapa", robolink.ITEM_TYPE_TARGET)
     pick_tapa = RDK.Item("PickTapa", robolink.ITEM_TYPE_TARGET)
     preplace_tapa = RDK.Item("PrePlaceTapa", robolink.ITEM_TYPE_TARGET)
+    preplace_tapaG1 = RDK.Item("PrePlaceTapaG1", robolink.ITEM_TYPE_TARGET)
+    preplace_tapaG2 = RDK.Item("PrePlaceTapaG2", robolink.ITEM_TYPE_TARGET)
+    preplace_tapaG3 = RDK.Item("PrePlaceTapaG3", robolink.ITEM_TYPE_TARGET)
     place_tapa = RDK.Item("PlaceTapa", robolink.ITEM_TYPE_TARGET)
 
     objeto_tapa = var.objetos_pendientes["SensorTapa"].get()
@@ -237,9 +241,15 @@ def place_tapa_en_mesa():
     robomath.pause(0.5)
     r.MoveJ(prepick_tapa)
     robomath.pause(0.5)
-    r.MoveJ(preplace_tapa)
-
     sim.setDO("abb_tapa", 1)
+
+    r.MoveJ(preplace_tapa)
+    r.MoveJ(preplace_tapaG1)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_tapaG2)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_tapaG3)
+
 
     robomath.pause(0.5)
     r.MoveL(place_tapa)
