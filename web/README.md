@@ -57,7 +57,9 @@ http://TU_DIRECCIÓN_IP:8000
 
 **Ejemplo práctico:**
 ```
-http://192.168.1.132:8000
+http://192.168.1.132:8000 -> casa
+http://158.42.142.55:8000 -> upvnet
+http://172.20.10.2:8000 -> iphone ali
 ```
 
 ### Crear un código QR para facilitar el acceso
