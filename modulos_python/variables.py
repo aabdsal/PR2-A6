@@ -65,7 +65,7 @@ plantilla: dict[str, str] = {
     "soldada": "plantilla_planchaSoldada",
     "tapa": "plantilla_tapaCuadro",
     "cuadroConTapa": "plantilla_cuadroConTapa",
-    "cuadroEtiqueta": "plantilla_cuadroEtiquetada",
+    "etiqueta": "plantilla_etiqueta",
 }
 
 objetos_tcp: dict[str, robolink.Item] = {}
@@ -82,6 +82,7 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
 cola_soldadas : queue.Queue[str] = queue.Queue()
 cola_cuadrosTapa : queue.Queue[str] = queue.Queue()
 cola_cuadrosAcabados : queue.Queue[str] = queue.Queue()
+cola_etiquetas : queue.Queue[str] = queue.Queue()
 
 tiempo_ini = queue.Queue()
 tiempo_fini = queue.Queue()

@@ -4,3 +4,4 @@ venv/
 __pycache__/
 *.pyc
 ESP-32/
+modulos_python/labels/

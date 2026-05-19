@@ -5,6 +5,7 @@
     "SensorCM",
     "SensorTapa",
     "SensorEtiqueta",
+    "SensorFinalEtiqueta",
     "BendingHecho",
     "enCintaMain",
     "mesaOcupada",
@@ -25,7 +26,6 @@
     "yaskawa_larga",
     "yaskawa_ancha",
     "abb_tapa",
-    "parada_emergencia",
-    "SensorCC"
+    "parada_emergencia"
   ]
 }

@@ -57,7 +57,7 @@ eliminar_duplicados("FramePlanchaAncha")
 eliminar_duplicados("FramePlanchaLarga")
 eliminar_duplicados("FramePlanchaMain")
 eliminar_duplicados("FrameTapa")
-eliminar_duplicados("FrameCuadroAcabada")
+eliminar_duplicados("FrameEtiqueta")
 eliminar_duplicados("Engranaje")
 
 reset_param()

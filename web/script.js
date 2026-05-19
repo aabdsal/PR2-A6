@@ -1,6 +1,15 @@
 const BROKER = "broker.emqx.io";
 const PORT = 8083;
 const TOPIC_WEB = "giirob/pr2/erro/pentapanel/pedido";
+const UPLOAD_URL = "http://192.168.1.132:5001";
+
+const STICKER_PATHS = {
+    hazard_bolt: "images/electricidad.png",
+    foot_bolt: "images/botas.png",
+    gloves: "images/guantes.png",
+    goggles: "images/gafas.png",
+    prohibited: "images/prohibidoPasar.png",
+};
 
 let client = new Paho.MQTT.Client(BROKER, PORT, "pentapanel_web_" + Math.random());
 let selectedId = null;
@@ -15,21 +24,50 @@ document.querySelectorAll('.sticker-option').forEach(opt => {
     });
 });
 
-document.getElementById('btnOrder').addEventListener('click', () => {
-    const qty = document.getElementById('quantity').value;
-    if(!selectedId) return alert("Selecciona un pictograma");
+async function uploadSticker(file) {
+    const form = new FormData();
+    form.append("file", file);
 
-    const payload = JSON.stringify({
-        sistema: "PENTAPANEL",
-        comando: "START",
-        sticker: selectedId,
-        unidades: parseInt(qty),
-        user_timestamp: Date.now()
+    const response = await fetch(UPLOAD_URL, {
+        method: "POST",
+        body: form,
     });
 
-    const message = new Paho.MQTT.Message(payload);
-    message.destinationName = TOPIC_WEB;
-    client.send(message);
-    
-    alert(`¡Pedido enviado! Fabricando ${qty} cuadros PentaPanel.`);
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || "Error al subir la imagen");
+    }
+
+    return response.json();
+}
+
+document.getElementById('btnOrder').addEventListener('click', async () => {
+    const qty = parseInt(document.getElementById('quantity').value);
+    const fileInput = document.getElementById('customSticker');
+
+    let ruta = null;
+
+    try {
+        if (fileInput.files && fileInput.files.length > 0) {
+            const resultado = await uploadSticker(fileInput.files[0]);
+            ruta = resultado.ruta_relativa;
+        } else if (selectedId && STICKER_PATHS[selectedId]) {
+            ruta = STICKER_PATHS[selectedId];
+        } else {
+            return alert("Selecciona un pictograma o sube un PNG.");
+        }
+
+        const payload = JSON.stringify({
+            ruta_png: ruta,
+            unidades: qty,
+        });
+
+        const message = new Paho.MQTT.Message(payload);
+        message.destinationName = TOPIC_WEB;
+        client.send(message);
+
+        alert(`¡Pedido enviado! Fabricando ${qty} cuadros PentaPanel.`);
+    } catch (error) {
+        alert(error.message || "Error al enviar el pedido");
+    }
 });

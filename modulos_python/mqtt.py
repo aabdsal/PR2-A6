@@ -3,7 +3,7 @@ suscribirse a los topics necesarios y recibir/enviar mensajes."""
 
 import json
 from robodk import robolink
-from modulos_python import simulation as sim
+from modulos_python import simulation as sim, variables as var
 import paho.mqtt.client as mqtt  # type: ignore[reportMissingImports]
 
 broker = "broker.emqx.io"
@@ -57,6 +57,8 @@ def conectar():
     var_mqtt.subscribe(hello_topic, 0)
     var_mqtt.subscribe(button_topic, 0)
     var_mqtt.subscribe(emergency_stop_topic, 0)
+    var_mqtt.subscribe(web_topic, 0)
+
     print("Suscrito a topics MQTT")
 
     hello_payload = json.dumps({
@@ -109,10 +111,15 @@ def handle_message(mqttc, topic, payload):
     if topic == web_topic:
         try:
             data = json.loads(payload)
-            estado = data.get("START")
-            
+            ruta = data.get("ruta_png")
+            unidades = int(data.get("unidades", 1))
+
+            if ruta:
+                for i in range(unidades):
+                    var.cola_etiquetas.put(ruta)
+                RDK.ShowMessage(f"Etiqueta recibida. ruta={ruta} unidades={unidades}", False)
         except json.JSONDecodeError:
-                pass
+            pass
     
         
 

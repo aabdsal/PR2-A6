@@ -17,7 +17,7 @@ import threading
 import time
 
 mqtt.conectar()
-bbdd.conectar()
+#bbdd.conectar()
 
 sim.setDO("yaskawa_larga", 1)
 sim.setDO("yaskawa_ancha", 1)
@@ -93,6 +93,8 @@ def hilo_yaskawa():
         pp.place_cinta_main()
         variables.alternancia.put("ancha") 
 
+        time.sleep(0.01)
+
 def hilo_abb_paletizado():
     """Hilo del abb paletizado que decide que tarea hace primero segun la logica de la automatización."""
     
@@ -112,6 +114,7 @@ def hilo_abb_soldador():
     """Hilo que ejecuta la secuencia de soldadura."""
     while True:
         soldar.iniciar()
+        time.sleep(0.01)
 
 # Hilos de sensores para detectar objetos en cada cinta.
 def hilo_sensorCA():
@@ -133,6 +136,10 @@ def hilo_sensorTapa():
 def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
     sensor.detectar_objeto("SensorEtiqueta", "FrameEtiqueta")
+
+def hilo_sensorFinalEtiqueta():
+    """Hilo del sensor de la cinta de etiquetado."""
+    sensor.detectar_objeto("SensorFinalEtiqueta", "FrameEtiqueta")
 
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 

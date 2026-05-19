@@ -3,6 +3,7 @@ simular el movimiento de los objetos sobre las cintas."""
 
 import threading
 import json
+from pathlib import Path
 from robodk import robolink, robomath
 from modulos_python import mqtt, bbdd, variables as var, simulation as sim
 
@@ -69,8 +70,7 @@ def mover_cinta_cuadro_acabada():
     """Mueve la cinta final donde salen los cuadros eléctricos hacia el túnel.
 
     Implementa una espera digital que se activa cuando el ABB paletizado
-    pone el cuadro con tapa en la cinta. Falta la lógica para detenerse
-    2 segundos en el túnel de etiquetado."""
+    pone el cuadro con tapa en la cinta."""
 
     sim.waitDI("EnCintaEtiquetar", 1)
     sim.setDO("EnCintaEtiquetar", 0)
@@ -81,6 +81,22 @@ def mover_cinta_cuadro_acabada():
     
     cuadro_etiquetado = var.cola_cuadrosAcabados.get()
     cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
+
+    robomath.pause(2.0)
+    
+    if not var.cola_etiquetas.empty():
+        ruta_rel = var.cola_etiquetas.get()
+        ruta_abs = (Path(__file__).resolve().parents[1] / "web" / ruta_rel).as_posix()
+        pegatina = sim.crear_pegatina_obj(RDK, ruta_abs, var.frame_cinta_etiqueta)
+        if pegatina.Valid():
+            pegatina.setParentStatic(cuadro_obj)
+            pose_etiqueta = (robomath.transl(5, 3, 100) *robomath.rotz(robomath.pi / 2))    
+            pegatina.setPose(pose_etiqueta)
+            pegatina.setName("pegatina" + cuadro_obj.Name())
+
+    robomath.pause(3.0)
+
+    _mover_cinta(var.cinta_etiqueta, "SensorFinalEtiqueta", "FrameEtiqueta")
     
     RDK.Render(False)
     cuadro_obj.setVisible(False)

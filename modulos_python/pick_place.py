@@ -92,14 +92,14 @@ def place_cinta_main():
     sim.soltar_objeto(var.tool_yaskawa, sistRefCinta)
     
     r.MoveL(preplace)   
-    robomath.pause(0.5)
+    #robomath.pause(0.5)
 
     sistRefBending = RDK.Item(var.frame_bending, robolink.ITEM_TYPE_FRAME)
     r.setFrame(sistRefBending)
 
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
     r.MoveJ(home)
-    robomath.pause(0.5)
+    #robomath.pause(0.5)
     sim.setDO("enCintaMain", 1)
 
 count = 0
@@ -109,8 +109,7 @@ def place_plancha_mesa():
 
     También comunica si ya hay una plancha en la mesa o si ya están las dos
     para pasar a la siguiente fase."""
-
-    #sim.waitDI("SensorCM", 1)   
+  
     RDK = robolink.Robolink()
     
     r = RDK.Item(var.robot_abb_p, robolink.ITEM_TYPE_ROBOT)
@@ -144,7 +143,7 @@ def place_plancha_mesa():
 
     r.setFrame(frame_paletizado)
     r.setTool(toolR)
-    #r.MoveJ(ini)
+    
     r.setFrame(frame_cinta)
     elem = var.alternancia.get()
     
@@ -257,7 +256,7 @@ def place_tapa_en_mesa():
     sim.soltar_objeto(var.tool_abb_p, sistRefMesa)
     
     robomath.pause(0.5)
-    r.MoveJ(preplace_tapa)
+    #r.MoveJ(preplace_tapa)
 
     item_objeto_tapa = RDK.Item(objeto_tapa, robolink.ITEM_TYPE_OBJECT)
 
@@ -318,8 +317,8 @@ def place_cuadro_acabada():
     place_cuadro = RDK.Item("PlaceCuadro", robolink.ITEM_TYPE_TARGET)
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
-    r.MoveJ(prepick_cuadro)
-    robomath.pause(0.5)
+    #r.MoveJ(prepick_cuadro)
+    #robomath.pause(0.5)
     r.MoveL(pick_cuadro)
     
     objeto = var.cola_cuadrosTapa.get()
