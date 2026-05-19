@@ -2,7 +2,6 @@ const BROKER = "broker.emqx.io";
 const PORT = 8083;
 const TOPIC_WEB = "giirob/pr2/erro/pentapanel/pedido";
 
-// CORRECCIÓN 1: Se añade '/upload' y detecta automáticamente la IP de tu ordenador
 const UPLOAD_URL = `http://${window.location.hostname}:5001/upload`;
 
 const STICKER_PATHS = {
@@ -16,16 +15,14 @@ const STICKER_PATHS = {
 let client = new Paho.MQTT.Client(BROKER, PORT, "pentapanel_web_" + Math.random());
 let selectedId = null;
 
-client.connect({ onSuccess: () => console.log("PentaPanel Conectado") });
+client.connect({ onSuccess: () => console.log("MQTT conectado") });
 
 document.querySelectorAll('.sticker-option').forEach(opt => {
     opt.addEventListener('click', () => {
-        // CORRECCIÓN 2: Lógica para deseleccionar si ya estaba seleccionado
         if (opt.classList.contains('selected')) {
             opt.classList.remove('selected');
-            selectedId = null; // Resetea la variable
+            selectedId = null;
         } else {
-            // Si no estaba seleccionado, quita la selección de los demás y lo selecciona
             document.querySelectorAll('.sticker-option').forEach(o => o.classList.remove('selected'));
             opt.classList.add('selected');
             selectedId = opt.getAttribute('data-id');
@@ -33,9 +30,46 @@ document.querySelectorAll('.sticker-option').forEach(opt => {
     });
 });
 
+async function processImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = e => img.src = e.target.result;
+
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const MAX_WIDTH = 800;
+            const scale = Math.min(1, MAX_WIDTH / img.width);
+
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(blob => {
+                if (!blob) return reject("Error procesando imagen");
+
+                if (blob.size > 2 * 1024 * 1024) {
+                    return reject("Imagen demasiado grande (>2MB)");
+                }
+
+                resolve(blob);
+            }, "image/png");
+        };
+
+        reader.onerror = () => reject("Error leyendo archivo");
+        reader.readAsDataURL(file);
+    });
+}
+
 async function uploadSticker(file) {
+    const processed = await processImage(file);
+
     const form = new FormData();
-    form.append("file", file);
+    form.append("file", processed, "custom.png");
 
     const response = await fetch(UPLOAD_URL, {
         method: "POST",
@@ -44,7 +78,7 @@ async function uploadSticker(file) {
 
     if (!response.ok) {
         const error = await response.json().catch(() => ({}));
-        throw new Error(error.error || "Error al subir la imagen");
+        throw new Error(error.error || "Error al subir");
     }
 
     return response.json();
@@ -63,7 +97,7 @@ document.getElementById('btnOrder').addEventListener('click', async () => {
         } else if (selectedId && STICKER_PATHS[selectedId]) {
             ruta = STICKER_PATHS[selectedId];
         } else {
-            return alert("Selecciona un pictograma o sube un PNG.");
+            return alert("Selecciona un pictograma o sube una imagen");
         }
 
         const payload = JSON.stringify({
@@ -71,12 +105,17 @@ document.getElementById('btnOrder').addEventListener('click', async () => {
             unidades: qty,
         });
 
-        const message = new Paho.MQTT.Message(payload);
-        message.destinationName = TOPIC_WEB;
-        client.send(message);
+        if (client.isConnected()) {
+            const message = new Paho.MQTT.Message(payload);
+            message.destinationName = TOPIC_WEB;
+            client.send(message);
 
-        alert(`¡Pedido enviado! Fabricando ${qty} cuadros PentaPanel.`);
+            alert(`Pedido enviado (${qty})`);
+        } else {
+            alert("MQTT no conectado");
+        }
+
     } catch (error) {
-        alert(error.message || "Error al enviar el pedido");
+        alert(error.message);
     }
 });

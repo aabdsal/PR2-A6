@@ -1,23 +1,27 @@
-"""Servidor sencillo para subir PNGs desde la web."""
-
 from __future__ import annotations
 
 from pathlib import Path
 import uuid
-
-from flask import Flask, jsonify, request
+from PIL import Image
+from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
+app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
+
 BASE_DIR = Path(__file__).resolve().parents[1]
 UPLOAD_DIR = BASE_DIR / "web" / "uploads"
-ALLOWED_EXTENSIONS = {".png"}
 
-
-def _allowed_file(filename: str) -> bool:
-    return Path(filename).suffix.lower() in ALLOWED_EXTENSIONS
-
+def _allowed_file(file) -> bool:
+    try:
+        file.seek(0)
+        img = Image.open(file)
+        es_png = img.format == "PNG"
+        file.seek(0)
+        return es_png
+    except:
+        return False
 
 @app.after_request
 def _add_cors_headers(response):
@@ -26,6 +30,9 @@ def _add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
 
 @app.route("/upload", methods=["POST", "OPTIONS"])
 def upload_png():
@@ -36,15 +43,12 @@ def upload_png():
         return jsonify({"error": "Falta el archivo"}), 400
 
     file = request.files["file"]
-    if not file or file.filename == "":
-        return jsonify({"error": "Archivo vacio"}), 400
 
-    filename = file.filename
-    if not filename:
-        return jsonify({"error": "Archivo vacio"}), 400
-    
-    if not _allowed_file(filename):
-        return jsonify({"error": "Solo se permiten PNG"}), 400
+    if not file or file.filename == "":
+        return jsonify({"error": "Archivo vacío"}), 400
+
+    if not _allowed_file(file.stream):
+        return jsonify({"error": "El archivo no es un PNG válido"}), 400
 
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -52,12 +56,12 @@ def upload_png():
     save_path = UPLOAD_DIR / filename
     file.save(save_path)
 
-    return jsonify({"ruta_relativa": f"uploads/{filename}"})
-
+    return jsonify({
+        "ruta_relativa": f"http://{request.host}/uploads/{filename}"
+    })
 
 def start_server(host: str = "0.0.0.0", port: int = 5001):
     app.run(host=host, port=port, debug=False, use_reloader=False)
-
 
 if __name__ == "__main__":
     start_server()
