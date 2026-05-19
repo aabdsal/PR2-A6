@@ -115,7 +115,7 @@ def handle_message(mqttc, topic, payload):
             unidades = int(data.get("unidades", 1))
 
             if ruta:
-                for i in range(unidades):
+                for _ in range(unidades):
                     var.cola_etiquetas.put(ruta)
                 RDK.ShowMessage(f"Etiqueta recibida. ruta={ruta} unidades={unidades}", False)
         except json.JSONDecodeError:

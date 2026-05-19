@@ -77,6 +77,7 @@ objetos_pendientes: dict[str, queue.Queue[str]] = {
     "SensorCM" : queue.Queue(),
     "SensorTapa" : queue.Queue(),
     "SensorEtiqueta" : queue.Queue(),
+    "SensorFinalEtiqueta" : queue.Queue(),
 }
 
 cola_soldadas : queue.Queue[str] = queue.Queue()

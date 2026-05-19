@@ -159,7 +159,8 @@ threads = [
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCM, name="sensor_cm"),
     threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
-    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
+    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta"),
+    threading.Thread(target=hilo_sensorFinalEtiqueta, name="sensor_final_etiqueta")
 ]
 
 # Se inicializan todos los hilos a la vez

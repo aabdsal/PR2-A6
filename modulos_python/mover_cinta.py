@@ -78,19 +78,22 @@ def mover_cinta_cuadro_acabada():
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameEtiqueta")
     
     RDK = robolink.Robolink()
-    
+
     cuadro_etiquetado = var.cola_cuadrosAcabados.get()
     cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
 
     robomath.pause(2.0)
     
     if not var.cola_etiquetas.empty():
+        RDK.ShowMessage(f"Numero de etiquetas en cola: {var.cola_etiquetas.qsize()}", True)
+
         ruta_rel = var.cola_etiquetas.get()
         ruta_abs = (Path(__file__).resolve().parents[1] / "web" / ruta_rel).as_posix()
         pegatina = sim.crear_pegatina_obj(RDK, ruta_abs, var.frame_cinta_etiqueta)
+
         if pegatina.Valid():
             pegatina.setParentStatic(cuadro_obj)
-            pose_etiqueta = (robomath.transl(5, 3, 100) *robomath.rotz(robomath.pi / 2))    
+            pose_etiqueta = (robomath.transl(5, 3, 100) * robomath.rotz(robomath.pi / 2))    
             pegatina.setPose(pose_etiqueta)
             pegatina.setName("pegatina" + cuadro_obj.Name())
 
