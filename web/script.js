@@ -1,7 +1,9 @@
 const BROKER = "broker.emqx.io";
 const PORT = 8083;
 const TOPIC_WEB = "giirob/pr2/erro/pentapanel/pedido";
-const UPLOAD_URL = "http://192.168.1.132:5001";
+
+// CORRECCIÓN 1: Se añade '/upload' y detecta automáticamente la IP de tu ordenador
+const UPLOAD_URL = `http://${window.location.hostname}:5001/upload`;
 
 const STICKER_PATHS = {
     hazard_bolt: "images/electricidad.png",
@@ -18,9 +20,16 @@ client.connect({ onSuccess: () => console.log("PentaPanel Conectado") });
 
 document.querySelectorAll('.sticker-option').forEach(opt => {
     opt.addEventListener('click', () => {
-        document.querySelectorAll('.sticker-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        selectedId = opt.getAttribute('data-id');
+        // CORRECCIÓN 2: Lógica para deseleccionar si ya estaba seleccionado
+        if (opt.classList.contains('selected')) {
+            opt.classList.remove('selected');
+            selectedId = null; // Resetea la variable
+        } else {
+            // Si no estaba seleccionado, quita la selección de los demás y lo selecciona
+            document.querySelectorAll('.sticker-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            selectedId = opt.getAttribute('data-id');
+        }
     });
 });
 
