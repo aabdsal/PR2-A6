@@ -73,7 +73,6 @@ def mover_cinta_cuadro_acabada():
     pone el cuadro con tapa en la cinta."""
 
     sim.waitDI("EnCintaEtiquetar", 1)
-    sim.setDO("EnCintaEtiquetar", 0)
         
     _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameEtiqueta")
     
@@ -82,10 +81,12 @@ def mover_cinta_cuadro_acabada():
     cuadro_etiquetado = var.cola_cuadrosAcabados.get()
     cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
 
+    if not cuadro_obj.Valid():
+        raise RuntimeError("Nombre de cuadro no válido, revisa errores")
+    
     robomath.pause(2.0)
     
     if not var.cola_etiquetas.empty():
-        RDK.ShowMessage(f"Numero de etiquetas en cola: {var.cola_etiquetas.qsize()}", True)
 
         ruta_rel = var.cola_etiquetas.get()
         ruta_abs = (Path(__file__).resolve().parents[1] / "web" / ruta_rel).as_posix()
@@ -97,10 +98,12 @@ def mover_cinta_cuadro_acabada():
             pegatina.setPose(pose_etiqueta)
             pegatina.setName("pegatina" + cuadro_obj.Name())
 
-    robomath.pause(3.0)
+        robomath.pause(3.0)
 
     _mover_cinta(var.cinta_etiqueta, "SensorFinalEtiqueta", "FrameEtiqueta")
     
+    RDK.setParam("EnCintaEtiquetar", "0")
+
     RDK.Render(False)
     cuadro_obj.setVisible(False)
     cuadro_obj.Delete()
