@@ -31,6 +31,7 @@
 
 // LED
 #define LED_PIN                   3
+#define LED_WELDING_PIN           7
 
 // BUTTON
 #define BUTTON_PIN                0

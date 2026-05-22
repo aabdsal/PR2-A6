@@ -23,7 +23,8 @@
 typedef enum
 {
     LED_APAGADO,
-    LED_ENCENDIDO
+    LED_ENCENDIDO,
+    WELDING
 } Estado_Led;
 
 typedef enum 

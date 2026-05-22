@@ -38,6 +38,14 @@ void setInternalLedFromRemote(uint8_t status);
 
 /******************************************************************************/
 /**
+ * @brief  Actualiza el LED del Soldado con control remoto
+ * @param  status Estado del LED (0 apagado, 1 encendido)
+ * @retval None
+ */
+void setWeldingLed(uint8_t status);
+
+/******************************************************************************/
+/**
  * @brief  Tarea que encender y apagar el LED
  * @param pvParameters parametros opcionales de FreeRTOS
  * @retval None

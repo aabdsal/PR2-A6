@@ -3,7 +3,7 @@
 from robodk import robolink
 RDK = robolink.Robolink()
 
-from modulos_python import simulation as sim, variables as var, giro
+from modulos_python import simulation as sim, variables as var, giro, mqtt
 from typing import Optional
 
 ACTION_RESET = -1
@@ -117,6 +117,7 @@ def iniciar(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
         r.Pause(500)
         r.setFrame(frame_mesa)
         
+        mqtt.enviar_message(mqtt.led_topic, "welding")
         _apply_spray_action(
             action=ACTION_ON,
             object_name=piezas_en_mesa[0].Name(),
