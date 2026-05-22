@@ -16,7 +16,7 @@ def productorEvento(nombre_sensor: str, detectados: list[robolink.Item], RDK : r
             elif nombre_sensor == "SensorEtiqueta":
                 var.tiempo_fini.put(datetime.now().time())
 
-            if nombre_sensor == "SensorCC":
+            if nombre_sensor == "SensorCM":
                 pass
 
 

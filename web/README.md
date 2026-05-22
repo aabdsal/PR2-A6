@@ -55,11 +55,6 @@ Desde cualquier navegador en la misma red, abre:
 http://TU_DIRECCIÓN_IP:8000
 ```
 
-**Ejemplo práctico:**
-```
-http://192.168.1.132:8000
-```
-
 ### Crear un código QR para facilitar el acceso
 Para eventos donde otros deben conectarse rápidamente:
 1. Ve a https://www.the-qrcode-generator.com

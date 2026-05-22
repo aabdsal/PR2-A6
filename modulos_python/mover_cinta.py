@@ -3,6 +3,7 @@ simular el movimiento de los objetos sobre las cintas."""
 
 import threading
 import json
+from pathlib import Path
 from robodk import robolink, robomath
 from modulos_python import mqtt, bbdd, variables as var, simulation as sim
 
@@ -56,32 +57,64 @@ def mover_cinta_tapa():
 
 def mover_cinta_main():
     """Método que mueve la cinta principal, donde van las planchasLargas2 
-    y planchasAnchas2. El sensor encargado de notificar si hay objeto es el SensorCC.
+    y planchasAnchas2. El sensor encargado de notificar si hay objeto es el SensorCM.
 
     Implementa una espera digital que se activa cuando el yaskawa pone una plancha prensada en la cinta"""
 
     sim.waitDI("enCintaMain", 1)
     sim.setDO("enCintaMain", 0)
     
-    _mover_cinta(var.cinta_main, "SensorCC", "FramePlanchaMain")
+    _mover_cinta(var.cinta_main, "SensorCM", "FramePlanchaMain")
 
 def mover_cinta_cuadro_acabada():
     """Mueve la cinta final donde salen los cuadros eléctricos hacia el túnel.
 
     Implementa una espera digital que se activa cuando el ABB paletizado
-    pone el cuadro con tapa en la cinta. Falta la lógica para detenerse
-    2 segundos en el túnel de etiquetado."""
+    pone el cuadro con tapa en la cinta."""
 
     sim.waitDI("EnCintaEtiquetar", 1)
-    sim.setDO("EnCintaEtiquetar", 0)
         
-    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameCuadroAcabada")
+    _mover_cinta(var.cinta_etiqueta, "SensorEtiqueta", "FrameEtiqueta")
     
     RDK = robolink.Robolink()
-    
+
     cuadro_etiquetado = var.cola_cuadrosAcabados.get()
     cuadro_obj = RDK.Item(cuadro_etiquetado, robolink.ITEM_TYPE_OBJECT)
+
+    if not cuadro_obj.Valid():
+        raise RuntimeError("Nombre de cuadro no válido, revisa errores")
     
+    robomath.pause(2.0)
+    
+    ruta_pentapanel = (Path(__file__).resolve().parents[1] / "web" / "images/pentapanel.png").as_posix()
+    pentapanel = sim.crear_pegatina_obj(RDK, ruta_pentapanel, var.frame_cinta_etiqueta)
+
+    if pentapanel.Valid():
+        pentapanel.setParentStatic(cuadro_obj)
+        pose_etiqueta = (robomath.transl(100, -100, 100) * robomath.rotx(robomath.pi) * robomath.rotz(robomath.pi))    
+        pentapanel.setPose(pose_etiqueta)
+        pentapanel.setName("pentapanel" + cuadro_obj.Name())
+    
+    if not var.cola_etiquetas.empty():
+
+        ruta_rel = var.cola_etiquetas.get()
+        ruta_abs = (Path(__file__).resolve().parents[1] / "web" / ruta_rel).as_posix()
+        pegatina = sim.crear_pegatina_obj(RDK, ruta_abs, var.frame_cinta_etiqueta)
+
+        if pegatina.Valid():
+            pegatina.setParentStatic(cuadro_obj)
+            pose_etiqueta = (robomath.transl(-100, -100, 100))    
+            pegatina.setPose(pose_etiqueta)
+            pegatina.setName("pegatina" + cuadro_obj.Name())
+
+        robomath.pause(3.0)
+
+    _mover_cinta(var.cinta_etiqueta, "SensorFinalEtiqueta", "FrameEtiqueta")
+    
+    RDK.setParam("EnCintaEtiquetar", "0")
+
+    robomath.pause(3.0)
+
     RDK.Render(False)
     cuadro_obj.setVisible(False)
     cuadro_obj.Delete()

@@ -17,7 +17,7 @@ import threading
 import time
 
 mqtt.conectar()
-bbdd.conectar()
+#bbdd.conectar()
 
 sim.setDO("yaskawa_larga", 1)
 sim.setDO("yaskawa_ancha", 1)
@@ -93,6 +93,8 @@ def hilo_yaskawa():
         pp.place_cinta_main()
         variables.alternancia.put("ancha") 
 
+        time.sleep(0.01)
+
 def hilo_abb_paletizado():
     """Hilo del abb paletizado que decide que tarea hace primero segun la logica de la automatización."""
     
@@ -103,7 +105,7 @@ def hilo_abb_paletizado():
             pp.place_cuadro_acabada()
         elif RDK.getParam("planchaSoldada") == 1 and not variables.objetos_pendientes["SensorTapa"].empty():
             pp.place_tapa_en_mesa()
-        elif RDK.getParam("mesaOcupada") == 0 and not variables.objetos_pendientes["SensorCC"].empty():
+        elif RDK.getParam("mesaOcupada") == 0 and not variables.objetos_pendientes["SensorCM"].empty():
             pp.place_plancha_mesa()
         else:
             time.sleep(0.01)
@@ -112,6 +114,7 @@ def hilo_abb_soldador():
     """Hilo que ejecuta la secuencia de soldadura."""
     while True:
         soldar.iniciar()
+        time.sleep(0.01)
 
 # Hilos de sensores para detectar objetos en cada cinta.
 def hilo_sensorCA():
@@ -134,6 +137,10 @@ def hilo_sensorEtiqueta():
     """Hilo del sensor de la cinta de etiquetado."""
     sensor.detectar_objeto("SensorEtiqueta", "FrameEtiqueta")
 
+def hilo_sensorFinalEtiqueta():
+    """Hilo del sensor de la cinta de etiquetado."""
+    sensor.detectar_objeto("SensorFinalEtiqueta", "FrameEtiqueta")
+
 """ Lista para guardar todos los hilos que se van a ejecutar 
 en la estación, el parametro name se usa darle cuando 
 ocurra un error, que se imprima por mensaje el nombre del hilo."""
@@ -152,7 +159,8 @@ threads = [
     threading.Thread(target=hilo_sensorCL, name="sensor_cl"),
     threading.Thread(target=hilo_sensorCM, name="sensor_cm"),
     threading.Thread(target=hilo_sensorTapa, name="sensor_tapa"),
-    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta")
+    threading.Thread(target=hilo_sensorEtiqueta, name="sensor_etiqueta"),
+    threading.Thread(target=hilo_sensorFinalEtiqueta, name="sensor_final_etiqueta")
 ]
 
 # Se inicializan todos los hilos a la vez

@@ -4,6 +4,7 @@ Funciona en cualquier sistema que soporte Python."""
 
 import os
 import sys
+from pathlib import Path
 from robodk import robolink   
 
 def preparar_entorno():
@@ -22,7 +23,11 @@ def preparar_entorno():
         rdk_file = str(rdk_file_param)
 
     project_dir = os.path.dirname(os.path.abspath(rdk_file))
+    web_dir = Path(project_dir) / "web"
 
     if project_dir not in sys.path:
         sys.path.insert(0, project_dir)
+
+    if str(web_dir) not in sys.path:
+        sys.path.insert(0, str(web_dir))
     

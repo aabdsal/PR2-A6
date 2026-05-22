@@ -52,23 +52,29 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 
     # principio
     home = RDK.Item("Home", robolink.ITEM_TYPE_TARGET)
+    preplace1 = RDK.Item("PrePlace1", robolink.ITEM_TYPE_TARGET)
     place1 = RDK.Item("Place1", robolink.ITEM_TYPE_TARGET)
     bajaprensa1 = RDK.Item("BajaPrensa1", robolink.ITEM_TYPE_TARGET)
 
     # mid bending
     abreprensa1 = RDK.Item("AbrePrensa1", robolink.ITEM_TYPE_TARGET)
+    preretract1 = RDK.Item("PreRetract1", robolink.ITEM_TYPE_TARGET)
     retract1 = RDK.Item("Retract1", robolink.ITEM_TYPE_TARGET)
     gir180 = RDK.Item("Gir180", robolink.ITEM_TYPE_TARGET)
 
+    preplace2 = RDK.Item("PrePlace2", robolink.ITEM_TYPE_TARGET)
     place2 = RDK.Item("Place2", robolink.ITEM_TYPE_TARGET)
     bajaprensa2 = RDK.Item("BajaPrensa2", robolink.ITEM_TYPE_TARGET)
 
     abreprensa2 = RDK.Item("AbrePrensa2", robolink.ITEM_TYPE_TARGET)
+    preretract2 = RDK.Item("PreRetract2", robolink.ITEM_TYPE_TARGET)
     retract2 = RDK.Item("Retract2", robolink.ITEM_TYPE_TARGET)
     r.setFrame(sistRefBend)
     r.setTool(toolR)
 
     r.MoveL(home)
+    robomath.pause(0.5)
+    r.MoveL(preplace1)
     robomath.pause(0.5)
     r.MoveL(place1)
     robomath.pause(0.5)
@@ -82,9 +88,14 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 
     r.MoveL(abreprensa1)
     robomath.pause(0.5)
+    r.MoveL(preretract1)
+    robomath.pause(0.5)
     r.MoveL(retract1)
     robomath.pause(0.5)
     r.MoveJ(gir180)
+    robomath.pause(0.5)
+
+    r.MoveJ(preplace2)
     robomath.pause(0.5)
     r.MoveJ(place2)
     robomath.pause(0.5)
@@ -98,6 +109,8 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 
     r.MoveL(abreprensa2)
     robomath.pause(0.5)
+    r.MoveL(preretract2)
+    robomath.pause(0.5)
     r.MoveL(retract2)
     robomath.pause(0.5)
 
@@ -106,9 +119,9 @@ def _bending_generico(bend_1: str, bend_2: str, obj_0: str, obj_1: str, obj_2: s
 def bending_plancha_larga(obj_name : str):
     """Ejecuta el prensado de la plancha larga con los targets adecuados."""
 
-    _bending_generico("Bend1", "Bend2", obj_name, var.plantilla["larga1"], var.plantilla["larga2"])
+    _bending_generico("BendLarga1", "BendLarga2", obj_name, var.plantilla["larga1"], var.plantilla["larga2"])
 
 def bending_plancha_ancha(obj_name : str):
     """Ejecuta el prensado de la plancha ancha con los targets adecuados."""
 
-    _bending_generico("BendA1", "BendA2", obj_name, var.plantilla["ancha1"], var.plantilla["ancha2"])
+    _bending_generico("BendAncha1", "BendAncha2", obj_name, var.plantilla["ancha1"], var.plantilla["ancha2"])

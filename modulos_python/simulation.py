@@ -8,6 +8,9 @@ from robodk import robolink, robomath
 from typing import Optional
 from modulos_python import variables as var
 from threading import Lock
+from pathlib import Path
+import uuid
+
 _copy_lock = Lock()
 
 RDK = robolink.Robolink()
@@ -146,3 +149,36 @@ def duplicar_objeto(plantilla_name: str, frame_name: str):
         
         return duplicado
 
+def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, nombre_base="label"):
+
+    assets_dir = Path(__file__).resolve().parents[1] / "modulos_python" / "labels"
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    base = f"{nombre_base}_{uuid.uuid4().hex}"
+    obj_path = assets_dir / f"{base}.obj"
+    mtl_path = assets_dir / f"{base}.mtl"
+
+    w = 0.15
+    h = 0.15
+    obj_path.write_text(
+        "mtllib {mtl}\n"
+        f"v {-w/2} {-h/2} 0\n"
+        f"v {w/2} {-h/2} 0\n"
+        f"v {w/2} {h/2} 0\n"
+        f"v {-w/2} {h/2} 0\n"
+        "vt 0 0\nvt 1 0\nvt 1 1\nvt 0 1\n"
+        "usemtl mat0\n"
+        "f 1/1 2/2 3/3 4/4\n".format(mtl=mtl_path.name),
+        encoding="utf-8"
+    )
+
+    mtl_path.write_text(
+        "newmtl mat0\n"
+        "Kd 1.000 1.000 1.000\n"
+        f"map_Kd {Path(ruta_png).as_posix()}\n",
+        encoding="utf-8"
+    )
+
+    frame = RDK.Item(frame_name, robolink.ITEM_TYPE_FRAME)
+    pegatina = RDK.AddFile(str(obj_path), frame)
+    return pegatina
