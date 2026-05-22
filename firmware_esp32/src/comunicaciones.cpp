@@ -61,7 +61,7 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
         else if (strcmp(estadoLed, "welding") == 0) 
         {
             infoln("Orden recibida: Encender LED. Enviando al buzon...");
-            push(&buzon_led, LED_ENCENDIDO);
+            push(&buzon_led, WELDING);
         }
 
     }
