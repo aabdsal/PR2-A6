@@ -34,7 +34,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
+extern bool PARAR;
 // ID de Dispositivo : se proporcionan varias alternativas, a modo de ejemplo
  String deviceID = "esp32-" + WiFi.macAddress();
   // Versión usando el ID asignado en la asignatura GIIROB-PR2
@@ -83,6 +83,22 @@ void loop()
     // NO QUITAR (jjfons)
     wifi_loop();
     mqtt_loop();
+
+    if (PARAR) 
+    {
+        Serial.println("[EMERGENCIA] ¡Botón físico pulsado! Deteniendo sistema...");
+
+        JsonDocument doc;
+        doc["estado_simulacion"] = "STOP";
+
+        String payload;
+        serializeJson(doc, payload);
+        enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
+        
+        delay(100);
+        
+        exit(0);
+    }
 }
 
 /* Private functions ---------------------------------------------------------*/
