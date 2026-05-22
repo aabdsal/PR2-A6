@@ -158,8 +158,8 @@ def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, nombre_bas
     obj_path = assets_dir / f"{base}.obj"
     mtl_path = assets_dir / f"{base}.mtl"
 
-    w = 0.2
-    h = 0.2
+    w = 0.15
+    h = 0.15
     obj_path.write_text(
         "mtllib {mtl}\n"
         f"v {-w/2} {-h/2} 0\n"

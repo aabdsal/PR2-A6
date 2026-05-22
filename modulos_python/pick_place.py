@@ -183,7 +183,7 @@ def place_plancha_mesa():
     
     sim.soltar_objeto(var.tool_abb_p, frame_mesa)
     
-    r.MoveL(preplace_main)
+    r.MoveJ(preplace_main)
 
     global count
     
@@ -314,6 +314,7 @@ def place_cuadro_acabada():
     prepick_cuadro = RDK.Item("PrePickCuadro", robolink.ITEM_TYPE_TARGET)
     pick_cuadro = RDK.Item("PickCuadro", robolink.ITEM_TYPE_TARGET)
     preplace_cuadro = RDK.Item("PrePlaceCuadro", robolink.ITEM_TYPE_TARGET)
+    preplace_cuadro180 = RDK.Item("PrePlaceCuadro180", robolink.ITEM_TYPE_TARGET)
     place_cuadro = RDK.Item("PlaceCuadro", robolink.ITEM_TYPE_TARGET)
     ini = RDK.Item("Inicio", robolink.ITEM_TYPE_TARGET)
 
@@ -329,6 +330,8 @@ def place_cuadro_acabada():
     r.MoveJ(prepick_cuadro)
     robomath.pause(0.5)
     r.MoveJ(preplace_cuadro)
+    robomath.pause(0.5)
+    r.MoveJ(preplace_cuadro180)
     robomath.pause(0.5)
     r.MoveL(place_cuadro)
     
