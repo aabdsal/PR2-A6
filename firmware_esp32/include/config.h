@@ -39,7 +39,7 @@
 // ULTRASONIC SENSOR
 #define TRIG_PIN                  4
 #define ECHO_PIN                  5
-#define DISTANCIA_EMERGENCIA      10 //10cm de puro placer
+#define DISTANCIA_EMERGENCIA      10
 
 // WIFI
 #define NET_SSID                  "MIWIFI_XFE7"
