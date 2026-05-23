@@ -18,6 +18,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Variables -----------------------------------------------------------------*/
+extern bool PARAR;
 
 uint8_t ledStatus = 0;
 static bool ledRemoteLocked = false; /* When true, button presses won't change the LED; remote commands control it */
