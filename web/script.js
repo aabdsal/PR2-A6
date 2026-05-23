@@ -1,8 +1,9 @@
 const BROKER = "broker.emqx.io";
-const PORT = 8083;
+const PORT = 8084; // Puerto para wss
 const TOPIC_WEB = "giirob/pr2/erro/pentapanel/pedido";
 
-const UPLOAD_URL = `http://${window.location.hostname}:5001/upload`;
+// Detecta si se está usando ngrok o cualquier dominio externo y usa la URL actual
+const UPLOAD_URL = `${window.location.origin}/uploads`;
 
 const STICKER_PATHS = {
     hazard_bolt: "images/electricidad.png",
@@ -15,7 +16,10 @@ const STICKER_PATHS = {
 let client = new Paho.MQTT.Client(BROKER, PORT, "pentapanel_web_" + Math.random());
 let selectedId = null;
 
-client.connect({ onSuccess: () => console.log("MQTT conectado") });
+client.connect({
+    useSSL: true,
+    onSuccess: () => console.log("MQTT conectado")
+});
 
 document.querySelectorAll('.sticker-option').forEach(opt => {
     opt.addEventListener('click', () => {

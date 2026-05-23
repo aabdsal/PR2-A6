@@ -3,10 +3,14 @@ from __future__ import annotations
 from pathlib import Path
 import uuid
 from PIL import Image
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, send_file
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
+import os
+STATIC_DIR = Path(__file__).parent
+app = Flask(__name__, static_folder=str(STATIC_DIR), static_url_path="")
+CORS(app)
 
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
@@ -30,11 +34,24 @@ def _add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
+
+# Servir archivos estáticos (index.html, script.js, style.css, images, etc.)
+@app.route("/")
+def serve_index():
+    return send_file(STATIC_DIR / "index.html")
+
+# Servir imágenes y otros archivos estáticos
+@app.route("/images/<path:filename>")
+def serve_images(filename):
+    return send_from_directory(STATIC_DIR / "images", filename)
+
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_DIR, filename)
 
-@app.route("/upload", methods=["POST", "OPTIONS"])
+@app.route("/uploads", methods=["POST", "OPTIONS"])
 def upload_png():
     if request.method == "OPTIONS":
         return ("", 204)
@@ -59,6 +76,7 @@ def upload_png():
     return jsonify({
         "ruta_relativa": f"http://{request.host}/uploads/{filename}"
     })
+
 
 def start_server(host: str = "0.0.0.0", port: int = 5001):
     app.run(host=host, port=port, debug=False, use_reloader=False)

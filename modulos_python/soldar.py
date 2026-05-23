@@ -5,6 +5,7 @@ RDK = robolink.Robolink()
 
 from modulos_python import simulation as sim, variables as var, giro, mqtt
 from typing import Optional
+import json
 
 ACTION_RESET = -1
 ACTION_OFF = 0
@@ -117,7 +118,11 @@ def iniciar(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
         r.Pause(500)
         r.setFrame(frame_mesa)
         
-        mqtt.enviar_message(mqtt.led_topic, "welding")
+        mensaje = json.dumps({
+        "estado_led": "on",
+        })
+        mqtt.enviar_message(mqtt.led_topic, mensaje)
+
         _apply_spray_action(
             action=ACTION_ON,
             object_name=piezas_en_mesa[0].Name(),
