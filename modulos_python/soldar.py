@@ -119,7 +119,7 @@ def iniciar(tool_name: str = var.tool_abb_s, color: str = DEFAULT_COLOR):
         r.setFrame(frame_mesa)
         
         mensaje = json.dumps({
-        "estado_led": "on",
+        "estado_led": "welding",
         })
         mqtt.enviar_message(mqtt.led_topic, mensaje)
 

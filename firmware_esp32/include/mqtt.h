@@ -27,6 +27,7 @@
 /******************************************************************************/
 /**
  * @brief  Mantiene el bucle MQTT y gestiona reconexiones
+ * @param None
  * @retval None
  */
 void mqtt_loop();
@@ -73,8 +74,6 @@ void mqtt_publish(const char* topic, String outgoingMessage);
  * @retval None
  */
 void mqtt_subscribe(const char* topic);
-
-
 
 #endif // MQTT_H
 /* End of file ****************************************************************/

@@ -30,20 +30,20 @@
 #define DEVICE_GIIROB_PR2_ID      "00" //"giirobpr2_00"
 
 // LED
-#define LED_PIN                   18
-#define LED_WELDING_PIN           7
+#define LED_PIN                   17
+#define LED_WELDING_PIN           11
 
 // BUTTON
-#define BUTTON_PIN                0
+#define BUTTON_PIN                5
 
 // ULTRASONIC SENSOR
-#define TRIG_PIN                  4
-#define ECHO_PIN                  5
+#define TRIG_PIN                  8
+#define ECHO_PIN                  9
 #define DISTANCIA_EMERGENCIA      10
 
 // WIFI
-#define NET_SSID                  "iPhone"
-#define NET_PASSWD                "andreugrc"
+#define NET_SSID                  "MIWIFI_XFE7"
+#define NET_PASSWD                "QHubtTFE"
 
 // MQTT
 #define MQTT_SERVER_IP            "broker.emqx.io"   // IP del broker MQTT al que se conectará el dispositivo

@@ -13,6 +13,7 @@
 #include "config.h"
 #include "comunicaciones.h"
 #include "setup.h"
+#include "loop.h"
 #include "buffer_circular.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -29,6 +30,24 @@ bool PARAR = false;
 
 /* Exported functions --------------------------------------------------------*/
 
+void on_loop()
+{
+    if (PARAR) 
+    {
+        Serial.println("[EMERGENCIA] ¡Botón físico pulsado! Deteniendo sistema...");
+
+        JsonDocument doc;
+        doc["estado_simulacion"] = "STOP";
+
+        String payload;
+        serializeJson(doc, payload);
+        enviarMensajePorTopic(EMERGENCY_STOP_TOPIC, payload);
+        
+        delay(100);
+        
+        exit(0);
+    }
+}
 /* Private functions ---------------------------------------------------------*/
 
 /* End of file ****************************************************************/

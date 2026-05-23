@@ -27,6 +27,7 @@
 /******************************************************************************/
 /**
  * @brief  Suscribe el cliente MQTT a los topics del sistema
+ * @param None
  * @retval None
  */
 void suscribirseATopics();

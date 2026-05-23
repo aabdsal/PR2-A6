@@ -24,6 +24,7 @@
 /******************************************************************************/
 /**
  * @brief  Mide la distancia con el sensor ultrasonico
+ * @param None
  * @retval Distancia en centimetros
  */
 long leerUltrasonidos();

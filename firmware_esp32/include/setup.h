@@ -10,9 +10,6 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-
-
-
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 
@@ -29,6 +26,7 @@ extern String deviceID;
 /******************************************************************************/
 /**
  * @brief  Configura pines y estado inicial del dispositivo
+ * @param None
  * @retval None
  */
 void on_setup();

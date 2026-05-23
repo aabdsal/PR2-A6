@@ -9,6 +9,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <Arduino.h>
 #include "comunicaciones.h"
+#include "loop.h"
 #include "funciones.h"
 #include "config.h"
 #include "c_logger.h"
@@ -18,7 +19,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Variables -----------------------------------------------------------------*/
-extern bool PARAR;
 
 uint8_t ledStatus = 0;
 static bool ledRemoteLocked = false; /* When true, button presses won't change the LED; remote commands control it */
@@ -64,12 +64,12 @@ void setWeldingLed(uint8_t status)
   
     if (status) 
     {
-        infoln("Led: on");
+        infoln("Welding Led: on");
         digitalWrite(LED_WELDING_PIN, HIGH);
     } 
     else 
     {
-        infoln("Led: off");
+        infoln("Welding Led: off");
         digitalWrite(LED_WELDING_PIN, LOW);
     }
 }
@@ -102,16 +102,15 @@ void led_task(void *pvParameters)
             if(orden_recibida == LED_ENCENDIDO)
             {
                 setInternalLedFromRemote(1);
-                vTaskDelay(pdMS_TO_TICKS(500));
+                vTaskDelay(pdMS_TO_TICKS(1000));
                 setInternalLedFromRemote(0);
-                vTaskDelay(pdMS_TO_TICKS(500));
             }
-            else if(orden_recibida == WELDING)
+            
+            if(orden_recibida == WELDING)
             {
                 setWeldingLed(1);
-                vTaskDelay(pdMS_TO_TICKS(500));
+                vTaskDelay(pdMS_TO_TICKS(1000));
                 setWeldingLed(0);
-                vTaskDelay(pdMS_TO_TICKS(500));
             }
         }
         vTaskDelayUntil(&xLastWakeTime, xFrequency);

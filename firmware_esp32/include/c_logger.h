@@ -28,10 +28,10 @@ static bool _log_newline = true;
 #define traceln(message) if ( LOG_LEVEL >= TRACE ) { if (_log_newline) Serial.print("[TRACE] "); Serial.println(message); _log_newline = true;}
 #define debug(message)   if ( LOG_LEVEL >= DEBUG ) { if (_log_newline) Serial.print("[DEBUG] "); Serial.print(message);   _log_newline = false;}
 #define debugln(message) if ( LOG_LEVEL >= DEBUG ) { if (_log_newline) Serial.print("[DEBUG] "); Serial.println(message); _log_newline = true;}
-#define info(message)    if ( LOG_LEVEL >= INFO  ) { if (_log_newline) Serial.print("[ INFO] "); Serial.print(message);   _log_newline = false;}
-#define infoln(message)  if ( LOG_LEVEL >= INFO  ) { if (_log_newline) Serial.print("[ INFO] "); Serial.println(message); _log_newline = true;}
-#define warn(message)    if ( LOG_LEVEL >= WARN  ) { if (_log_newline) Serial.print("[ WARN] "); Serial.print(message);   _log_newline = false;}
-#define warnln(message)  if ( LOG_LEVEL >= WARN  ) { if (_log_newline) Serial.print("[ WARN] "); Serial.println(message); _log_newline = true;}
+#define info(message)    if ( LOG_LEVEL >= INFO  ) { if (_log_newline) Serial.print("[INFO]  "); Serial.print(message);   _log_newline = false;}
+#define infoln(message)  if ( LOG_LEVEL >= INFO  ) { if (_log_newline) Serial.print("[INFO]  "); Serial.println(message); _log_newline = true;}
+#define warn(message)    if ( LOG_LEVEL >= WARN  ) { if (_log_newline) Serial.print("[WARN]  "); Serial.print(message);   _log_newline = false;}
+#define warnln(message)  if ( LOG_LEVEL >= WARN  ) { if (_log_newline) Serial.print("[WARN]  "); Serial.println(message); _log_newline = true;}
 #define error(message)   if ( LOG_LEVEL >= ERROR ) { if (_log_newline) Serial.print("[ERROR] "); Serial.print(message);   _log_newline = false;}
 #define errorln(message) if ( LOG_LEVEL >= ERROR ) { if (_log_newline) Serial.print("[ERROR] "); Serial.println(message); _log_newline = true;}
 #define fatal(message)   if ( LOG_LEVEL >= FATAL ) { if (_log_newline) Serial.print("[FATAL] "); Serial.print(message);   _log_newline = false;}

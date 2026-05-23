@@ -24,6 +24,7 @@ extern Buffer_Circ buzon_led;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
+
 void suscribirseATopics() 
 {
     // TODO: añadir suscripciones a los topics MQTT ...
@@ -31,7 +32,6 @@ void suscribirseATopics()
     mqtt_subscribe(LED_TOPIC);
     //mqtt_subscribe(EMERGENCY_STOP_TOPIC);
 }
-
 
 void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
 
@@ -60,7 +60,7 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage) {
         }
         else if (strcmp(estadoLed, "welding") == 0) 
         {
-            infoln("Orden recibida: Encender LED. Enviando al buzon...");
+            infoln("Orden recibida: Encender Welding LED. Enviando al buzon...");
             push(&buzon_led, WELDING);
         }
 

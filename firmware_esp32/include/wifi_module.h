@@ -36,6 +36,7 @@ extern WiFiClient espWifiClient;
 /******************************************************************************/
 /**
  * @brief  Mantiene la conexion WiFi activa
+ * @param None
  * @retval None
  */
 void wifi_loop();
@@ -43,6 +44,7 @@ void wifi_loop();
 /******************************************************************************/
 /**
  * @brief  Configura y conecta la interfaz WiFi
+ * @param None
  * @retval None
  */
 void wifi_connect();
@@ -54,8 +56,6 @@ void wifi_connect();
  * @retval None
  */
 void wifi_reconnect(uint retries);
-
-
 
 #endif // WIFI_MODULE_H
 

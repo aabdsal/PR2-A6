@@ -17,7 +17,6 @@
 /* Private define ------------------------------------------------------------*/
 
 #define BUFSIZE 10          // Número máximo de elementos
-#define PIN_BUTTON 13
 
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
@@ -51,12 +50,6 @@ typedef struct
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
-/* 
-NOTA: extern portMUX_TYPE taskMux; 
-Hay que mirar si hay que proteger, si no se elimina esta variable.
-*/ 
-
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
@@ -109,9 +102,6 @@ uint32_t getTam(Buffer_Circ *lista);
  * @retval None
  */
 void listar(Buffer_Circ *lista);          
-
-
-
 
 #endif // BUFFER_CIRCULAR_H
 
