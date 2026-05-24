@@ -8,6 +8,13 @@ La implementación actual esta centrada en simulación y en la traducción funci
 	<img src="image.png" width="500"/>
 </p>
 
+## Miembros
+- Ali Abdelhamid
+- Andreu García
+- Manuel Martínez
+- Roberto Noguera
+- Ángela Sal
+
 ## Objetivo de la propuesta
 - Alimentación de material a través de cintas.
 - Pick-and-place robotizado.
@@ -15,27 +22,12 @@ La implementación actual esta centrada en simulación y en la traducción funci
 - Soldadura robotizada.
 - Montaje del cuadro.
 - Etiquetado del cuadro.
-
-Adicionalmente, la propuesta contempla:
 - Integración con nodos ESP32.
 - Mensajeria MQTT para coordinación.
 - Intercambio de estados y ordenes en JSON.
 
-## Estado actual del proyecto
-### Hecho
-- Traduccion principal de la logica de RoboDK a scripts Python.
-- Flujo funcional de simulación implementado por fases.
-- Correcciones base de estabilidad y reutilizacion aplicadas.
-- Integracion de E/S para sincronizacion (`waitDI` / `setDO`).
-- Integracion de comunicaciones con ESP32 y MQTT.
-- Integracion con base de datos para trazabilidad.
-- Realización de cuadros de forma infinita
-
-### En progreso / pendiente
-- Proceso de etiquetado
-
 ## Requisitos
-- RoboDK instalado y estacion de simulación disponible.
+- RoboDK instalado y estación de simulación disponible.
 - Python 3.9+ (compatible con el intérprete integrado de RoboDK.)
 - Paquete Python `robodk` instalado en el entorno activo.
 - Paquetes `paho-mqtt` y `psycopg` instalados en el intérprete de RoboDK para conectarse a MQTT y a la Base de Datos SQL
@@ -50,13 +42,22 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install robodk
+brew install cloudflared
 ```
 
-Para `paho-mqtt` y `psycopg`, usa el intérprete que RoboDK tiene configurado (Tools > Options > Python):
+Para `paho-mqtt` y `psycopg` ` flask` `flask-cors` `pillow`, usa el intérprete que RoboDK tiene configurado (Tools > Options > Python):
 
 ```bash
-<RUTA_PYTHON_ROBODK> -m pip install paho-mqtt psycopg
+<RUTA_PYTHON_ROBODK> -m pip install paho-mqtt psycopg  flask flask-cors pillow
 ```
+
+## Web (Flask + Cloudflare Tunnel)
+- Permite interactuar con la estación RoboDK desde cualquier dispositivo vía web.
+- Para acceso remoto seguro, se recomienda usar Cloudflare Tunnel (`cloudflared`).
+- La web se ejecuta desde la carpeta `web/` y se expone por defecto en el puerto 5001.
+- Acceso remoto: https seguro mediante URL pública generada por Cloudflare Tunnel.
+- Puedes generar un código QR con la URL pública en https://www.the-qrcode-generator.com para facilitar el acceso desde móviles.
+
 
 ## ESP32 (PlatformIO)
 - Abrir la carpeta `firmware_esp32` en VS Code con PlatformIO instalado.
@@ -69,5 +70,22 @@ Para `paho-mqtt` y `psycopg`, usa el intérprete que RoboDK tiene configurado (T
 
 ## Ejecución
 - Abrir RoboDK con licencia activa.
-- Cargar los scripts `modulos_python/main.py` y `modulos_python/reset.py` en la estación para asegurarse de tener la versión más nuevo dentro de ella.
+- Cargar los scripts `modulos_python/main.py` y `modulos_python/reset.py` en la estación para asegurarse de tener la versión más nueva dentro de ella.
 - Ejecutar script main desde RoboDK con la estación abierta.
+- Para la página web, ejecuta primero:
+
+```bash
+cd web
+python upload_server.py
+```
+- Y ahora para iniciar la web
+```bash
+cloudflared tunnel --url http://localhost:5001
+```
+- Se generará una URL pública para acceder desde cualquier dispositivo.
+
+
+
+
+
+
