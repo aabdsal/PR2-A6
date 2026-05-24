@@ -17,7 +17,7 @@ import threading
 import time
 
 mqtt.conectar()
-#bbdd.conectar()
+bbdd.conectar()
 
 sim.setDO("yaskawa_larga", 1)
 sim.setDO("yaskawa_ancha", 1)

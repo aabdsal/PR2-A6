@@ -34,9 +34,6 @@ def _add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
-def uploaded_file(filename):
-    return send_from_directory(UPLOAD_DIR, filename)
-
 # Servir archivos estáticos (index.html, script.js, style.css, images, etc.)
 @app.route("/")
 def serve_index():
@@ -74,7 +71,7 @@ def upload_png():
     file.save(save_path)
 
     return jsonify({
-        "ruta_relativa": f"http://{request.host}/uploads/{filename}"
+        "ruta_relativa": f"uploads/{filename}"
     })
 
 

@@ -1,6 +1,7 @@
 import psycopg
 from modulos_python import variables as var
 from datetime import datetime
+from robodk import robolink
 
 curr = None
 conn = None
@@ -58,5 +59,6 @@ def actualizar_unidad():
     pedido = _buscar_pedido_pendiente(curr)
     if pedido is not None:
         _registrar_producto(conn, curr, pedido[0], t_ini, t_fini)
-
+        RDK = robolink.Robolink()
+        RDK.ShowMessage("Pedido actualizado", False)
    

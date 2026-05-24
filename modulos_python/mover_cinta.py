@@ -103,7 +103,7 @@ def mover_cinta_cuadro_acabada():
 
         if pegatina.Valid():
             pegatina.setParentStatic(cuadro_obj)
-            pose_etiqueta = (robomath.transl(-100, -100, 100))    
+            pose_etiqueta = (robomath.transl(100, 100, 100))    
             pegatina.setPose(pose_etiqueta)
             pegatina.setName("pegatina" + cuadro_obj.Name())
 
@@ -111,7 +111,12 @@ def mover_cinta_cuadro_acabada():
 
     _mover_cinta(var.cinta_etiqueta, "SensorFinalEtiqueta", "FrameEtiqueta")
     
-    RDK.setParam("EnCintaEtiquetar", "0")
+    sim.setDO("EnCintaEtiquetar", 0)
+
+    mensaje = json.dumps({
+        "estado_led": "on",
+    })
+    mqtt.enviar_message(mqtt.led_topic, mensaje)
 
     robomath.pause(3.0)
 
@@ -120,9 +125,4 @@ def mover_cinta_cuadro_acabada():
     cuadro_obj.Delete()
     RDK.Render(True)
 
-    mensaje = json.dumps({
-        "estado_led": "on",
-    })
-    mqtt.enviar_message(mqtt.led_topic, mensaje)
-
-    #threading.Thread(target=bbdd.actualizar_unidad).start()
+    threading.Thread(target=bbdd.actualizar_unidad).start()
