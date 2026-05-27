@@ -9,6 +9,7 @@ from typing import Optional
 from modulos_python import variables as var
 from threading import Lock
 from pathlib import Path
+from PIL import Image
 import uuid
 
 _copy_lock = Lock()
@@ -149,7 +150,7 @@ def duplicar_objeto(plantilla_name: str, frame_name: str):
         
         return duplicado
 
-def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, nombre_base="label"):
+def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, px_to_m, nombre_base="label"):
 
     assets_dir = Path(__file__).resolve().parents[1] / "modulos_python" / "labels"
     assets_dir.mkdir(parents=True, exist_ok=True)
@@ -158,8 +159,13 @@ def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, nombre_bas
     obj_path = assets_dir / f"{base}.obj"
     mtl_path = assets_dir / f"{base}.mtl"
 
-    w = 0.15
-    h = 0.15
+    # Leer dimensiones de la imagen
+    with Image.open(ruta_png) as img:
+        width_px, height_px = img.size
+
+    w = width_px * px_to_m
+    h = height_px * px_to_m
+    
     obj_path.write_text(
         "mtllib {mtl}\n"
         f"v {-w/2} {-h/2} 0\n"
@@ -175,7 +181,9 @@ def crear_pegatina_obj(RDK : robolink.Robolink, ruta_png, frame_name, nombre_bas
     mtl_path.write_text(
         "newmtl mat0\n"
         "Kd 1.000 1.000 1.000\n"
-        f"map_Kd {Path(ruta_png).as_posix()}\n",
+        "d 1.0\n"
+        f"map_Kd {Path(ruta_png).as_posix()}\n"
+        f"map_d {Path(ruta_png).as_posix()}\n",
         encoding="utf-8"
     )
 
