@@ -91,7 +91,7 @@ def mover_cinta_cuadro_acabada():
 
     if pentapanel.Valid():
         pentapanel.setParentStatic(cuadro_obj)
-        pose_etiqueta = (robomath.transl(70, -160, 100) * robomath.rotx(robomath.pi) * robomath.rotz(robomath.pi))    
+        pose_etiqueta = (robomath.transl(70, -160, 95) * robomath.rotx(robomath.pi) * robomath.rotz(robomath.pi))    
         pentapanel.setPose(pose_etiqueta)
         pentapanel.setName("pentapanel" + cuadro_obj.Name())
     
@@ -105,8 +105,8 @@ def mover_cinta_cuadro_acabada():
 
         if ruta_rel.startswith("uploads/"):
             pegatina = sim.crear_pegatina_obj(RDK, ruta_abs, var.frame_cinta_etiqueta, 0.0002)
-            x = -50
-            y = -30
+            x = -60
+            y = 10
 
         elif ruta_rel.startswith("images/"):
             pegatina = sim.crear_pegatina_obj(RDK, ruta_abs, var.frame_cinta_etiqueta, 0.0001)
@@ -115,9 +115,9 @@ def mover_cinta_cuadro_acabada():
 
         if pegatina.Valid():
             pegatina.setParentStatic(cuadro_obj)  
-            pose_etiqueta = (robomath.transl(x, y, 100))  
+            pose_etiqueta = (robomath.transl(x, y, 95)* robomath.roty(robomath.pi))  
             pegatina.setPose(pose_etiqueta)
-            pegatina.setName("pegatina" + cuadro_obj.Name())
+            pegatina.setName("pegatina_" + cuadro_obj.Name())
         
         robomath.pause(3.0)
 
