@@ -30,15 +30,15 @@
 #define DEVICE_GIIROB_PR2_ID      "00" //"giirobpr2_00"
 
 // LED
-#define LED_PIN                   17
-#define LED_WELDING_PIN           11
+#define LED_PIN                   7
+#define LED_WELDING_PIN           3
 
 // BUTTON
-#define BUTTON_PIN                5
+#define BUTTON_PIN                1
 
 // ULTRASONIC SENSOR
-#define TRIG_PIN                  8
-#define ECHO_PIN                  9
+#define TRIG_PIN                  41
+#define ECHO_PIN                  40
 #define DISTANCIA_EMERGENCIA      10
 
 // WIFI
